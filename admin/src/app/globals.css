@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/bismarck');
+@import url('https://fonts.cdnfonts.com/css/agency-fb');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.css-15bnxaz-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+    @apply text-white !important;
+}
+
+.modal {
+    @apply fixed z-10 bg-black bg-opacity-40 rounded-md top-0 bottom-0 right-0 left-0 flex items-center justify-center;
+}
+.modal-container {
+    @apply px-[60px] py-10 bg-white rounded-lg;
+}
