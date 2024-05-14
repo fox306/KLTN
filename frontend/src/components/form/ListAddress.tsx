@@ -38,9 +38,7 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
     const [open, setOpen] = useState(false);
 
     const handleDefault = async (id: string) => {
-        const { data } = await axios.patch('/address/default', {
-            address: id,
-        });
+        const { data } = await axios.patch(`/deliveryAddress/user/${id}`);
         if (data.success) {
             toast.success('Set default address success');
             setLoad((prev) => !prev);
@@ -92,7 +90,7 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
                             <div className="flex gap-[10px] absolute top-[-14px] right-20">
                                 <div
                                     className="text-[#FF00B4] px-1 bg-white cursor-pointer hover:opacity-60"
-                                    onClick={() => handleDefault(item._id)}
+                                    onClick={() => handleDefault(item.user as string)}
                                 >
                                     <DoneRoundedIcon />
                                 </div>

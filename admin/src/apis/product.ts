@@ -3,13 +3,8 @@ import axios from '@/utils/axios';
 
 const productApi = {
     getAllProduct: (pageNumber: number) => {
-        const url = '/products';
-        return axios.get(url, {
-            params: {
-                pageNumber: pageNumber,
-                pageSize: 5,
-            },
-        });
+        const url = `/products?pageSize=5&pageNumber=${pageNumber}`;
+        return axios.get(url);
     },
     getAllProductByStatus: (item: ProductByStatus) => {
         const url = '/products/status';
@@ -22,8 +17,8 @@ const productApi = {
         });
     },
     getProductById: (product: string) => {
-        const url = '/products/detail';
-        return axios.get(url, { params: { product: product } });
+        const url = `/products/admin/${product}`;
+        return axios.get(url);
     },
     getAllProductByCateId: (category: string) => {
         const url = '/products/category';

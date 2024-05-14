@@ -62,15 +62,14 @@ export type ProductByStatus = {
 };
 
 export type Variant = {
-    listColor: string[];
+    listColor: detailColor[];
     listSize: string[];
 };
 
-export type detailVariant = {
-    _id: string;
+export type detailColor = {
     color: string;
-    size: string;
-    quantity: string;
+    hex: string;
+    image: string;
 };
 
 export type Address = {
@@ -226,4 +225,19 @@ export type CreateCoupon = {
     minAmount: number;
     maxDiscount: number;
     validityDuration: number;
+};
+
+export type CreateVariant = {
+    color: string;
+    image: File | null;
+    details: CreateSizes[];
+};
+export type CreateSizes = {
+    size: string;
+    quantity: number;
+};
+export type UpdateVariant = {
+    color: string;
+    image: string;
+    details: CreateSizes[];
 };
