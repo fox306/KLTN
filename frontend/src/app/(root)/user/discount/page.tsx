@@ -30,20 +30,26 @@ const DiscountPage = () => {
         <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
             <div className="flex flex-col w-[1100px]">
-                <div className="grid grid-cols-2 gap-4">
-                    {coupon &&
-                        coupon.map((item) => (
-                            <div className="border h-[116px] p-4 flex flex-col justify-center items-center">
-                                <div className="flex items-center justify-between font-bold text-lg w-full">
-                                    <span>Code: {item.code} </span>
-                                    <span>Name: {item.name} </span>
-                                </div>
-                                <span className="font-semibold">Minimum Orders: {item.minAmount}</span>
+                {coupon && coupon.length === 0 ? (
+                    <div className="w-full flex items-center justify-center">
+                        <span className="font-bold text-xl">Don't have Coupon</span>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 gap-4">
+                        {coupon &&
+                            coupon.map((item) => (
+                                <div className="border h-[116px] p-4 flex flex-col justify-center items-center">
+                                    <div className="flex items-center justify-between font-bold text-lg w-full">
+                                        <span>Code: {item.code} </span>
+                                        <span>Name: {item.name} </span>
+                                    </div>
+                                    <span className="font-semibold">Minimum Orders: {item.minAmount}</span>
 
-                                <span>Effective from: {item.startDate}</span>
-                            </div>
-                        ))}
-                </div>
+                                    <span>Effective from: {item.startDate}</span>
+                                </div>
+                            ))}
+                    </div>
+                )}
             </div>
         </div>
     );

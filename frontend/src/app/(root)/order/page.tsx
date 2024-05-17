@@ -6,7 +6,7 @@ import Border from '@/components/shared/Border';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { createOrder } from '@/slices/orderSlice';
-import type { Address, Cart, Coupon, ItemCart, Order, User, checkoutOrder } from '@/types/type';
+import type { Address, Cart, Coupon, ItemCart, Order, Province, User, checkoutOrder } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -30,6 +30,13 @@ const unProps = {
         default: false,
     },
     addressId: '',
+    districtID: '',
+    setDistrictID: () => {},
+    district: undefined,
+    setDistrict: () => {},
+    ward: undefined,
+    setWard: () => {},
+    setAddressId: () => {},
 };
 
 const Order = () => {
@@ -60,6 +67,9 @@ const Order = () => {
     const [active, setActive] = useState<boolean>(false);
     const [listCoupons, setListCoupons] = useState<Coupon[]>();
     const [discount, setDiscount] = useState<Coupon>();
+    const [province, setProvince] = useState<Province[]>();
+    const [provinceID, setProvinceID] = useState<string>('');
+
     let totalPay = totalPrice;
 
     const [pay, setPay] = useState<string>('');
@@ -100,6 +110,14 @@ const Order = () => {
             }
         }
     }, [discount]);
+    useEffect(() => {
+        const fetchProvince = async () => {
+            const data = await axios.get('https://vapi.vnappmob.com/api/province');
+            setProvince(data.data.results);
+            // console.log(data);
+        };
+        fetchProvince();
+    }, []);
 
     const idAddress = datas?._id as string;
 
@@ -126,12 +144,11 @@ const Order = () => {
             await dispatch(createOrder(item));
             localStorage.removeItem('itemOrders');
             localStorage.removeItem('totalPrice');
-            const { data } = await axios.post('/orders/create_payment_url', {
-                amount: totalPrice,
-                bankCode: 'VNBANK',
-            });
-            window.open(data.vnpUrl);
-            window.close();
+            const { data } = await axios.post('/orders');
+            if (data.success) {
+                window.open(data.data);
+                window.close();
+            }
         } else {
             const item: checkoutOrder = {
                 items: items,
@@ -276,7 +293,17 @@ const Order = () => {
                 </button>
             </div>
             {change && <ListAddress setLoad={setLoad} address={address} setChange={setChange} />}
-            {open && <AddAddress setLoad={setLoad} setOpen={setOpen} {...unProps} />}
+            {open && (
+                <AddAddress
+                    setLoad={setLoad}
+                    setOpen={setOpen}
+                    {...unProps}
+                    province={province}
+                    setProvince={setProvince}
+                    provinceID={provinceID}
+                    setProvinceID={setProvinceID}
+                />
+            )}
             {active && (
                 <Coupons setActive={setActive} listCoupons={listCoupons as Coupon[]} setDiscount={setDiscount} />
             )}

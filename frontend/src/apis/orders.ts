@@ -21,6 +21,7 @@ const ordersApi = {
             deliveryAddress: item.deliveryAddress,
             items: item.items,
             total: item.total,
+            paymentMethod: item.paymentMethod,
         };
         console.log(data);
         return axios.post(url, data);

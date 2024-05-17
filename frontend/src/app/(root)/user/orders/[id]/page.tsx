@@ -32,7 +32,7 @@ const DetailOrder = () => {
                         <span>Payment Method:</span>
                     </div>
                     <div className="flex flex-col gap-[14px]">
-                        <span>{detail?._id}</span>
+                        <span>{detail?.orderId}</span>
                         <span>{detail?.deliveryAddress.receiver}</span>
                         <span>{detail?.paymentMethod}</span>
                     </div>

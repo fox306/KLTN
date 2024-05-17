@@ -48,6 +48,7 @@ module.exports = {
             },
             boxShadow: {
                 form: '2px 2px 2px 0 rgba(0,0,0,0.2)',
+                comment: '1px 1px 2px 0 rgba(0,0,0,0.2)',
             },
             keyframes: {
                 'accordion-down': {

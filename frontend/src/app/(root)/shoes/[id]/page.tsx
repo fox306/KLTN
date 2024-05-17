@@ -13,11 +13,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { useParams } from 'next/navigation';
 import { getProductById, getProductHotDeal } from '@/slices/productSlice';
-import { ItemCart, ItemCartFake, Product, RVariant, User, Variant, getQtyOfSizeColor } from '@/types/type';
+import {
+    Comment,
+    ItemCart,
+    ItemCartFake,
+    Product,
+    RVariant,
+    User,
+    Variant,
+    detailVariant,
+    getQtyOfSizeColor,
+} from '@/types/type';
 import { getColorOfSize } from '@/slices/variantSlice';
 import { toast } from 'react-toastify';
 import { addItemToCartByUserId } from '@/slices/cartSlice';
 import { useRouter } from 'next/navigation';
+import axios from '@/utils/axios';
 
 const unProp = {
     productHots: [],
@@ -68,7 +79,6 @@ const ShoesSinglePage = () => {
         }
     }
     const idUser = user?._id as string;
-    console.log(randomItem);
     const { id } = useParams() as { id: string };
     const [number, setNumber] = useState<number>(0);
     const [items, setItems] = useState<RVariant>({
@@ -85,6 +95,8 @@ const ShoesSinglePage = () => {
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
     const [isFirstRender, setIsFirstRender] = useState(true);
+    const [active, setActive] = useState<boolean>(false);
+    const [comments, setComments] = useState<Comment[]>();
 
     const handleImage = (i: number) => {
         setNumber(i);
@@ -112,6 +124,7 @@ const ShoesSinglePage = () => {
     const handleSetColor = (newColor: string, hex: string) => {
         setItems({ ...items, color: newColor, hex: hex });
         setFlag((prev) => !prev);
+        setIsFirstRender(false);
     };
 
     const handleAddToCart = async () => {
@@ -161,18 +174,16 @@ const ShoesSinglePage = () => {
             };
             const fetchData = async () => {
                 const res: any = await dispatch(getColorOfSize(item));
-                console.log(res);
+                console.log('HHHH', res);
                 if ((res.payload as { status: number }).status === 200) {
                     setItems({ ...items, quantity: res.payload.data.data.quantity });
                 }
             };
-
             fetchData();
         } else {
             setIsFirstRender(true);
         }
     }, [flag]);
-    console.log(quantity);
     const [count, setCount] = useState(0);
     useEffect(() => {
         let mount = true;
@@ -181,20 +192,30 @@ const ShoesSinglePage = () => {
             if (mount) {
                 setCount((prev) => prev + 1);
             }
+            if (variants.listColor) {
+                const index = variants.listColor.findIndex((item) => item.image === randomItem.image);
+                setNumber(index);
+            }
         });
+        const fetchData = async () => {
+            const { data } = await axios.get(`/comments/find/by-product?pageSize=5&product=${id}`);
+            if (data.success) {
+                setComments(data.data);
+            }
+        };
+        fetchData();
     }, []);
-
     useEffect(() => {
         setItems(randomItem);
     }, [count]);
-    console.log(items);
+    console.log(comments);
     return (
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
                 <div className="w-[420px]">
                     <div className="relative bg-bg_sell rounded-lg border-gray border-2 overflow-hidden">
                         <Image
-                            src={productDetail.images && productDetail.images[number]}
+                            src={variants.listColor && variants.listColor[number].image}
                             alt="giày"
                             width={420}
                             height={328}
@@ -207,15 +228,14 @@ const ShoesSinglePage = () => {
                         )}
                     </div>
                     <div className="flex gap-5 mt-5">
-                        {productDetail &&
-                            productDetail.images &&
-                            productDetail.images.map((item, i) => (
+                        {variants.listColor &&
+                            variants.listColor.map((item, i) => (
                                 <div
                                     key={i}
                                     className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4 overflow-hidden"
                                 >
                                     <Image
-                                        src={item}
+                                        src={item.image}
                                         alt="giày"
                                         fill
                                         onClick={() => handleImage(i)}
@@ -265,7 +285,10 @@ const ShoesSinglePage = () => {
                                 variants.listColor.map((item, i) => (
                                     <div
                                         key={i}
-                                        onClick={() => handleSetColor(item.color, item.hex)}
+                                        onClick={() => {
+                                            handleSetColor(item.color, item.hex);
+                                            handleImage(i);
+                                        }}
                                         className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[item.color]}`}
                                     >
                                         <div
@@ -318,17 +341,30 @@ const ShoesSinglePage = () => {
             </div>
             <div className="px-5 pt-[25px] pb-5 bg-bg_sell rounded-lg w-[1020px]">
                 <div className="text-base font-medium flex mb-[25px]">
-                    <span className="w-[180px] border-b-2 text-blue border-blue flex items-center justify-center">
+                    <span
+                        className={`w-[180px] flex items-center justify-center cursor-pointer ${
+                            active === false ? 'border-b-2 text-blue border-blue hover:opacity-50' : 'hover:text-blue'
+                        }`}
+                        onClick={() => setActive(false)}
+                    >
                         Shoe Information
                     </span>
-                    <div className="w-[160px] flex items-center justify-center gap-3">
+                    <div
+                        className={`w-[160px] flex items-center justify-center gap-3 cursor-pointer ${
+                            active === true ? 'border-b-2 text-blue border-blue hover:opacity-50' : 'hover:text-blue'
+                        }`}
+                        onClick={() => setActive(true)}
+                    >
                         <span>Review</span>
                         <span className="text-rv">0</span>
                     </div>
                 </div>
                 {/* view about shoes info and review*/}
-                <ShoeInfo detail={productDetail.desc} />
-                {/* <Reviews /> */}
+                {active === false ? (
+                    <ShoeInfo detail={productDetail.desc} />
+                ) : (
+                    <Reviews comments={comments as Comment[]} />
+                )}
             </div>
             <div className="mt-24 flex flex-col items-center">
                 <span className="font-bold text-base text-blue">Hot Shoes</span>

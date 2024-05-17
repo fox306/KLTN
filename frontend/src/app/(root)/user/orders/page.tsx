@@ -132,10 +132,10 @@ const Orders = () => {
                             <div
                                 key={order._id}
                                 className="px-[15px] pt-[15px] pb-[10px] shadow-lg cursor-pointer hover:border-2 hover:border-blue"
-                                onClick={() => router.push(`orders/${order._id}`)}
+                                onClick={() => router.push(`orders/${order.orderId}`)}
                             >
                                 <div className="flex justify-between mb-[8px]">
-                                    <h1 className="ml-[12px] font-bold text-[14px]">ID: {order._id}</h1>
+                                    <h1 className="ml-[12px] font-bold text-[14px]">ID: {order.orderId}</h1>
                                     <h1 className="mr-[12px] font-bold text-[14px] uppercase">{order.status}</h1>
                                 </div>
                                 <Border />

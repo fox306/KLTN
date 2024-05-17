@@ -38,26 +38,47 @@ const Review = ({ item, setActive, id }: Props) => {
     };
     return (
         <div className="modal">
-            <div className="flex flex-col bg-white items-center py-10 px-[60px] rounded-md shadow-form gap-5">
-                <span className="font-semibold text-xl">Review about {item?.name}</span>
-                <div className="w-full ">
+            <div className="flex flex-col bg-white items-center py-5 px-[40px] rounded-md shadow-form gap-5">
+                <div className="flex items-center gap-[3px]">
+                    <span className="text-lg text-black opacity-60">Create Review:</span>
+                    <span className="font-semibold text-lg">{item?.name}</span>
+                </div>
+                <div className="flex items-center w-full ml-[30px] gap-[50px]">
+                    <span className="text-black opacity-60 text-base">Rating:</span>
+                    <Rating
+                        value={value}
+                        onChange={(event, newValue) => {
+                            setValue(newValue);
+                        }}
+                        className="text-3xl"
+                    />
+                </div>
+                <div className="w-[840px] h-[140px] px-10 py-5 border border-black border-opacity-20 relative rounded-[5px] shadow-comment">
+                    <span className="absolute left-[6px] top-[-16px] px-2 py-1 bg-white text-base text-black text-opacity-60 ">
+                        Comment
+                    </span>
                     <textarea
                         onChange={(e) => setText(e.target.value)}
-                        className="w-full p-2 text-base border border-blue"
+                        className="w-full h-full outline-none"
                     ></textarea>
                 </div>
-                <Rating
-                    value={value}
-                    onChange={(event, newValue) => {
-                        setValue(newValue);
-                    }}
-                />
-                <button
-                    className="w-[190px] h-[60px] rounded-full bg-blue bg-opacity-20 hover:bg-opacity-100 hover:text-white text-blue"
-                    onClick={handleSubmit}
-                >
-                    Submit Review
-                </button>
+                <div className="flex item-center gap-5">
+                    <button
+                        className="w-[160px] h-10 rounded-[50px] bg-red text-red bg-opacity-20 hover:bg-opacity-100 hover:text-white"
+                        onClick={() => {
+                            setActive(false);
+                            setText('');
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="w-[160px] h-10 rounded-[50px] bg-blue bg-opacity-20 hover:bg-opacity-100 hover:text-white text-blue"
+                        onClick={handleSubmit}
+                    >
+                        Submit Review
+                    </button>
+                </div>
             </div>
         </div>
     );

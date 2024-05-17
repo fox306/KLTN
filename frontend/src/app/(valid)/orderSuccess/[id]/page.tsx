@@ -1,0 +1,33 @@
+'use client';
+import React from 'react';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import { useParams, useRouter } from 'next/navigation';
+
+const OrderSuccess = () => {
+    const router = useRouter();
+    const { id } = useParams();
+
+    return (
+        <div className="flex flex-col items-center justify-center w-screen h-screen">
+            <CheckCircleOutlineOutlinedIcon className="text-[160px] text-blue" />
+            <span className="font-bold text-blue text-4xl mt-[10px]">Thank You!</span>
+            <span className="text-lg font-semibold mt-10">You have successfully paid for order "{id}".</span>
+            <div className="flex gap-[10px] mt-5">
+                <button
+                    className="w-[200px] h-[60px] bg-blue text-main bg-opacity-60 hover:bg-opacity-100 rounded-[5px] text-white font-medium text-lg"
+                    onClick={() => router.push('/')}
+                >
+                    Home
+                </button>
+                <button
+                    className="w-[200px] h-[60px] bg-blue text-main bg-opacity-60 hover:bg-opacity-100 rounded-[5px] text-white font-medium text-lg "
+                    onClick={() => router.push('/user/orders')}
+                >
+                    Order Details
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default OrderSuccess;
