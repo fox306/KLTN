@@ -161,8 +161,8 @@ export const productSlice = createSlice({
         });
         builder.addCase(getProductById.fulfilled, (state, action) => {
             state.loading = true;
-            state.productDetail = action.payload.data.data.product;
-            state.variants = action.payload.data.data.variants;
+            state.productDetail = action.payload.data.data;
+            state.variants = action.payload.data.data.listVariants;
         });
         builder.addCase(getAllProductByCateId.pending, (state) => {
             state.loading = true;

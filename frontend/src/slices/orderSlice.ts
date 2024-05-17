@@ -42,7 +42,7 @@ export const createOrder = createAsyncThunk(
     async (item: checkoutOrder, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.createOrder(item);
-            await dispatch(getAllOrderByUserId(item.userID));
+            await dispatch(getAllOrderByUserId(item.user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);

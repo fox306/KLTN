@@ -49,6 +49,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
             if (data.success) {
                 toast.success('Cancel order success');
                 setLoad((prev) => !prev);
+                setOpen(false);
             } else {
                 toast.error('Cancel order fail');
             }
@@ -58,7 +59,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
         <div className="modal">
             <div className="flex flex-col bg-white items-center p-10 rounded-md shadow-form gap-5">
                 <span className="font-semibold text-xl">Are You Sure ?</span>
-                <div>
+                <div className="flex gap-2">
                     <button
                         className="w-[100px] h-[50px] rounded-full bg-blue bg-opacity-60 text-white hover:bg-opacity-100"
                         onClick={handleStatus}

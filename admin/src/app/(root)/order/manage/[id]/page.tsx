@@ -20,7 +20,7 @@ const OrderDetail = () => {
     const handleComfirm = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
 
-        const { data } = await axios.patch(`/orders/accepted/${id}`);
+        const { data } = await axios.patch(`/orders/accepted/${order._id}`);
         if (data.success) {
             toast.success('Comfirm Success');
             setLoad((prev) => !prev);
@@ -29,7 +29,7 @@ const OrderDetail = () => {
     const handleDelivery = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
 
-        const { data } = await axios.patch(`/orders/delivering/${id}`);
+        const { data } = await axios.patch(`/orders/delivering/${order._id}`);
         if (data.success) {
             toast.success('Delivery Success');
             setLoad((prev) => !prev);
@@ -38,7 +38,7 @@ const OrderDetail = () => {
     const handleCancel = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
 
-        const { data } = await axios.patch(`/orders/cancel/${id}`);
+        const { data } = await axios.patch(`/orders/cancel/${order._id}`);
         if (data.success) {
             toast.success('Cancel Success');
             setLoad((prev) => !prev);
@@ -47,9 +47,18 @@ const OrderDetail = () => {
     const handleSuccess = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
 
-        const { data } = await axios.patch(`/orders/delivered/${id}`);
+        const { data } = await axios.patch(`/orders/delivered/${order._id}`);
         if (data.success) {
             toast.success('Success Success');
+            setLoad((prev) => !prev);
+        }
+    };
+    const handleReturn = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
+        e.stopPropagation();
+
+        const { data } = await axios.patch(`/orders/confirmReturn/${order._id}`);
+        if (data.success) {
+            toast.success('Return Success');
             setLoad((prev) => !prev);
         }
     };
@@ -220,6 +229,16 @@ const OrderDetail = () => {
                                     onClick={(e) => handleSuccess(e, order._id)}
                                 >
                                     SUCCESS
+                                </button>
+                            ) : (
+                                ''
+                            )}
+                            {order.status === 'Return' ? (
+                                <button
+                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100"
+                                    onClick={(e) => handleReturn(e, order._id)}
+                                >
+                                    Return
                                 </button>
                             ) : (
                                 ''

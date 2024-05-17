@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
 import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
@@ -8,7 +8,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
-import { Address } from '@/types/type';
+import { Address, District, Province, Ward } from '@/types/type';
 import AddAddress from './AddAddress';
 
 type Props = {
@@ -32,15 +32,22 @@ const unProps = {
         default: false,
     },
     addressId: '',
+    districtID: '',
+    setDistrictID: () => {},
+    district: undefined,
+    setDistrict: () => {},
+    ward: undefined,
+    setWard: () => {},
+    setAddressId: () => {},
 };
 
 const ListAddress = ({ setLoad, address, setChange }: Props) => {
     const [open, setOpen] = useState(false);
+    const [province, setProvince] = useState<Province[]>();
+    const [provinceID, setProvinceID] = useState<string>('');
 
     const handleDefault = async (id: string) => {
-        const { data } = await axios.patch('/address/default', {
-            address: id,
-        });
+        const { data } = await axios.patch(`/deliveryAddress/default/${id}`);
         if (data.success) {
             toast.success('Set default address success');
             setLoad((prev) => !prev);
@@ -49,6 +56,14 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
             toast.error('Set default address fail');
         }
     };
+    useEffect(() => {
+        const fetchProvince = async () => {
+            const data = await axios.get('https://vapi.vnappmob.com/api/province');
+            setProvince(data.data.results);
+            // console.log(data);
+        };
+        fetchProvince();
+    }, []);
 
     return (
         <div className="modal">
@@ -92,7 +107,7 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
                             <div className="flex gap-[10px] absolute top-[-14px] right-20">
                                 <div
                                     className="text-[#FF00B4] px-1 bg-white cursor-pointer hover:opacity-60"
-                                    onClick={() => handleDefault(item._id)}
+                                    onClick={() => handleDefault(item._id as string)}
                                 >
                                     <DoneRoundedIcon />
                                 </div>
@@ -126,7 +141,17 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
                     ))}
                 </div>
             </div>
-            {open && <AddAddress setOpen={setOpen} {...unProps} setLoad={setLoad} />}
+            {open && (
+                <AddAddress
+                    setOpen={setOpen}
+                    {...unProps}
+                    setLoad={setLoad}
+                    province={province}
+                    setProvince={setProvince}
+                    provinceID={provinceID}
+                    setProvinceID={setProvinceID}
+                />
+            )}
         </div>
     );
 };

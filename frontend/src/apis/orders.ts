@@ -3,11 +3,11 @@ import axios from '../utils/axios';
 
 const ordersApi = {
     getAllOrderByUserId: (userId: string) => {
-        const url = `/orders/find/by-user?pageSize=1&pageNumber=1&user=${userId}`;
+        const url = `/orders/find/by-user?pageSize=4&pageNumber=1&user=${userId}`;
         return axios.get(url);
     },
     getAllOrderByUserAndStatus: (item: orderStatus) => {
-        const url = `/orders/find/by-user-status?pageSize=1&pageNumber=1&user=${item.user}&status=${item.status}`;
+        const url = `/orders/find/by-user-status?pageSize=4&pageNumber=1&user=${item.user}&status=${item.status}`;
         return axios.get(url);
     },
     getOrderByOrderId: (order: string) => {
@@ -17,10 +17,11 @@ const ordersApi = {
     createOrder: (item: checkoutOrder) => {
         const url = '/orders';
         const data = {
-            user: item.userID,
+            user: item.user,
             deliveryAddress: item.deliveryAddress,
             items: item.items,
             total: item.total,
+            paymentMethod: item.paymentMethod,
         };
         console.log(data);
         return axios.post(url, data);

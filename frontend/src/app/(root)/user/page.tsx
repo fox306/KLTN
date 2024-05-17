@@ -109,7 +109,7 @@ const Profile = () => {
             fullName: items.fullName,
             phone: items.phone,
             gender: selectedGender,
-            birthDay: selectedDate?.format('DD/MM/YYYY') ?? '',
+            birthDay: selectedDate?.format('YYYY-MM-DD') ?? '',
         };
         // const { data } = await axios.put('/users', item);
         const res = await dispatch(updateUser(item));
@@ -179,7 +179,7 @@ const Profile = () => {
             setImage(undefined);
         }
         if (user.birthDay) {
-            const birthDay = dayjs(user.birthDay, 'DD/MM/YYYY');
+            const birthDay = dayjs(user.birthDay, 'YYYY-MM-DD');
             setSelectedDate(birthDay);
         } else {
             setSelectedDate(undefined);
@@ -301,7 +301,7 @@ const Profile = () => {
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
                                         format="DD/MM/YYYY"
-                                        defaultValue={dayjs(userlocal?.birthDay, 'DD/MM/YYYY')}
+                                        defaultValue={dayjs(userlocal?.birthDay, 'YYYY-MM-DD')}
                                         onChange={handleDateChange}
                                     />
                                 </LocalizationProvider>

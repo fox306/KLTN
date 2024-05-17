@@ -108,11 +108,12 @@ export type UpdateAddress = {
 };
 
 export type ItemCart = {
+    _id?: string;
     user: string;
     product: string;
     image: string;
     name: string;
-    color: string;
+    color?: string;
     hex: string;
     size: string;
     quantity: number;
@@ -139,6 +140,7 @@ export type Cart = {
 
 export type Order = {
     _id: string;
+    orderId: string;
     items: ItemCart[];
     user: string;
     deliveryAddress: Address;
@@ -150,7 +152,7 @@ export type Order = {
 };
 export type checkoutOrder = {
     items: ItemCart[];
-    userID: string;
+    user: string;
     deliveryAddress: string;
     paymentMethod: string;
     total: number;

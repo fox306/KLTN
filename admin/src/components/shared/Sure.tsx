@@ -19,10 +19,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
     };
     const handleStatus = async () => {
         if (current === 'Accepted') {
-            const { data } = await axios.patch('/orders', {
-                order: orderId,
-                status: current,
-            });
+            const { data } = await axios.patch(`/orders/accepted/${orderId}`);
             if (data.success) {
                 toast.success('Comfirm Success');
                 setLoad((prev) => !prev);
@@ -31,10 +28,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 setOpen(false);
             }
         } else if (current === 'Delivering') {
-            const { data } = await axios.patch('/orders', {
-                order: orderId,
-                status: current,
-            });
+            const { data } = await axios.patch(`/orders/delivering/${orderId}`);
             if (data.success) {
                 toast.success('Delivery Success');
                 setLoad((prev) => !prev);
@@ -43,10 +37,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 setOpen(false);
             }
         } else if (current === 'Cancel') {
-            const { data } = await axios.patch('/orders', {
-                order: orderId,
-                status: current,
-            });
+            const { data } = await axios.patch(`/orders/cancel/${orderId}`);
             if (data.success) {
                 toast.success('Cancel Success');
                 setLoad((prev) => !prev);
@@ -54,13 +45,19 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 setOrderId('');
                 setOpen(false);
             }
-        } else {
-            const { data } = await axios.patch('/orders', {
-                order: orderId,
-                status: current,
-            });
+        } else if (current === 'Successful') {
+            const { data } = await axios.patch(`/orders/delivered/${orderId}`);
             if (data.success) {
                 toast.success('Success');
+                setLoad((prev) => !prev);
+                setCurrent('');
+                setOrderId('');
+                setOpen(false);
+            }
+        } else {
+            const { data } = await axios.patch(`/orders/confirmReturn/${orderId}`);
+            if (data.success) {
+                toast.success('Return Success');
                 setLoad((prev) => !prev);
                 setCurrent('');
                 setOrderId('');
