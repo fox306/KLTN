@@ -13,7 +13,7 @@ const SellShoe = () => {
     const [isNext, setIsNext] = useState<boolean>(false);
     const [isBack, setIsBack] = useState<boolean>(false);
     const [back, setBack] = useState<number>(0);
-    const [next, setNext] = useState<number>(8);
+    const [next, setNext] = useState<number>(4);
 
     useEffect(() => {
         const fetchData = async () => {

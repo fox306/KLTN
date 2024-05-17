@@ -112,7 +112,7 @@ const SingleSellShoe = ({
                     className={`text-3xl ${back === 0 ? ' text-gray' : 'cursor-pointer'}`}
                     onClick={isBack ? handleBack : undefined}
                 />
-                <div className="grid grid-cols-4 gap-2">
+                <div className="flex gap-2">
                     {active
                         ? products &&
                           products.slice(back, next).map((product: Product, index: number) => (

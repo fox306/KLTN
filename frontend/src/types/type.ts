@@ -108,11 +108,12 @@ export type UpdateAddress = {
 };
 
 export type ItemCart = {
+    _id?: string;
     user: string;
     product: string;
     image: string;
     name: string;
-    color: string;
+    color?: string;
     hex: string;
     size: string;
     quantity: number;

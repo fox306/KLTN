@@ -92,7 +92,7 @@ const Order = () => {
 
     useEffect(() => {
         const fetchCoupon = async () => {
-            const { data } = await axios.get(`/coupons/find/by-user?user=${id}`);
+            const { data } = await axios.get(`/coupons/find/by-user/valid?user=${id}&pageSize=5&amount=${totalPrice}`);
             if (data.success) {
                 setListCoupons(data.data);
             }
@@ -132,8 +132,9 @@ const Order = () => {
         }
 
         if (pay === 'VNPAY') {
+            const updatedItems = items.map(({ _id, ...rest }) => rest);
             const item: checkoutOrder = {
-                items: items,
+                items: updatedItems,
                 userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
@@ -144,7 +145,7 @@ const Order = () => {
             await dispatch(createOrder(item));
             localStorage.removeItem('itemOrders');
             localStorage.removeItem('totalPrice');
-            const { data } = await axios.post('/orders');
+            const { data } = await axios.post('/orders', item);
             if (data.success) {
                 window.open(data.data);
                 window.close();
