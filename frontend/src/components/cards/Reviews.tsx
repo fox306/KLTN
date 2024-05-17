@@ -31,7 +31,7 @@ const Reviews = ({ comments }: Props) => {
                             </div>
                         </div>
                         <div>
-                            <Text />
+                            <Text review={item.content} />
                         </div>
                     </div>
                 ))}

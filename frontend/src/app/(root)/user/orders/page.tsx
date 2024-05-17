@@ -212,15 +212,18 @@ const Orders = () => {
                                                 >
                                                     RETURN
                                                 </button>
-                                            ) : order.status === 'Confirming' || order.status === 'Delivering' ? (
-                                                ''
                                             ) : (
+                                                ''
+                                            )}
+                                            {order.status === 'Confirming' || order.status === 'Delivering' ? (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
                                                     onClick={(e) => handleCancel(e, order._id)}
                                                 >
                                                     Cancel
                                                 </button>
+                                            ) : (
+                                                ''
                                             )}
                                         </div>
                                     )}

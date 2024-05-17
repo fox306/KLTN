@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-const Text = () => {
-    const [text, setText] = useState('Sản phẩm đẹp, đúng với mô tả. Giao hàng nhanh chóng. Shipper nhiệt tình.');
+type Props = {
+    review: string;
+};
+
+const Text = ({ review }: Props) => {
+    const [text, setText] = useState(review);
 
     // useEffect(() => {
     //     const fetchData = async () => {
