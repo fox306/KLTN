@@ -230,6 +230,7 @@ export type Comment = {
     rating: number;
     like: number;
     images: string;
+    content: string;
 };
 export type Commentator = {
     _id: string;
