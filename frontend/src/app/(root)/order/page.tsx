@@ -135,7 +135,7 @@ const Order = () => {
             const updatedItems = items.map(({ _id, ...rest }) => rest);
             const item: checkoutOrder = {
                 items: updatedItems,
-                userID: id,
+                user: id,
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
                 total: totalPay,
@@ -148,12 +148,13 @@ const Order = () => {
             const { data } = await axios.post('/orders', item);
             if (data.success) {
                 window.open(data.data);
-                window.close();
+                router.push('/');
             }
         } else {
+            const updatedItems = items.map(({ _id, ...rest }) => rest);
             const item: checkoutOrder = {
-                items: items,
-                userID: id,
+                items: updatedItems,
+                user: id,
                 deliveryAddress: idAddress,
                 paymentMethod: 'COD',
                 total: totalPay,

@@ -15,7 +15,17 @@ import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Sure from '@/components/shared/Sure';
 
-const statuses = ['All', 'Confirming', 'Accepted', 'Delivering', 'Successful', 'Cancel', 'Return'];
+const statuses = [
+    'All',
+    'Confirming',
+    'Accepted',
+    'Delivering',
+    'Successful',
+    'Cancel',
+    'Return',
+    'ReturnSuccessfully',
+    'DeliveredSuccessfully',
+];
 const buttons = [
     'Select All',
     'Confirm All',
@@ -85,6 +95,12 @@ const OrderManage = () => {
         setOrderId(id);
         setOpen(true);
         setCurrent('Successful');
+    };
+    const handleReturn = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
+        e.stopPropagation();
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Return');
     };
 
     //Check
@@ -228,7 +244,7 @@ const OrderManage = () => {
                         <div
                             key={order._id}
                             className="px-[15px] pt-[15px] pb-[10px] shadow-order bg-white cursor-pointer hover:border-2 hover:border-blue"
-                            onClick={() => router.push(`/order/manage/${order._id}`)}
+                            onClick={() => router.push(`/order/manage/${order.orderId}`)}
                         >
                             <div className="flex justify-between mb-[15px] font-bold">
                                 <div className="flex items-center gap-[14px]">
@@ -241,7 +257,7 @@ const OrderManage = () => {
                                         }}
                                         className="w-[26px] h-[26px]"
                                     />
-                                    <h1>ID: {order._id}</h1>
+                                    <h1>ID: {order.orderId}</h1>
                                 </div>
                                 <span>Buyer: {order.user}</span>
                                 <h1 className="uppercase">{order.status}</h1>
@@ -316,6 +332,16 @@ const OrderManage = () => {
                                         onClick={(e) => handleSuccess(e, order._id)}
                                     >
                                         SUCCESS
+                                    </button>
+                                ) : (
+                                    ''
+                                )}
+                                {order.status === 'Return' ? (
+                                    <button
+                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100"
+                                        onClick={(e) => handleReturn(e, order._id)}
+                                    >
+                                        Return
                                     </button>
                                 ) : (
                                     ''

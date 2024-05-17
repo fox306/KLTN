@@ -19,14 +19,14 @@ const SellShoe = () => {
         const fetchData = async () => {
             if (!active) {
                 await dispatch(getProductHotDeal()).unwrap();
-                if (productHots.length > 8) {
+                if (productHots.length > 4) {
                     setIsNext(true);
                 } else {
                     setIsNext(false);
                 }
             } else {
                 await dispatch(getAllProduct()).unwrap();
-                if (products.length > 8) {
+                if (products.length > 4) {
                     setIsNext(true);
                 } else {
                     setIsNext(false);

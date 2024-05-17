@@ -103,6 +103,7 @@ export type Cart = {
 
 export type Order = {
     _id: string;
+    orderId: string;
     items: ItemCart[];
     user: string;
     deliveryAddress: Address;

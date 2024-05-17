@@ -17,7 +17,7 @@ const ordersApi = {
     createOrder: (item: checkoutOrder) => {
         const url = '/orders';
         const data = {
-            user: item.userID,
+            user: item.user,
             deliveryAddress: item.deliveryAddress,
             items: item.items,
             total: item.total,

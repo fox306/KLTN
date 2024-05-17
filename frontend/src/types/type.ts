@@ -152,7 +152,7 @@ export type Order = {
 };
 export type checkoutOrder = {
     items: ItemCart[];
-    userID: string;
+    user: string;
     deliveryAddress: string;
     paymentMethod: string;
     total: number;

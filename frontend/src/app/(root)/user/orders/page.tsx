@@ -18,7 +18,17 @@ import React, { MouseEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
-const statuses = ['All', 'Confirming', 'Accepted', 'Delivering', 'Successful', 'Cancel', 'Return'];
+const statuses = [
+    'All',
+    'Confirming',
+    'Accepted',
+    'Delivering',
+    'Successful',
+    'Cancel',
+    'Return',
+    'DeliveredSuccessfully',
+    'ReturnSuccessfully',
+];
 
 const Orders = () => {
     const [status, setStatus] = useState('All');
@@ -154,12 +164,14 @@ const Orders = () => {
                                                 <div className="w-full font-medium text-lg">
                                                     <div className="flex justify-between">
                                                         <span>{product.name}</span>
-                                                        <span
-                                                            className="text-blue text-[14px] opacity-60 hover:opacity-100"
-                                                            onClick={(e) => handleReview(e, product)}
-                                                        >
-                                                            Submit a review
-                                                        </span>
+                                                        {order.status === 'Successful' && (
+                                                            <span
+                                                                className="text-blue text-[14px] opacity-60 hover:opacity-100"
+                                                                onClick={(e) => handleReview(e, product)}
+                                                            >
+                                                                Submit a review
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <div className="flex gap-[100px] mt-[18px] mb-[14px] text-sm opacity-70">
                                                         <span>Color: {product.color}</span>
@@ -182,7 +194,8 @@ const Orders = () => {
                                         ''
                                     ) : (
                                         <div className="flex gap-5">
-                                            {order.status === 'Successful' || order.status === 'Delivering' ? (
+                                            {order.status === 'DeliveredSuccessfully' ||
+                                            order.status === 'Delivering' ? (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
                                                     onClick={(e) => handleReceived(e, order._id)}
@@ -199,7 +212,7 @@ const Orders = () => {
                                                 >
                                                     RETURN
                                                 </button>
-                                            ) : order.status === 'Accepted' || order.status === 'Delivering' ? (
+                                            ) : order.status === 'Confirming' || order.status === 'Delivering' ? (
                                                 ''
                                             ) : (
                                                 <button
