@@ -3,7 +3,7 @@ import axios from '../utils/axios';
 
 const variantsApi = {
     getColorOfSize: (item: getQtyOfSizeColor) => {
-        const url = `/variants/find/by-info?product=${item.id}&size=${item.size}&color=${item.color}`;
+        const url = `/variants/find/by-size?product=${item.id}&size=${item.size}`;
         return axios.get(url);
     },
 };

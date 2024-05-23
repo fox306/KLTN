@@ -17,7 +17,7 @@ export const getColorOfSize = createAsyncThunk(
 export const variantSlice = createSlice({
     name: 'variants',
     initialState: {
-        quantity: Number,
+        variantBySize: [],
         loading: false,
         error: false,
     },
@@ -34,7 +34,7 @@ export const variantSlice = createSlice({
         builder.addCase(getColorOfSize.fulfilled, (state, action) => {
             state.loading = false;
             state.error = false;
-            state.quantity = action.payload.data.data.quantity;
+            state.variantBySize = action.payload.data.data;
         });
     },
 });

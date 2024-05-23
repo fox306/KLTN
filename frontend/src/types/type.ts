@@ -176,7 +176,6 @@ export type upAvatar = {
 export type getQtyOfSizeColor = {
     id: string;
     size: string;
-    color: string;
 };
 
 export type variantColor = {
@@ -220,6 +219,13 @@ export type RVariant = {
     hex: string;
     image: string;
     size: string;
+    quantity: number;
+};
+
+export type VariantBySize = {
+    color: string;
+    hex: string;
+    image: string;
     quantity: number;
 };
 

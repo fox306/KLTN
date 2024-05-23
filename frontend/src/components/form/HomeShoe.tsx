@@ -51,23 +51,8 @@ const HomeShoe = () => {
     }, [productHots]);
     useEffect(() => {
         dispatch(getProductById(id));
-        let currentIndex = productHots.findIndex((productHot) => productHot._id === id);
-        console.log(currentIndex);
-        const timeout = setTimeout(() => {
-            if (currentIndex >= productHots.length - 1) {
-                currentIndex = 0;
-            } else {
-                currentIndex++;
-            }
-            setCount(currentIndex);
-            setItems({ size: '', color: '', quantity: 0, hex: '', image: '' });
-
-            const nextId = productHots[currentIndex]._id;
-            setId(nextId);
-        }, 10000);
-
-        return () => clearTimeout(timeout);
-    }, [id, productHots, count]);
+        setItems({ color: '', hex: '', image: '', quantity: 0, size: '' });
+    }, [id, productHots]);
     useEffect(() => {
         if (productHots.length > 4) {
             setIsNext(true);
@@ -132,8 +117,8 @@ const HomeShoe = () => {
                         productHots.slice(back, next).map((productHot) => (
                             <div
                                 key={productHot._id}
-                                onClick={() => router.push(`/shoes/${productHot._id}`)}
-                                className="flex items-center rounded-xl h-40 "
+                                onClick={() => setId(productHot._id)}
+                                className="flex items-center rounded-xl h-40 cursor-pointer"
                             >
                                 <div className="w-[100px] bg-pink h-full flex items-center relative rounded-tl-lg rounded-bl-lg">
                                     <Image

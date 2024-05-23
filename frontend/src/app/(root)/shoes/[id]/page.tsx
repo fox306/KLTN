@@ -21,6 +21,7 @@ import {
     RVariant,
     User,
     Variant,
+    VariantBySize,
     detailVariant,
     getQtyOfSizeColor,
 } from '@/types/type';
@@ -65,7 +66,7 @@ const ShoesSinglePage = () => {
         variants: Variant;
         randomItem: RVariant;
     } = useSelector((state: any) => state.products);
-    const { quantity }: { quantity: number } = useSelector((state: any) => state.variants);
+    const { variantBySize }: { variantBySize: VariantBySize[] } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
 
@@ -94,9 +95,12 @@ const ShoesSinglePage = () => {
     const [isBack, setIsBack] = useState<boolean>(false);
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
-    const [isFirstRender, setIsFirstRender] = useState(true);
     const [active, setActive] = useState<boolean>(false);
     const [comments, setComments] = useState<Comment[]>();
+
+    const [isFirstRender, setIsFirstRender] = useState(true);
+    const [flag, setFlag] = useState(false);
+    const [flag1, setFlag1] = useState(false);
 
     const handleImage = (i: number) => {
         setNumber(i);
@@ -117,13 +121,14 @@ const ShoesSinglePage = () => {
             setManageQuantity((prev) => prev - 1);
         }
     };
-    const [flag, setFlag] = useState(false);
+
     const handleSetSize = (newSize: string) => {
         setItems({ size: newSize, color: '', quantity: 0, hex: '', image: '' });
+        setFlag((prev) => !prev);
     };
     const handleSetColor = (newColor: string, hex: string) => {
         setItems({ ...items, color: newColor, hex: hex });
-        setFlag((prev) => !prev);
+        setFlag1((prev) => !prev);
         setIsFirstRender(false);
     };
 
@@ -165,25 +170,6 @@ const ShoesSinglePage = () => {
         }
     };
 
-    useEffect(() => {
-        if (!isFirstRender) {
-            const item: getQtyOfSizeColor = {
-                id: id,
-                color: items.color,
-                size: items.size,
-            };
-            const fetchData = async () => {
-                const res: any = await dispatch(getColorOfSize(item));
-                console.log('HHHH', res);
-                if ((res.payload as { status: number }).status === 200) {
-                    setItems({ ...items, quantity: res.payload.data.data.quantity });
-                }
-            };
-            fetchData();
-        } else {
-            setIsFirstRender(true);
-        }
-    }, [flag]);
     const [count, setCount] = useState(0);
     useEffect(() => {
         let mount = true;
@@ -204,11 +190,39 @@ const ShoesSinglePage = () => {
             }
         };
         fetchData();
+        return () => {
+            mount = false;
+        };
     }, []);
     useEffect(() => {
         setItems(randomItem);
+        setFlag((prev) => !prev);
     }, [count]);
-    console.log(comments);
+
+    useEffect(() => {
+        const item: getQtyOfSizeColor = {
+            id: id,
+            size: items.size,
+        };
+        console.log(item);
+        if (item.size) {
+            dispatch(getColorOfSize(item));
+        }
+    }, [flag]);
+    useEffect(() => {
+        if (!isFirstRender) {
+            const fetchData = async () => {
+                const { data } = await axios.get(
+                    `/variants/find/by-info?product=${id}&size=${items.size}&color=${items.color}`,
+                );
+                if (data.success) {
+                    setItems({ ...items, quantity: data.data.quantity });
+                }
+            };
+            fetchData();
+        } else setIsFirstRender(true);
+    }, [flag1]);
+    console.log(items.color);
     return (
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
@@ -280,9 +294,8 @@ const ShoesSinglePage = () => {
                     <div className="flex items-center mt-[25px] mb-5">
                         <span className="font-medium flex-1">Color:</span>
                         <div className="font-bold text-white flex gap-2">
-                            {variants &&
-                                variants.listColor &&
-                                variants.listColor.map((item, i) => (
+                            {variantBySize &&
+                                variantBySize.map((item, i) => (
                                     <div
                                         key={i}
                                         onClick={() => {
