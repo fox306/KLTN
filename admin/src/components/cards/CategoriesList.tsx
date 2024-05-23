@@ -1,13 +1,14 @@
 'use client';
 import { Category } from '@/types/type';
 import Image from 'next/image';
-import React, { Dispatch } from 'react';
+import React, { Dispatch, MouseEvent, SetStateAction } from 'react';
 
 type Props = {
     categories: Category[];
-    setItem: Dispatch<React.SetStateAction<Category>>;
+    setItem: Dispatch<SetStateAction<Category>>;
+    handleSelectedItem: (e: MouseEvent<HTMLInputElement, globalThis.MouseEvent>, item: Category) => void;
 };
-const CategoriesList = ({ categories, setItem }: Props) => {
+const CategoriesList = ({ categories, setItem, handleSelectedItem }: Props) => {
     const handleSet = (item: Category) => {
         setItem({
             _id: item._id,
@@ -34,7 +35,13 @@ const CategoriesList = ({ categories, setItem }: Props) => {
                             />
                             <div className="flex flex-col w-[150px] items-center">
                                 <div className="text-right w-full">
-                                    <input type="checkbox" className="w-5 h-5" />
+                                    <input
+                                        type="checkbox"
+                                        className="w-5 h-5"
+                                        name="selected"
+                                        defaultChecked={item.selected || false}
+                                        onClick={(e) => handleSelectedItem(e, item)}
+                                    />
                                 </div>
                                 <span className="font-bold">{item.name}</span>
                                 <div className="flex justify-between mt-[30px] font-medium text-sm w-full">

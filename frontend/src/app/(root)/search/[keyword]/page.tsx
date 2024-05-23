@@ -29,19 +29,14 @@ const unProp = {
     isNext: false,
     next: 0,
     back: 0,
-    setBack: () => { },
-    setNext: () => { },
-    setIsBack: () => { },
-    setIsNext: () => { },
+    setBack: () => {},
+    setNext: () => {},
+    setIsBack: () => {},
+    setIsNext: () => {},
 };
 
 const ManShoes = () => {
-    const {
-        products,
-        brands,
-        hotdeals,
-        pages,
-    }: { products: Product[]; brands: Brand[]; hotdeals: Brand[]; pages: number } = useSelector(
+    const { products, brands, pages }: { products: Product[]; brands: Brand[]; pages: number } = useSelector(
         (state: any) => state.products,
     );
 
@@ -60,20 +55,20 @@ const ManShoes = () => {
     const { keyword }: { keyword: string } = useParams();
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = () => {
             const item: findProduct = {
                 keyword: keyword,
                 brand: brand,
                 color: color,
-                sort: view,
+                sort: sort,
                 pageNumber: pageNum,
             };
 
             console.log('product of cate: ', item);
-            await dispatch(findProductByKeyword(item)).unwrap();
+            dispatch(findProductByKeyword(item)).unwrap();
         };
         fetchData();
-    }, [dispatch, keyword, pageNum, view, brand, color]);
+    }, [keyword, pageNum, view, brand, color]);
 
     useEffect(() => {
         if (sort === '') {
@@ -87,11 +82,15 @@ const ManShoes = () => {
             const sorted = filtered.sort((a, b) => b.price - a.price);
             setListProduct(sorted);
         }
-    }, [products, sort, minPrice, maxPrice]);
+    }, [products, sort]);
+
+    useEffect(() => {
+        const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+        setListProduct(filtered);
+    }, [minPrice, maxPrice]);
 
     useEffect(() => {
         const fetchData = async () => {
-            await dispatch(getProductHotDeal());
             await dispatch(getQtyOfBrand());
             await dispatch(getQtyHotDealOfBrand());
         };
@@ -101,7 +100,6 @@ const ManShoes = () => {
     return (
         <div className="flex px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5 w-[260px]">
-                <HotDeals hotdeals={hotdeals} brand={brand} setBrand={setBrand} />
                 <Price minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} />
                 <Color color={color} setColor={setColor} />
                 <Brand brands={brands} brand={brand} setBrand={setBrand} />

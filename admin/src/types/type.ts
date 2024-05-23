@@ -39,6 +39,7 @@ export type Category = {
     _id: string;
     name: string;
     img: string;
+    selected?: boolean;
 };
 
 export type Product = {
@@ -54,6 +55,7 @@ export type Product = {
     sold?: number;
     status?: string;
     variant: Variant;
+    selected?: boolean;
 };
 
 export type ProductByStatus = {

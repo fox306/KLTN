@@ -1,10 +1,7 @@
 'use client';
 import TableProduct from '@/components/shared/TableProduct';
-import { getAllProduct, getAllProductByStatus } from '@/slices/productSlice';
 import { Product } from '@/types/type';
-import { AppDispatch } from '@/utils/store';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -12,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import TypeSure from '@/components/shared/TypeSure';
+import axios from '@/utils/axios';
 
 const nav = ['All', 'on sale', 'hidden', 'out of stock'];
 const status = ['All', 'Available', 'Hidden', 'outOfStock'];
@@ -28,8 +26,6 @@ const theme = createTheme({
 
 const WareHouseManage = () => {
     const [active, setActive] = useState(0);
-    const dispatch = useDispatch<AppDispatch>();
-    const { products, pages }: { products: Product[]; pages: number } = useSelector((state: any) => state.products);
     const [pageNumber, setPageNumber] = useState<number>(1);
 
     const [page, setPage] = useState<string>('Management');
@@ -51,49 +47,114 @@ const WareHouseManage = () => {
     };
 
     //Checked
+    const [prodcutList, setProductList] = useState<Product[]>([]);
     const [checkedAll, setCheckedAll] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<Product[]>([]);
+    const [pages, setPages] = useState<number>();
 
-    const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
-
-    const handleCheckedAll = () => {
-        setCheckedAll((prev) => !prev);
-
-        if (!checkedAll) {
-            const updatedCheckedItems: { [key: string]: boolean } = {};
-            for (const item of products) {
-                updatedCheckedItems[item._id] = true;
-            }
-            localStorage.setItem('tickProduct', JSON.stringify(products));
-            setCheckedItems(updatedCheckedItems);
-        } else {
-            const updatedCheckedItems: { [key: string]: boolean } = {};
-            for (const item of products) {
-                updatedCheckedItems[item._id] = false;
-            }
-            localStorage.setItem('tickProduct', '');
-            setCheckedItems(updatedCheckedItems);
+    const handleButtonClick = (button: string) => {
+        switch (button) {
+            case 'Select All':
+                handleSelectAll();
+                break;
+            case 'Hide All':
+                // handleHideAll();
+                break;
+            case 'Hide Selected':
+                handleHideSelected();
+                break;
+            case 'On Sale All':
+                handleOnSaleAll();
+                break;
+            case 'On Sale Selected':
+                handleOnSaleSelected();
+                break;
+            default:
+                break;
         }
     };
-    useEffect(() => {
-        const initialCheckedItems = (products ?? []).reduce((acc, item) => {
-            acc[item._id] = false;
-            return acc;
-        }, {} as { [key: string]: boolean });
-        setCheckedItems(initialCheckedItems);
-    }, [products]);
+
+    const handleHideSelected = () => {
+        console.log('Hide Selected button clicked');
+    };
+
+    const handleOnSaleAll = () => {
+        console.log('On Sale All button clicked');
+    };
+
+    const handleOnSaleSelected = () => {
+        console.log('On Sale Selected button clicked');
+    };
+
+    const handleFilterData = (data: Product[]) => {
+        const fillerData = data.filter((item) => {
+            return item.selected;
+        });
+        setSelectedItem(fillerData);
+    };
+    const handleSelectedItem = (data: Product) => {
+        const selected = prodcutList.map((item) => {
+            if (item._id === data._id) {
+                return {
+                    ...data,
+                    selected: !data.selected,
+                };
+            } else return data;
+        });
+        setProductList(selected);
+        handleFilterData(selected);
+    };
+    const handleSelectAll = () => {
+        const filterPrice = prodcutList.map((item) => {
+            if (checkedAll) {
+                return {
+                    ...item,
+                    selected: false,
+                };
+            } else {
+                return {
+                    ...item,
+                    selected: true,
+                };
+            }
+        });
+        setProductList(filterPrice);
+        handleFilterData(filterPrice);
+    };
+    const validateSelectedAll = () => {
+        const validate = prodcutList.every((item) => item.selected === true);
+        setCheckedAll(validate);
+    };
 
     useEffect(() => {
-        const item = {
-            status: status[active],
-            pageNumber: pageNumber,
+        validateSelectedAll();
+    }, [selectedItem]);
+
+    useEffect(() => {
+        const fetchAll = async () => {
+            const { data } = await axios.get(`/products?pageSize=5&pageNumber=${pageNumber}`);
+            if (data.success) {
+                setProductList(data.data);
+                setPage(data.pages);
+                setCheckedAll(false);
+            }
+        };
+        const fetchStatus = async () => {
+            const { data } = await axios.get(
+                `/products/find/by-status?pageSize=5&pageNumber=${pageNumber}&status=${status[active]}`,
+            );
+            if (data.success) {
+                setProductList(data.data);
+                setPage(data.pages);
+                setCheckedAll(false);
+            }
         };
         if (nav[active] === 'All') {
-            dispatch(getAllProduct(pageNumber));
+            fetchAll();
         } else {
-            dispatch(getAllProductByStatus(item));
+            fetchStatus();
         }
-        localStorage.setItem('tickProduct', '');
-    }, [dispatch, active, pageNumber, load]);
+    }, [active, pageNumber, load]);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -130,12 +191,13 @@ const WareHouseManage = () => {
                         type="checkbox"
                         className="w-[26px] h-[26px] cursor-pointer"
                         checked={checkedAll}
-                        onChange={handleCheckedAll}
+                        onChange={handleSelectAll}
                     />
                     {buttons.map((item) => (
                         <button
                             key={item}
                             className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg hover:bg-opacity-100"
+                            onClick={() => handleButtonClick(item)}
                         >
                             {item}
                         </button>
@@ -149,14 +211,13 @@ const WareHouseManage = () => {
                 </button>
             </div>
             <TableProduct
-                products={products}
+                products={prodcutList}
                 setOpen={setOpen}
                 setAction={setAction}
                 setId={setId}
-                checkedItems={checkedItems}
-                setCheckedItems={setCheckedItems}
+                handleSelectedItem={handleSelectedItem}
+                handleSelectAll={handleSelectAll}
                 checkedAll={checkedAll}
-                setCheckedAll={setCheckedAll}
             />
             {pages !== 0 && (
                 <div className="flex justify-center shadow-product2 bg-white">

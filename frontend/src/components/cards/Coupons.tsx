@@ -1,15 +1,15 @@
-import { Coupon } from '@/types/type';
+import { ListCoupon, ValidCoupons } from '@/types/type';
 import React, { Dispatch, SetStateAction } from 'react';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 
 type Props = {
     setActive: Dispatch<SetStateAction<boolean>>;
-    listCoupons: Coupon[];
-    setDiscount: Dispatch<SetStateAction<Coupon | undefined>>;
+    listCoupons: ListCoupon;
+    setDiscount: Dispatch<SetStateAction<ValidCoupons | undefined>>;
 };
 
 const Coupons = ({ setActive, listCoupons, setDiscount }: Props) => {
-    const handleSetDiscount = (item: Coupon) => {
+    const handleSetDiscount = (item: ValidCoupons) => {
         setDiscount(item);
         setActive(false);
     };
@@ -23,10 +23,10 @@ const Coupons = ({ setActive, listCoupons, setDiscount }: Props) => {
                     className="text-orange cursor-pointer absolute right-[10px] top-[10px]"
                     onClick={() => setActive(false)}
                 />
-
-                <div className={`${listCoupons.length !== 0 ? 'grid grid-cols-2 gap-4' : ''}`}>
-                    {listCoupons.length !== 0 ? (
-                        listCoupons.map((item) => (
+                <span className="text-base font-medium">Valid Coupon</span>
+                <div className={`${listCoupons.validCoupons.length !== 0 ? 'grid grid-cols-2 gap-4' : ''}`}>
+                    {listCoupons.validCoupons.length !== 0 ? (
+                        listCoupons.validCoupons.map((item) => (
                             <div
                                 className="border h-[116px] p-4 flex flex-col justify-center items-center"
                                 onClick={() => handleSetDiscount(item)}
@@ -45,6 +45,28 @@ const Coupons = ({ setActive, listCoupons, setDiscount }: Props) => {
                             <span>You dont have Coupon yet. Review some Product to get</span>
                         </div>
                     )}
+                </div>
+                {listCoupons.recommendCoupons.length !== 0 && (
+                    <span className="text-base font-medium">Valid Coupon</span>
+                )}
+
+                <div className={`${listCoupons.recommendCoupons.length !== 0 ? 'grid grid-cols-2 gap-4' : ''}`}>
+                    {listCoupons.recommendCoupons.length !== 0 &&
+                        listCoupons.recommendCoupons.map((item) => (
+                            <div
+                                className="border h-[116px] p-4 flex flex-col justify-center items-center"
+                                onClick={() => handleSetDiscount(item)}
+                            >
+                                <div className="flex items-center justify-between font-bold text-lg w-full">
+                                    <span>Code: {item.code} </span>
+                                    <span>Name: {item.name} </span>
+                                </div>
+                                <span className="font-semibold">Minimum Orders: {item.minAmount}</span>
+
+                                <span>Effective from: {item.startDate}</span>
+                                <span>{item.recommend}</span>
+                            </div>
+                        ))}
                 </div>
             </div>
         </div>

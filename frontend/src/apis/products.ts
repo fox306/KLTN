@@ -25,7 +25,17 @@ const productsApi = {
         // }
     },
     findProductByKeyword: (item: findProduct) => {
-        const url = `/products/find/by-keyword?keyword=${item.keyword}&pageSize=5&pageNumber=1`;
+        let url = `/products/find/by-keyword?keyword=${item.keyword}&pageSize=5&pageNumber=1`;
+
+        if (item.color) {
+            url += `&color=${item.color}`;
+        }
+        if (item.brand) {
+            url += `&brand=${item.brand}`;
+        }
+        if (item.sort) {
+            url += `&sort=${item.sort}`;
+        }
 
         return axios.get(url);
     },

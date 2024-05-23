@@ -4,16 +4,14 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import { Product } from '@/types/type';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/utils/store';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { getAllProduct, getAllProductByStatus } from '@/slices/productSlice';
 import Pagination from '@mui/material/Pagination';
 import TableProduct from '@/components/shared/TableProduct';
 import TypeSure from '@/components/shared/TypeSure';
+import axios from '@/utils/axios';
 
 const nav = ['All', 'on sale', 'hidden', 'out of stock'];
-const status = ['All', 'Available', 'Hidden', 'outOfStock'];
+const status = ['All', 'Active', 'Hidden', 'outOfStock'];
 
 const theme = createTheme({
     palette: {
@@ -24,9 +22,6 @@ const theme = createTheme({
 });
 
 const PricePage = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const { products, pages }: { products: Product[]; pages: number } = useSelector((state: any) => state.products);
-
     const [value, setValue] = useState<string>('Change by percentage');
     const [active, setActive] = useState(0);
     const [pageNumber, setPageNumber] = useState<number>(1);
@@ -34,6 +29,10 @@ const PricePage = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [id, setId] = useState<string>('');
     const [load, setLoad] = useState<boolean>(false);
+    const [prodcutList, setProductList] = useState<Product[]>([]);
+    const [checkedAll, setCheckedAll] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<Product[]>([]);
+    const [page, setPage] = useState<number>();
 
     const handleChange = (event: SelectChangeEvent) => {
         setValue(event.target.value as string);
@@ -43,22 +42,75 @@ const PricePage = () => {
         setPageNumber(i);
     };
 
-    const [checkedAll, setCheckedAll] = useState(false);
+    const handleFilterData = (data: Product[]) => {
+        const fillerData = data.filter((item) => {
+            return item.selected;
+        });
+        setSelectedItem(fillerData);
+    };
+    const handleSelectedItem = (data: Product) => {
+        const selected = prodcutList.map((item) => {
+            if (item._id === data._id) {
+                return {
+                    ...data,
+                    selected: !data.selected,
+                };
+            } else return data;
+        });
+        setProductList(selected);
+        handleFilterData(selected);
+    };
+    const handleSelectAll = () => {
+        const filterPrice = prodcutList.map((item) => {
+            if (checkedAll) {
+                return {
+                    ...item,
+                    selected: false,
+                };
+            } else {
+                return {
+                    ...item,
+                    selected: true,
+                };
+            }
+        });
+        setProductList(filterPrice);
+        handleFilterData(filterPrice);
+    };
+    const validateSelectedAll = () => {
+        const validate = prodcutList.every((item) => item.selected === true);
+        setCheckedAll(validate);
+    };
 
-    const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
     useEffect(() => {
-        const item = {
-            status: status[active],
-            pageNumber: pageNumber,
+        validateSelectedAll();
+    }, [selectedItem]);
+    useEffect(() => {
+        const fetchAll = async () => {
+            const { data } = await axios.get(`/products?pageSize=5&pageNumber=${pageNumber}`);
+            if (data.success) {
+                setProductList(data.data);
+                setPage(data.pages);
+                setCheckedAll(false);
+            }
+        };
+        const fetchStatus = async () => {
+            const { data } = await axios.get(
+                `/products/find/by-status?pageSize=5&pageNumber=${pageNumber}&status=${status[active]}`,
+            );
+            if (data.success) {
+                setProductList(data.data);
+                setPage(data.pages);
+                setCheckedAll(false);
+            }
         };
         if (nav[active] === 'All') {
-            dispatch(getAllProduct(pageNumber));
+            fetchAll();
         } else {
-            dispatch(getAllProductByStatus(item));
+            fetchStatus();
         }
-        localStorage.setItem('tickProduct', '');
-    }, [dispatch, active, pageNumber]);
-    console.log(products);
+    }, [active, pageNumber]);
+
     return (
         <div className="flex flex-col gap-[10px]">
             <div className="flex items-center gap-[10px]">
@@ -103,20 +155,19 @@ const PricePage = () => {
                 ))}
             </div>
             <TableProduct
-                products={products}
+                products={prodcutList}
                 setOpen={setOpen}
                 setAction={setAction}
                 setId={setId}
-                checkedItems={checkedItems}
-                setCheckedItems={setCheckedItems}
+                handleSelectedItem={handleSelectedItem}
+                handleSelectAll={handleSelectAll}
                 checkedAll={checkedAll}
-                setCheckedAll={setCheckedAll}
             />
-            {pages !== 0 && (
+            {page !== 0 && (
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination
-                            count={pages}
+                            count={page}
                             shape="rounded"
                             onChange={(_, page: number) => handleChangePage(page)}
                             color="primary"

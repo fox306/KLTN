@@ -90,7 +90,11 @@ const ManShoes = () => {
             const sorted = filtered.sort((a, b) => b.price - a.price);
             setListProduct(sorted);
         }
-    }, [products, sort, minPrice, maxPrice]);
+    }, [products, sort]);
+    useEffect(() => {
+        const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+        setListProduct(filtered);
+    }, [minPrice, maxPrice]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -113,14 +117,14 @@ const ManShoes = () => {
                 <div className="w-full h-[280px] relative ">
                     <Image src="/layout.png" alt="Ảnh" fill />
                 </div>
-                <Sort
+                {/* <Sort
                     setActive={setActive}
                     active={active}
                     sort={sort}
                     setSort={setSort}
                     view={view}
                     setView={setView}
-                />
+                /> */}
                 {active ? (
                     <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (

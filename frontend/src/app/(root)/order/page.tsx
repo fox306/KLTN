@@ -6,7 +6,17 @@ import Border from '@/components/shared/Border';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { createOrder } from '@/slices/orderSlice';
-import type { Address, Cart, Coupon, ItemCart, Order, Province, User, checkoutOrder } from '@/types/type';
+import type {
+    Address,
+    Cart,
+    ItemCart,
+    ListCoupon,
+    Order,
+    Province,
+    User,
+    ValidCoupons,
+    checkoutOrder,
+} from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -65,8 +75,8 @@ const Order = () => {
     const [change, setChange] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
     const [active, setActive] = useState<boolean>(false);
-    const [listCoupons, setListCoupons] = useState<Coupon[]>();
-    const [discount, setDiscount] = useState<Coupon>();
+    const [listCoupons, setListCoupons] = useState<ListCoupon>();
+    const [discount, setDiscount] = useState<ValidCoupons>();
     const [province, setProvince] = useState<Province[]>();
     const [provinceID, setProvinceID] = useState<string>('');
 
@@ -307,7 +317,7 @@ const Order = () => {
                 />
             )}
             {active && (
-                <Coupons setActive={setActive} listCoupons={listCoupons as Coupon[]} setDiscount={setDiscount} />
+                <Coupons setActive={setActive} listCoupons={listCoupons as ListCoupon} setDiscount={setDiscount} />
             )}
         </div>
     );

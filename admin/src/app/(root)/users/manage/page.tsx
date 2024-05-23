@@ -140,6 +140,7 @@ const UserManage = () => {
         dispatch(getAllUser());
         localStorage.setItem('tickUser', '');
     }, [dispatch, load]);
+    console.log(users);
     return (
         <div className="flex flex-col gap-[10px]">
             <FormControl className="w-[150px]">

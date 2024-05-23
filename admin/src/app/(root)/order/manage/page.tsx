@@ -164,6 +164,37 @@ const OrderManage = () => {
         });
     };
 
+    const handleButtonClick = (button: string) => {
+        switch (button) {
+            case 'Select All':
+                handleSelectAll();
+                break;
+            case 'Hide All':
+                // handleHideAll();
+                break;
+            case 'Hide Selected':
+                // handleHideSelected();
+                break;
+            case 'On Sale All':
+                // handleOnSaleAll();
+                break;
+            case 'On Sale Selected':
+                // handleOnSaleSelected();
+                break;
+            default:
+                break;
+        }
+    };
+    const handleSelectAll = () => {
+        setCheckedAll(true);
+        const updatedCheckedItems: { [key: string]: boolean } = {};
+        for (const item of orders) {
+            updatedCheckedItems[item._id] = true;
+        }
+        localStorage.setItem('tickProduct', JSON.stringify(orders));
+        setCheckedItems(updatedCheckedItems);
+    };
+
     useEffect(() => {
         let allChecked = false;
         if (Object.keys(checkedItems).length !== 0) {
@@ -230,6 +261,7 @@ const OrderManage = () => {
                     <button
                         key={item}
                         className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg hover:bg-opacity-100"
+                        onClick={() => handleButtonClick(item)}
                     >
                         {item}
                     </button>
@@ -251,7 +283,7 @@ const OrderManage = () => {
                                     <input
                                         type="checkbox"
                                         checked={checkedAll ? checkedAll : checkedItems[order._id]}
-                                        onClick={(e) => {
+                                        onChange={(e) => {
                                             e.stopPropagation();
                                             handleChecked(order._id);
                                         }}
