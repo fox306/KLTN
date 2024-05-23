@@ -23,7 +23,9 @@ const Coupons = ({ setActive, listCoupons, setDiscount }: Props) => {
                     className="text-orange cursor-pointer absolute right-[10px] top-[10px]"
                     onClick={() => setActive(false)}
                 />
-                <span className="text-base font-medium">Valid Coupon</span>
+                {listCoupons.validCoupons.length !== 0 && (
+                    <span className="text-base font-medium w-full">Valid Coupon</span>
+                )}
                 <div className={`${listCoupons.validCoupons.length !== 0 ? 'grid grid-cols-2 gap-4' : ''}`}>
                     {listCoupons.validCoupons.length !== 0 ? (
                         listCoupons.validCoupons.map((item) => (
@@ -47,7 +49,7 @@ const Coupons = ({ setActive, listCoupons, setDiscount }: Props) => {
                     )}
                 </div>
                 {listCoupons.recommendCoupons.length !== 0 && (
-                    <span className="text-base font-medium">Valid Coupon</span>
+                    <span className="text-base font-medium">Recommend Coupons</span>
                 )}
 
                 <div className={`${listCoupons.recommendCoupons.length !== 0 ? 'grid grid-cols-2 gap-4' : ''}`}>

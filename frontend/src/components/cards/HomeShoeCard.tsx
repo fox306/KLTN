@@ -1,6 +1,16 @@
 import { addItemToCartByUserId } from '@/slices/cartSlice';
 import { getColorOfSize } from '@/slices/variantSlice';
-import { ItemCart, ItemCartFake, Product, RVariant, User, Variant, getQtyOfSizeColor } from '@/types/type';
+import {
+    ItemCart,
+    ItemCartFake,
+    Product,
+    RVariant,
+    User,
+    Variant,
+    VariantBySize,
+    getQtyOfSizeColor,
+} from '@/types/type';
+import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -31,12 +41,16 @@ const colors: { [key: string]: string } = {
 };
 
 const HomeShoeCard = ({ id, setItems, items }: Props) => {
+    const [isFirstRender, setIsFirstRender] = useState(true);
+    const [flag, setFlag] = useState(false);
+    const [flag1, setFlag1] = useState(false);
+
     const { productDetail, variants } = useSelector((state: any) => state.products) as {
         productDetail: Product;
         variants: Variant;
     };
-    const { quantity } = useSelector((state: any) => state.variants) as {
-        quantity: number;
+    const { variantBySize } = useSelector((state: any) => state.variants) as {
+        variantBySize: VariantBySize[];
     };
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
@@ -56,9 +70,12 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
 
     const handleSetSize = (newSize: string) => {
         setItems({ size: newSize, color: '', quantity: 0, hex: '', image: '' });
+        setFlag((prev) => !prev);
     };
     const handleSetColor = (newColor: string, hex: string) => {
         setItems({ ...items, color: newColor, hex: hex });
+        setFlag1((prev) => !prev);
+        setIsFirstRender(false);
     };
 
     const handleAddToCart = async () => {
@@ -77,7 +94,7 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
             toast.error('Choose Color And Size');
             return;
         }
-        if (quantity === 0) {
+        if (items.quantity === 0) {
             toast.error('Out of stock');
             return;
         }
@@ -89,7 +106,7 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
             name: productDetail.name,
             color: items.color,
             size: items.size,
-            quantity: quantity,
+            quantity: 1,
         };
 
         const res = await dispatch(addItemToCartByUserId(item));
@@ -100,11 +117,26 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
     useEffect(() => {
         const item: getQtyOfSizeColor = {
             id: id,
-            color: items.color,
             size: items.size,
         };
-        dispatch(getColorOfSize(item));
-    }, [items.color]);
+        console.log(item);
+        if (item.size) {
+            dispatch(getColorOfSize(item));
+        }
+    }, [flag]);
+    useEffect(() => {
+        if (!isFirstRender) {
+            const fetchData = async () => {
+                const { data } = await axios.get(
+                    `/variants/find/by-info?product=${id}&size=${items.size}&color=${items.color}`,
+                );
+                if (data.success) {
+                    setItems({ ...items, quantity: data.data.quantity });
+                }
+            };
+            fetchData();
+        } else setIsFirstRender(true);
+    }, [flag1]);
     // console.log(variants.listColor);
     return (
         <div className="flex items-center pt-[60px] px-[212px] gap-14">
@@ -130,26 +162,27 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
                             ))}
                     </div>
                 </div>
-                <div className="flex items-center ">
-                    <span className="text-white-60 font-bold w-[60px]">Color:</span>
-                    <div className="flex gap-2">
-                        {variants &&
-                            variants.listColor &&
-                            variants.listColor.map((item, i) => (
-                                <div
-                                    key={i}
-                                    onClick={() => handleSetColor(item.color, item.hex)}
-                                    className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[item.color]}`}
-                                >
+                {items.size && (
+                    <div className="flex items-center ">
+                        <span className="text-white-60 font-bold w-[60px]">Color:</span>
+                        <div className="flex gap-2">
+                            {variantBySize &&
+                                variantBySize.map((item, i) => (
                                     <div
-                                        className={`absolute inset-[-4px] p-3 rounded-full border-2 ${
-                                            item.color === items.color ? 'border-blue' : ''
-                                        }`}
-                                    ></div>
-                                </div>
-                            ))}
+                                        key={i}
+                                        onClick={() => handleSetColor(item.color, item.hex)}
+                                        className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[item.color]}`}
+                                    >
+                                        <div
+                                            className={`absolute inset-[-4px] p-3 rounded-full border-2 ${
+                                                item.color === items.color ? 'border-blue' : ''
+                                            }`}
+                                        ></div>
+                                    </div>
+                                ))}
+                        </div>
                     </div>
-                </div>
+                )}
                 <span className="font-bak text-[#FFD6AE] text-base mt-5 mb-2">$ {productDetail.price}</span>
                 <button
                     onClick={handleAddToCart}
