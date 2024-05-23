@@ -1,5 +1,5 @@
 import categoriesApi from '@/apis/category';
-import { Category, updateCateImg, updateCateName } from '@/types/type';
+import { Category, updateCateImg } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllCategory = createAsyncThunk('categories/getAllCategory', async (_, { rejectWithValue }) => {
@@ -34,19 +34,7 @@ export const createCategory = createAsyncThunk(
         }
     },
 );
-export const updateCategoryName = createAsyncThunk(
-    'categories/updateCategoryName',
-    async (item: updateCateName, { dispatch, rejectWithValue }) => {
-        try {
-            const res = await categoriesApi.updateCateName(item);
-            await dispatch(getAllCategory);
 
-            return res;
-        } catch (err: any) {
-            return rejectWithValue(err.res.data);
-        }
-    },
-);
 export const updateCategoryImg = createAsyncThunk(
     'categories/updateCategoryImg',
     async (item: updateCateImg, { dispatch, rejectWithValue }) => {
@@ -105,6 +93,7 @@ export const categorySlice = createSlice({
             state.loading = false;
             state.categories = action.payload.data.data;
         });
+
         builder.addCase(getCategoryById.pending, (state) => {
             state.loading = true;
         });
@@ -124,16 +113,6 @@ export const categorySlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(createCategory.fulfilled, (state, action) => {
-            state.loading = false;
-        });
-        builder.addCase(updateCategoryName.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(updateCategoryName.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(updateCategoryName.fulfilled, (state, action) => {
             state.loading = false;
         });
         builder.addCase(updateCategoryImg.pending, (state) => {

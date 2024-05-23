@@ -22,15 +22,17 @@ const Text = ({ review }: Props) => {
     // }, []);
 
     const formatText = (text: any) => {
-        const firstDotIndex = text.indexOf('.');
-        const modifiedText = (
-            <>
-                {text.substring(0, firstDotIndex + 1)}
-                <br />
-                {text.substring(firstDotIndex + 1)}
-            </>
-        );
-        return modifiedText;
+        if (text) {
+            const firstDotIndex = text.indexOf('.');
+            const modifiedText = (
+                <>
+                    {text.substring(0, firstDotIndex + 1)}
+                    <br />
+                    {text.substring(firstDotIndex + 1)}
+                </>
+            );
+            return modifiedText;
+        }
     };
 
     return <div>{formatText(text)}</div>;

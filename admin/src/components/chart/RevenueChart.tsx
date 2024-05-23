@@ -46,9 +46,9 @@ const RevenueChart = ({ path }: Props) => {
                         barSize={20}
                     >
                         <XAxis dataKey="day" scale="point" padding={{ left: 10, right: 10 }} />
-                        <YAxis />
+                        <YAxis padding={{ top: 10 }} />
                         <Tooltip />
-                        <CartesianGrid strokeDasharray="3 3" />
+
                         <Bar dataKey="total" fill="#8884d8" background={{ fill: '#eee' }} />
                     </BarChart>
                 </div>
@@ -70,7 +70,6 @@ const RevenueChart = ({ path }: Props) => {
                             bottom: 0,
                         }}
                     >
-                        <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="day" />
                         <YAxis />
                         <Tooltip />

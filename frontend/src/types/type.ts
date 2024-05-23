@@ -204,10 +204,10 @@ export type productByCate = {
 
 export type findProduct = {
     keyword: string;
-    sort: string;
     brand: string;
     color: string;
     pageNumber: number;
+    sort: string;
 };
 
 export type orderStatus = {
@@ -237,7 +237,7 @@ export type Commentator = {
     fullName: string;
     avatar: string;
 };
-export type Coupon = {
+export type ValidCoupons = {
     _id: string;
     code: string;
     name: string;
@@ -248,6 +248,25 @@ export type Coupon = {
     validityDuration: 10;
     startDate: string;
     endDate: string;
+};
+
+export type RecommendCoupons = {
+    _id: string;
+    code: string;
+    name: string;
+    value: number;
+    type: string;
+    maxDiscount: number;
+    minAmount: number;
+    validityDuration: 10;
+    startDate: string;
+    endDate: string;
+    recommend: string;
+};
+
+export type ListCoupon = {
+    validCoupons: ValidCoupons[];
+    recommendCoupons: RecommendCoupons[];
 };
 
 export type Province = {

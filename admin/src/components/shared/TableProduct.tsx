@@ -29,20 +29,18 @@ type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
     setAction: Dispatch<SetStateAction<string>>;
     setId: Dispatch<SetStateAction<string>>;
-    checkedItems: { [key: string]: boolean };
-    setCheckedItems: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
+    handleSelectedItem: (data: Product) => void;
+    handleSelectAll: () => void;
     checkedAll: boolean;
-    setCheckedAll: Dispatch<SetStateAction<boolean>>;
 };
 const TableProduct = ({
     products,
     setOpen,
     setAction,
     setId,
-    checkedItems,
-    setCheckedItems,
+    handleSelectedItem,
+    handleSelectAll,
     checkedAll,
-    setCheckedAll,
 }: Props) => {
     const router = useRouter();
 
@@ -67,69 +65,6 @@ const TableProduct = ({
 
     //Checked
 
-    const handleCheckedAll = () => {
-        setCheckedAll((prev) => !prev);
-
-        if (!checkedAll) {
-            const updatedCheckedItems: { [key: string]: boolean } = {};
-            for (const item of products) {
-                updatedCheckedItems[item._id] = true;
-            }
-            localStorage.setItem('tickProduct', JSON.stringify(products));
-            setCheckedItems(updatedCheckedItems);
-        } else {
-            const updatedCheckedItems: { [key: string]: boolean } = {};
-            for (const item of products) {
-                updatedCheckedItems[item._id] = false;
-            }
-            localStorage.setItem('tickProduct', '');
-            setCheckedItems(updatedCheckedItems);
-        }
-    };
-
-    const handleChecked = (productId: string) => {
-        setCheckedItems((prevState) => {
-            const newState = {
-                ...prevState,
-                [productId]: !prevState[productId],
-            };
-
-            if (newState[productId]) {
-                const storedItems = localStorage.getItem('tickProduct');
-                let storedItemsArray: Product[] = [];
-
-                if (storedItems) {
-                    storedItemsArray = JSON.parse(storedItems);
-                }
-
-                const selectedItem = products.find((item) => item._id === productId);
-
-                if (selectedItem) {
-                    storedItemsArray = storedItemsArray.filter((item) => item._id !== productId);
-                    storedItemsArray.push(selectedItem);
-                    localStorage.setItem('tickProduct', JSON.stringify(storedItemsArray));
-                }
-            } else {
-                const storedItems = localStorage.getItem('tickProduct');
-                let storedItemsArray: Product[] = [];
-
-                if (storedItems) {
-                    storedItemsArray = JSON.parse(storedItems);
-                    storedItemsArray = storedItemsArray.filter((item) => item._id !== productId);
-                    localStorage.setItem('tickProduct', JSON.stringify(storedItemsArray));
-                }
-            }
-            return newState;
-        });
-    };
-
-    useEffect(() => {
-        let allChecked = false;
-        if (Object.keys(checkedItems).length !== 0) {
-            allChecked = Object.values(checkedItems).every((value) => value === true);
-        }
-        setCheckedAll(allChecked);
-    }, [checkedItems]);
     return (
         <div>
             {products.length === 0 ? (
@@ -140,12 +75,12 @@ const TableProduct = ({
                         <TableHead className="mb-[10px]">
                             <TableRow>
                                 <TableCell align="left">
-                                    {/* <input
+                                    <input
                                         type="checkbox"
                                         className="w-[26px] h-[26px]"
                                         checked={checkedAll}
-                                        onChange={handleCheckedAll}
-                                    /> */}
+                                        onChange={handleSelectAll}
+                                    />
                                 </TableCell>
                                 <TableCell align="center">Image</TableCell>
                                 <TableCell align="center">Name of Product</TableCell>
@@ -171,10 +106,10 @@ const TableProduct = ({
                                             <input
                                                 type="checkbox"
                                                 className="w-[26px] h-[26px]"
-                                                checked={checkedAll ? checkedAll : checkedItems[product._id]}
-                                                onClick={(e) => {
+                                                checked={product.selected || false}
+                                                onChange={(e) => {
                                                     e.stopPropagation();
-                                                    handleChecked(product._id);
+                                                    handleSelectedItem(product);
                                                 }}
                                             />
                                         </TableCell>
@@ -185,6 +120,10 @@ const TableProduct = ({
                                                 width={100}
                                                 height={100}
                                                 className="bg-product rounded-md"
+                                                style={{
+                                                    width: 100,
+                                                    height: 100,
+                                                }}
                                             />
                                         </TableCell>
                                         <TableCell align="center" className="w-[360px]">

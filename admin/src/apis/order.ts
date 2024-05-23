@@ -20,7 +20,7 @@ const ordersApi = {
         return axios.get(url);
     },
     getOrderByOrderId: (order: string) => {
-        const url = `/orders/${order}`;
+        const url = `/orders/by-id/${order}`;
         return axios.get(url);
     },
     createOrder: (item: Order) => {

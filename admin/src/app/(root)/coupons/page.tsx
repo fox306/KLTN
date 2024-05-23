@@ -41,7 +41,7 @@ const CouponsPage = () => {
         setSelected(filterData);
     };
     const handleSelectedItem = (item: Coupon) => {
-        const selectedItem = coupons?.map((data) => {
+        const selectedItem = coupons.map((data) => {
             if (item._id === data._id) {
                 return {
                     ...data,
@@ -54,7 +54,7 @@ const CouponsPage = () => {
     };
 
     const handleSelectedAll = () => {
-        const filterCart = coupons?.map((data) => {
+        const filterCoupon = coupons.map((data) => {
             if (checkedAll) {
                 return {
                     ...data,
@@ -67,8 +67,8 @@ const CouponsPage = () => {
                 };
             }
         });
-        setCoupons(filterCart);
-        handleFilterData(filterCart);
+        setCoupons(filterCoupon);
+        handleFilterData(filterCoupon);
     };
     const validateSelectedAll = () => {
         const data = coupons?.every((item) => item.selected === true);

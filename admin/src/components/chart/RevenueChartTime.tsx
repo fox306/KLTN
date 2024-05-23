@@ -150,7 +150,7 @@ const RevenueChartTime = ({ path }: Props) => {
                         <XAxis dataKey="date" scale="point" padding={{ left: 10, right: 10 }} />
                         <YAxis />
                         <Tooltip />
-                        <CartesianGrid strokeDasharray="3 3" />
+
                         <Bar dataKey="total" fill="#8884d8" background={{ fill: '#eee' }} />
                     </BarChart>
                 ) : (
@@ -166,7 +166,6 @@ const RevenueChartTime = ({ path }: Props) => {
                         }}
                         className="w-full"
                     >
-                        <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="date" />
                         <YAxis />
                         <Tooltip />

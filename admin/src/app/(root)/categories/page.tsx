@@ -1,29 +1,77 @@
 'use client';
 import CategoriesList from '@/components/cards/CategoriesList';
-import { TextField } from '@mui/material';
-import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import EditCate from '@/components/form/EditCate';
 import AddNewCate from '@/components/form/AddNewCate';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/utils/store';
-import { getAllCategory } from '@/slices/categorySlice';
 import { Category } from '@/types/type';
+import axios from '@/utils/axios';
 
 const Categories = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
     const [load, setLoad] = useState(false);
     const [item, setItem] = useState<Category>({
         _id: '',
         name: '',
         img: '',
     });
+    const [selected, setSelected] = useState<Category[]>([]);
+    const [cateList, setCateList] = useState<Category[]>([]);
+    const [checkedAll, setCheckedAll] = useState<boolean>(false);
+
+    const handleFilterData = (data: Category[]) => {
+        const filterData = data.filter((item) => {
+            return item.selected;
+        });
+        setSelected(filterData);
+    };
+    const handleSelectedItem = (e: MouseEvent<HTMLInputElement, globalThis.MouseEvent>, item: Category) => {
+        e.stopPropagation();
+        const selectedItem = cateList.map((data) => {
+            if (item._id === data._id) {
+                return {
+                    ...data,
+                    selected: !data.selected,
+                };
+            } else return data;
+        });
+        setCateList(selectedItem);
+        handleFilterData(selectedItem);
+    };
+
+    const handleSelectedAll = () => {
+        const filterCart = cateList?.map((data) => {
+            if (checkedAll) {
+                return {
+                    ...data,
+                    selected: false,
+                };
+            } else {
+                return {
+                    ...data,
+                    selected: true,
+                };
+            }
+        });
+        // setCateList(filterCart);
+        handleFilterData(filterCart);
+    };
+    const validateSelectedAll = () => {
+        const data = cateList?.every((item) => item.selected === true);
+        setCheckedAll(data);
+    };
 
     useEffect(() => {
-        dispatch(getAllCategory());
-    }, [dispatch, load]);
+        validateSelectedAll();
+    }, [selected]);
+    console.log(selected);
+    useEffect(() => {
+        const fetchData = async () => {
+            const { data } = await axios.get('/categories');
+            if (data.success) {
+                setCateList(data.data);
+            }
+        };
+        fetchData();
+    }, [load]);
     return (
         <div className="flex flex-col gap-[14px]">
             <div className="flex gap-5">
@@ -38,7 +86,7 @@ const Categories = () => {
                 </button>
             </div>
             <div>
-                <CategoriesList categories={categories} setItem={setItem} />
+                <CategoriesList categories={cateList} setItem={setItem} handleSelectedItem={handleSelectedItem} />
             </div>
             <div className="h-[400px] shadow-product bg-white py-5 px-[100px] flex gap-[110px]">
                 <EditCate item={item} setLoad={setLoad} />
