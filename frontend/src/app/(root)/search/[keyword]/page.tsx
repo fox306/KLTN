@@ -21,6 +21,7 @@ import {
 import { getAllCategory } from '@/slices/categorySlice';
 import { Category, Product, findProduct, productByCate } from '@/types/type';
 import { useParams, usePathname } from 'next/navigation';
+import { CircularProgress } from '@mui/material';
 
 const unProp = {
     productHots: [],
@@ -36,7 +37,12 @@ const unProp = {
 };
 
 const ManShoes = () => {
-    const { products, brands, pages }: { products: Product[]; brands: Brand[]; pages: number } = useSelector(
+    const {
+        products,
+        brands,
+        pages,
+        loading,
+    }: { products: Product[]; brands: Brand[]; pages: number; loading: boolean } = useSelector(
         (state: any) => state.products,
     );
 
@@ -115,8 +121,14 @@ const ManShoes = () => {
                     setSort={setSort}
                     view={view}
                     setView={setView}
+                    setBrand={setBrand}
+                    setColor={setColor}
                 />
-                {active ? (
+                {loading ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                        <CircularProgress color="secondary" size={60} />
+                    </div>
+                ) : active ? (
                     <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (
                     <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />

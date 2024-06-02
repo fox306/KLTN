@@ -6,11 +6,13 @@ type Props = {
     setActive: Dispatch<SetStateAction<boolean>>;
     listCoupons: ListCoupon;
     setDiscount: Dispatch<SetStateAction<ValidCoupons | undefined>>;
+    setFlag: Dispatch<SetStateAction<boolean>>;
 };
 
-const Coupons = ({ setActive, listCoupons, setDiscount }: Props) => {
+const Coupons = ({ setActive, listCoupons, setDiscount, setFlag }: Props) => {
     const handleSetDiscount = (item: ValidCoupons) => {
         setDiscount(item);
+        setFlag((prev) => !prev);
         setActive(false);
     };
     return (
@@ -30,7 +32,7 @@ const Coupons = ({ setActive, listCoupons, setDiscount }: Props) => {
                     {listCoupons.validCoupons.length !== 0 ? (
                         listCoupons.validCoupons.map((item) => (
                             <div
-                                className="border h-[116px] p-4 flex flex-col justify-center items-center"
+                                className="border h-[116px] p-4 flex flex-col justify-center items-center hover:border-blue cursor-pointer"
                                 onClick={() => handleSetDiscount(item)}
                             >
                                 <div className="flex items-center justify-between font-bold text-lg w-full">
@@ -56,7 +58,7 @@ const Coupons = ({ setActive, listCoupons, setDiscount }: Props) => {
                     {listCoupons.recommendCoupons.length !== 0 &&
                         listCoupons.recommendCoupons.map((item) => (
                             <div
-                                className="border h-[116px] p-4 flex flex-col justify-center items-center"
+                                className="border h-[116px] p-4 flex flex-col justify-center items-center cursor-pointer"
                                 onClick={() => handleSetDiscount(item)}
                             >
                                 <div className="flex items-center justify-between font-bold text-lg w-full">

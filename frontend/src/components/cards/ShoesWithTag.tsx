@@ -75,7 +75,7 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                         <div className="flex gap-5">
                             <div className="bg-deal flex items-center justify-center relative overflow-hidden">
                                 <Image
-                                    src={product.images[0]}
+                                    src={product.image}
                                     alt="Giày"
                                     width={300}
                                     height={280}

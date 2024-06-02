@@ -243,6 +243,19 @@ export type Commentator = {
     fullName: string;
     avatar: string;
 };
+export type Coupon = {
+    _id: string;
+    code: string;
+    name: string;
+    value: number;
+    type: string;
+    maxDiscount: number;
+    minAmount: number;
+    validityDuration: 10;
+    startDate: string;
+    endDate: string;
+};
+
 export type ValidCoupons = {
     _id: string;
     code: string;

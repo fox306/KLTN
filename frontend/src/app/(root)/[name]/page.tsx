@@ -15,6 +15,7 @@ import { getAllProductByCateId, getProductHotDeal, getQtyHotDealOfBrand, getQtyO
 import { getAllCategory } from '@/slices/categorySlice';
 import { Category, Product, productByCate } from '@/types/type';
 import { usePathname } from 'next/navigation';
+import { CircularProgress } from '@mui/material';
 
 const unProp = {
     productHots: [],
@@ -36,14 +37,15 @@ const ManShoes = () => {
         brands,
         hotdeals,
         pages,
-    }: { products: Product[]; brands: Brand[]; hotdeals: Brand[]; pages: number } = useSelector(
+        loading,
+    }: { products: Product[]; brands: Brand[]; hotdeals: Brand[]; pages: number; loading: boolean } = useSelector(
         (state: any) => state.products,
     );
 
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
     const [sort, setSort] = useState<string>('');
-    const [view, setView] = useState<string>('new');
+    const [view, setView] = useState<string>('NEW');
     const [listProduct, setListProduct] = useState<Product[]>([]);
     const [color, setColor] = useState<string>('');
     const [brand, setBrand] = useState<string>('');
@@ -75,7 +77,9 @@ const ManShoes = () => {
             console.log('product of cate: ', item);
             await dispatch(getAllProductByCateId(item)).unwrap();
         };
-        fetchData();
+        if (idCate) {
+            fetchData();
+        }
     }, [dispatch, idCate, pageNum, view, brand, color]);
 
     useEffect(() => {
@@ -98,7 +102,6 @@ const ManShoes = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await dispatch(getProductHotDeal());
             await dispatch(getQtyOfBrand());
             await dispatch(getQtyHotDealOfBrand());
         };
@@ -108,7 +111,6 @@ const ManShoes = () => {
     return (
         <div className="flex px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5 w-[260px]">
-                <HotDeals hotdeals={hotdeals} brand={brand} setBrand={setBrand} />
                 <Price minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} />
                 <Color color={color} setColor={setColor} />
                 <Brand brands={brands} brand={brand} setBrand={setBrand} />
@@ -124,8 +126,14 @@ const ManShoes = () => {
                     setSort={setSort}
                     view={view}
                     setView={setView}
+                    setColor={setColor}
+                    setBrand={setBrand}
                 />
-                {active ? (
+                {loading ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                        <CircularProgress color="secondary" size={60} />
+                    </div>
+                ) : active ? (
                     <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (
                     <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />
