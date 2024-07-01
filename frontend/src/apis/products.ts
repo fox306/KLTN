@@ -3,7 +3,7 @@ import axios from '../utils/axios';
 
 const productsApi = {
     getAllProduct: () => {
-        const url = '/products?pageSize=5&pageNumber=1';
+        const url = '/products?pageSize=6&pageNumber=1';
         return axios.get(url);
     },
     getProductById: (product: string) => {
@@ -11,7 +11,7 @@ const productsApi = {
         return axios.get(url);
     },
     getAllProductByCateId: (category: productByCate) => {
-        let url = `/products/find/by-category?category=${category.category}&pageSize=5`;
+        let url = `/products/find/by-category?category=${category.category}&pageSize=6&pageNumber=${category.pageNumber}`;
         if (category.color) {
             url += `&color=${category.color}`;
         }
@@ -34,7 +34,7 @@ const productsApi = {
         // }
     },
     findProductByKeyword: (item: findProduct) => {
-        let url = `/products/find/by-keyword?keyword=${item.keyword}&pageSize=5&pageNumber=1`;
+        let url = `/products/find/by-keyword?keyword=${item.keyword}&pageSize=6&pageNumber=1`;
 
         if (item.color) {
             url += `&color=${item.color}`;
@@ -50,7 +50,7 @@ const productsApi = {
     },
 
     getProductHotDeal: () => {
-        const url = '/products?pageSize=5&pageNumber=1';
+        const url = '/revenue/products/hot';
         return axios.get(url);
     },
     getQtyOfBrand: () => {
@@ -68,7 +68,7 @@ const productsApi = {
         });
     },
     getFavoriteUser: (user: string) => {
-        const url = `/products/find/by-favorites?pageSize=5&pageNumber=1&user=${user}`;
+        const url = `/products/find/by-favorites?pageSize=6&pageNumber=1&user=${user}`;
         return axios.get(url);
     },
 };

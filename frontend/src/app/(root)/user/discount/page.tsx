@@ -3,6 +3,7 @@ import UserNav from '@/components/shared/UserNav';
 import { Coupon, User } from '@/types/type';
 import axios from '@/utils/axios';
 import { CircularProgress } from '@mui/material';
+import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 
 const statuses = ['ALL', 'VALID', 'EXPIRED'];
@@ -94,7 +95,8 @@ const DiscountPage = () => {
                                         </div>
                                         <span className="font-semibold">Minimum Orders: {item.minAmount}</span>
 
-                                        <span>Effective from: {item.startDate}</span>
+                                        <span>Effective from: {format(new Date(item.startDate), 'dd-MM-yyyy')}</span>
+                                        <span>Expried Day: {format(new Date(item.endDate), 'dd-MM-yyyy')}</span>
                                     </div>
                                 ))}
                         </div>

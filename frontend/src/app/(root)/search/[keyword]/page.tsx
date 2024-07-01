@@ -107,7 +107,7 @@ const ManShoes = () => {
         <div className="flex px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5 w-[260px]">
                 <Price minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} />
-                <Color color={color} setColor={setColor} setView={setView} />
+                <Color color={color} setColor={setColor} />
                 <Brand brands={brands} brand={brand} setBrand={setBrand} />
             </div>
             <div className="w-[1010px]">

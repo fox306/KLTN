@@ -116,7 +116,13 @@ const DetailOrder = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-3">
+                        {(detail?.discountAmount as number) > 0 && (
+                            <div className="flex items-center font-bold gap-2">
+                                <span>Discount Amount:</span>
+                                <span className="text-lg text-blue">${detail?.discountAmount}</span>
+                            </div>
+                        )}
                         <div className="flex items-center font-bold gap-2">
                             <span>Total Price:</span>
                             <span className="text-lg text-blue">${detail?.total}</span>

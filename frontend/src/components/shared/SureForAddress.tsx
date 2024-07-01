@@ -37,7 +37,7 @@ const SureForAddress = ({ id, setId, setLoad, setOpen1 }: Props) => {
                         className="w-[100px] h-[50px] rounded-full bg-red bg-opacity-60 text-white hover:bg-opacity-100"
                         onClick={handleClose}
                     >
-                        Cancel
+                        No
                     </button>
                 </div>
             </div>

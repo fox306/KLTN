@@ -177,36 +177,30 @@ const Orders = () => {
                                         ''
                                     ) : (
                                         <div className="flex gap-5">
-                                            {order.status === 'DeliveredSuccessfully' ||
-                                            order.status === 'Delivering' ? (
+                                            {(order.status === 'DeliveredSuccessfully' ||
+                                                order.status === 'Delivering') && (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
                                                     onClick={(e) => handleReceived(e, order._id)}
                                                 >
                                                     RECEIVED
                                                 </button>
-                                            ) : (
-                                                ''
                                             )}
-                                            {order.status === 'Successful' ? (
+                                            {order.status === 'Successful' && (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
                                                     onClick={(e) => handleReturn(e, order._id)}
                                                 >
                                                     RETURN
                                                 </button>
-                                            ) : (
-                                                ''
                                             )}
-                                            {order.status === 'Confirming' || order.status === 'Delivering' ? (
+                                            {order.status === 'Confirming' && (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
                                                     onClick={(e) => handleCancel(e, order._id)}
                                                 >
                                                     Cancel
                                                 </button>
-                                            ) : (
-                                                ''
                                             )}
                                         </div>
                                     )}

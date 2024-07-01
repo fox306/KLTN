@@ -149,6 +149,7 @@ export type Order = {
     status?: string;
     isPaid?: boolean;
     isDelivered?: boolean;
+    discountAmount: number;
 };
 export type checkoutOrder = {
     items: ItemCart[];
