@@ -15,6 +15,7 @@ type Props = {
     setLoad: Dispatch<SetStateAction<boolean>>;
     address: Address[];
     setChange: Dispatch<SetStateAction<boolean>>;
+    setDatas: Dispatch<SetStateAction<Address | undefined>>;
 };
 
 const unProps = {
@@ -41,34 +42,27 @@ const unProps = {
     setAddressId: () => {},
 };
 
-const ListAddress = ({ setLoad, address, setChange }: Props) => {
+const ListAddress = ({ setLoad, address, setChange, setDatas }: Props) => {
     const [open, setOpen] = useState(false);
     const [province, setProvince] = useState<Province[]>();
     const [provinceID, setProvinceID] = useState<string>('');
     const [active, setActive] = useState<string>('');
-    const [id, setId] = useState<string>('');
+    const [ads, setAds] = useState<Address>();
 
-    const handleDefault = async () => {
-        const { data } = await axios.patch(`/deliveryAddress/default/${id}`);
-        if (data.success) {
-            toast.success('Set default address success');
-            setLoad((prev) => !prev);
-            setChange(false);
-        } else {
-            toast.error('Set default address fail');
-        }
+    const handleSet = () => {
+        setDatas(ads);
+        setOpen(false);
     };
-    const handleClick = (id: string) => {
+    const handleClick = (item: Address) => {
         const notDo = address.find((item) => item.isDefault === true) as Address;
-        if (notDo._id !== id) {
-            setId(id);
-            setActive(id);
+        if (notDo._id !== item._id) {
+            setAds(item);
+            setActive(item._id as string);
         } else {
-            setId('');
-            setActive(id);
+            setAds(undefined);
+            setActive(item._id as string);
         }
     };
-    console.log(id);
     useEffect(() => {
         const fetchProvince = async () => {
             const { data } = await axios.get('/utils/provinces');
@@ -92,10 +86,10 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
                         <span className="font-bold">Where you can receive your orders!!!</span>
                     </div>
                     <div className="flex gap-2">
-                        {id && (
+                        {ads && (
                             <div
                                 className="w-[186px] h-10 cursor-pointer bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium hover:bg-opacity-100 hover:text-white"
-                                onClick={handleDefault}
+                                onClick={handleSet}
                             >
                                 <span>Comfirm</span>
                             </div>
@@ -122,7 +116,7 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
                             className={`border ${
                                 active === item._id ? 'border-[#FF00B4]' : 'border-black'
                             } border-opacity-20 px-10 pt-8 pb-6 rounded-full relative cursor-pointer`}
-                            onClick={() => handleClick(item._id as string)}
+                            onClick={() => handleClick(item)}
                         >
                             <span
                                 className={`opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center ${

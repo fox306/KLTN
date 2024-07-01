@@ -70,7 +70,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                         className="w-[100px] h-[50px] rounded-full bg-red bg-opacity-60 text-white hover:bg-opacity-100"
                         onClick={handleClose}
                     >
-                        Cancel
+                        No
                     </button>
                 </div>
             </div>

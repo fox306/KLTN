@@ -1,7 +1,7 @@
 'use client';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { useDispatch } from 'react-redux';
@@ -219,10 +219,17 @@ const SingleSellShoe = ({
                               </div>
                           ))}
                 </div>
-                <ArrowForwardIosRoundedIcon
-                    className={`text-3xl ${next === productHots.length ? 'text-gray' : 'cursor-pointer'}`}
-                    onClick={isNext ? handleNext : undefined}
-                />
+                {active ? (
+                    <ArrowForwardIosRoundedIcon
+                        className={`text-3xl ${next < products.length ? 'cursor-pointer' : 'text-gray'}`}
+                        onClick={isNext ? handleNext : undefined}
+                    />
+                ) : (
+                    <ArrowForwardIosRoundedIcon
+                        className={`text-3xl ${next < productHots.length ? 'cursor-pointer' : 'text-gray'}`}
+                        onClick={isNext ? handleNext : undefined}
+                    />
+                )}
             </div>
         );
     }
@@ -235,7 +242,9 @@ const SingleSellShoe = ({
                 />
                 {products && products.length === 0 ? (
                     <div className="flex justify-center items-center">
-                        <span className="text-base font-semibold">No Data</span>
+                        {/* <span className="text-base font-semibold">No Data</span>
+                         */}
+                        <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
                     </div>
                 ) : (
                     products.slice(back, next).map((product: Product, index: number) => (
@@ -296,10 +305,10 @@ const SingleSellShoe = ({
     }
     if (pathname.startsWith('/search')) {
         return (
-            <div className="grid  grid-cols-3 gap-[50px]">
+            <div className={`${products && products.length === 0 ? '' : 'grid grid-cols-3 gap-[20px]'}`}>
                 {products && products.length === 0 ? (
                     <div className="flex justify-center items-center">
-                        <span className="text-base font-semibold">No Data</span>
+                        <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
                     </div>
                 ) : (
                     products.map((product: Product, index: number) => (
@@ -356,27 +365,27 @@ const SingleSellShoe = ({
     }
 
     return (
-        <div className={`${products && products.length === 0 ? '' : 'grid grid-cols-3 gap-[50px]'}`}>
+        <div className={`${products && products.length === 0 ? '' : 'grid grid-cols-3 gap-[20px]'}`}>
             {products && products.length === 0 ? (
                 <div className="flex justify-center items-center">
-                    <span className="text-base font-semibold">No Data</span>
+                    <Image src="/noData.jpg" alt="No Data" width={500} height={300} className="rounded-[5px]" />
                 </div>
             ) : (
                 products.map((product: Product, index: number) => (
                     <div
                         key={product._id}
-                        className="flex gap-2 cursor-pointer"
+                        className="flex flex-col gap-2 cursor-pointer"
                         onClick={() => handleDetail(product._id)}
                     >
-                        <div className="border-2 border-gray2 rounded-md p-1 w-[304px]">
+                        <div className="border-2 border-gray2 rounded-md p-1">
                             {/* Single Product */}
                             <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
                                 <Image
                                     src={product.image}
                                     alt="Nike"
-                                    width={292}
+                                    width={300}
                                     height={236}
-                                    className="rounded-md w-[292px] h-[236px]"
+                                    className="rounded-md w-full h-[236px]"
                                 />
                                 {product.isStock === false && (
                                     <div className="absolute w-[292px] h-[236px] rounded-md bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">

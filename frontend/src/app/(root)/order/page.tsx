@@ -132,7 +132,6 @@ const Order = () => {
         };
         fetchProvince();
     }, []);
-    console.log(totalPay);
     const idAddress = datas?._id as string;
 
     const handleOrder = async () => {
@@ -312,7 +311,7 @@ const Order = () => {
                     Confirm
                 </button>
             </div>
-            {change && <ListAddress setLoad={setLoad} address={address} setChange={setChange} />}
+            {change && <ListAddress setLoad={setLoad} address={address} setChange={setChange} setDatas={setDatas} />}
             {open && (
                 <AddAddress
                     setLoad={setLoad}
