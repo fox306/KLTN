@@ -12,6 +12,7 @@ import AddAddress from '@/components/form/AddAddress';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
+import SureForAddress from '@/components/shared/SureForAddress';
 
 const Address = () => {
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
@@ -26,9 +27,10 @@ const Address = () => {
     const id = user?._id as string;
 
     const [open, setOpen] = useState(false);
+    const [open1, setOpen1] = useState(false);
     const [load, setLoad] = useState(false);
+    const [idAds, setIdAds] = useState<string>('');
     const [update, setUpdate] = useState(false);
-    const [fake, setFake] = useState(false);
     const [addressId, setAddressId] = useState('');
     const [province, setProvince] = useState<Province[]>();
     const [district, setDistrict] = useState<District[]>();
@@ -54,13 +56,8 @@ const Address = () => {
     };
 
     const handleDelete = async (adsId: string) => {
-        const { data } = await axios.delete(`/deliveryAddress/${adsId}`);
-        if (data.success) {
-            toast.success('Delete address success');
-            setLoad((prev) => !prev);
-        } else {
-            toast.error('Delete address fail');
-        }
+        setIdAds(adsId);
+        setOpen1(true);
     };
 
     const handleUpdate = (adsId: string) => {
@@ -76,24 +73,22 @@ const Address = () => {
                         (item) => item.province_name === res.payload.data.data.province,
                     );
                     if (selectedProvince) {
-                        setProvinceID(selectedProvince.province_id);
-                        const data = await axios.get(
-                            `https://vapi.vnappmob.com/api/province/district/${selectedProvince.province_id}`,
-                        );
+                        setProvinceID(selectedProvince.provinceId);
+                        const data = await axios.get(`/utils/provinces/districts/${selectedProvince.provinceId}`);
                         if (data.status === 200) {
-                            setDistrict(data.data.results);
+                            setDistrict(data.data.result);
 
-                            const selectedDistrict: District = data.data.results?.find(
+                            const selectedDistrict: District = data.data.result?.find(
                                 (item: District) => item.district_name === res.payload.data.data.districts,
                             );
                             console.log(selectedDistrict);
                             if (selectedDistrict) {
-                                setDistrictID(selectedDistrict.district_id);
+                                setDistrictID(selectedDistrict.districtId);
                                 const data = await axios.get(
-                                    `https://vapi.vnappmob.com/api/province/ward/${selectedDistrict.district_id}`,
+                                    `/utils/provinces/districts/wards/${selectedDistrict.districtId}`,
                                 );
                                 if (data.status === 200) {
-                                    setWard(data.data.results);
+                                    setWard(data.data.result);
                                     setOpen(true);
                                 }
                             }
@@ -106,22 +101,12 @@ const Address = () => {
     }, [addressId]);
     useEffect(() => {
         const fetchProvince = async () => {
-            const data = await axios.get('https://vapi.vnappmob.com/api/province');
-            setProvince(data.data.results);
-            // console.log(data);
+            const { data } = await axios.get('/utils/provinces');
+            setProvince(data.result);
         };
         fetchProvince();
     }, []);
 
-    // useEffect(() => {
-    //     if (update) {
-    //         const fetchDistrict = async () => {
-    //             const { data } = await axios.get(`https://vapi.vnappmob.com/api/province/district/${provinceID}`);
-    //             setDistrict(data.results);
-    //         };
-    //         fetchDistrict();
-    //     }
-    // }, [addressId]);
     return (
         <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
@@ -145,12 +130,12 @@ const Address = () => {
                         <div
                             key={item._id}
                             className={`border ${
-                                item.default ? 'border-[#FF00B4]' : 'border-black'
+                                item.isDefault ? 'border-[#FF00B4]' : 'border-black'
                             } border-opacity-20 px-10 pt-8 pb-6 rounded-full relative`}
                         >
                             <span
                                 className={`opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center ${
-                                    item.default ? 'text-[#FF00B4]' : ''
+                                    item.isDefault ? 'text-[#FF00B4]' : ''
                                 }`}
                             >
                                 Address {index + 1}
@@ -225,6 +210,7 @@ const Address = () => {
                     setWard={setWard}
                 />
             )}
+            {open1 && <SureForAddress id={idAds} setId={setIdAds} setOpen1={setOpen1} setLoad={setLoad} />}
         </div>
     );
 };

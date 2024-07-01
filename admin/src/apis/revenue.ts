@@ -1,4 +1,4 @@
-import { day } from '@/types/type';
+import { brandYear, cateYear, day, eachBrand } from '@/types/type';
 import axios from '@/utils/axios';
 
 const revenueApi = {
@@ -88,6 +88,25 @@ const revenueApi = {
     },
     getDetailTotalProductSoldOfMonth: (item: day) => {
         const url = `/revenue/products/detail/by-month?month=${item.month}&year=${item.year}`;
+        return axios.get(url);
+    },
+
+    getEachBrand: (item: day) => {
+        {
+            const url = `/revenue/brand/this-month?month=${item.month}&year=${item.year}`;
+            return axios.get(url);
+        }
+    },
+    getEachCate: (item: day) => {
+        const url = `/revenue/category/this-month?month=${item.month}&year=${item.year}`;
+        return axios.get(url);
+    },
+    detailBrand: (item: brandYear) => {
+        const url = `/revenue/detail/brand/by-year?brand=${item.brand}&year=${item.year}`;
+        return axios.get(url);
+    },
+    detailCate: (item: cateYear) => {
+        const url = `/revenue/detail/category/by-year?category=${item.category}&year=${item.year}`;
         return axios.get(url);
     },
 };

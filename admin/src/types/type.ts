@@ -192,8 +192,20 @@ export type day = {
     year: number;
 };
 
+export type brandYear = {
+    brand: string;
+    year: number;
+};
+export type cateYear = {
+    category: string;
+    year: number;
+};
+
 export type detailTotal = [day: string, total: number];
 export type detailMonth = [date: number, total: number];
+export type eachBrand = [brand: string, sold: number];
+export type eachCate = [category: string, sold: number];
+export type detailMonthCB = [month: string, total: number];
 
 export type top = {
     id: string;
@@ -243,4 +255,39 @@ export type UpdateVariant = {
     color: string;
     image: string;
     details: CreateSizes[];
+};
+
+export type CreateVariants = {
+    name_product: string;
+    color: string;
+    total_quantity: number;
+    unit_price: number;
+    total_price: number;
+    receipt_variant: CreateSizes[];
+};
+
+export type Supplier = {
+    _id?: string;
+    supplier_name: string;
+    contacter_name: string;
+    email: string;
+    phone: string;
+    address: string;
+    billing_infomation: Billing;
+    total_receipt?: number;
+};
+
+export type Billing = {
+    method: string;
+    bank: string;
+    bank_account: string;
+    _id?: string;
+};
+
+export type Receipt = {
+    receiptId: string;
+    supplier: string;
+    confirmer: string;
+    confirmation_date: string;
+    total_receipt: number;
 };

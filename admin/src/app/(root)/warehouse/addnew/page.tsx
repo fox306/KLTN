@@ -1,13 +1,11 @@
 'use client';
-import Image from 'next/image';
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import axios from '@/utils/axios';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { Category, CreateVariant, Product, Variant } from '@/types/type';
 import { getAllCategory } from '@/slices/categorySlice';
@@ -75,29 +73,6 @@ const AddNewProduct = () => {
     };
     const addVariant = () => {
         setAddVariants((prevVariants) => [...prevVariants, {}]);
-    };
-
-    const handleVariantChange = (index: number, field: string, value: string) => {
-        setVars((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants[index] = {
-                ...updatedVariants[index],
-                [field]: value,
-            };
-            return updatedVariants;
-        });
-    };
-    const handleDeleteVariant = (index: number) => {
-        setVars((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants.splice(index, 1);
-            return updatedVariants;
-        });
-        setAddVariants((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants.splice(index, 1);
-            return updatedVariants;
-        });
     };
     console.log(vars[0].image);
     const handleSubmit = async () => {

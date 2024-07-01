@@ -37,6 +37,9 @@ module.exports = {
                 product2: '2px 2px 4px 0 rgba(38,38,38,0.25)',
                 form: '2px 2px 2px 0 rgba(0,0,0,0.2)',
                 product3: '0 4px 4px 0 rgba(0,0,0,0.25)',
+                cancel: '1px 1px 2px 0 rgba(255,71,71,0.2)',
+                create: '1px 1px 2px 0 rgba(51,160,255,0.2)',
+                input: '1px 1px 2px 0 rgba(255,255,255,0.2)',
             },
             fontFamily: {
                 poppin: ['Poppins', 'sans-serif'],

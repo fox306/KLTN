@@ -79,8 +79,9 @@ const Order = () => {
     const [discount, setDiscount] = useState<ValidCoupons>();
     const [province, setProvince] = useState<Province[]>();
     const [provinceID, setProvinceID] = useState<string>('');
+    const [flag, setFlag] = useState(false);
 
-    let totalPay = totalPrice;
+    const [totalPay, setTotalPay] = useState(totalPrice);
 
     const [pay, setPay] = useState<string>('');
     useEffect(() => {
@@ -113,22 +114,25 @@ const Order = () => {
     useEffect(() => {
         if (discount) {
             if (discount.type === 'percent') {
-                const money = totalPrice * discount.value;
-                totalPay = totalPrice - money;
+                const money = (totalPrice * discount.value) / 100;
+                console.log(money);
+                setTotalPay(totalPrice - money);
+                console.log(totalPay);
             } else {
-                totalPay = totalPrice - discount.value;
+                setTotalPay(totalPrice - discount.value);
             }
         }
-    }, [discount]);
+    }, [flag]);
+    console.log(discount);
     useEffect(() => {
         const fetchProvince = async () => {
-            const data = await axios.get('https://vapi.vnappmob.com/api/province');
-            setProvince(data.data.results);
+            const { data } = await axios.get('/utils/provinces');
+            setProvince(data.result);
             // console.log(data);
         };
         fetchProvince();
     }, []);
-
+    console.log(totalPay);
     const idAddress = datas?._id as string;
 
     const handleOrder = async () => {
@@ -149,6 +153,8 @@ const Order = () => {
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
                 total: totalPay,
+                discountAmount: discount?.value as number,
+                coupon: discount?._id as string,
             };
             console.log(item);
 
@@ -168,6 +174,8 @@ const Order = () => {
                 deliveryAddress: idAddress,
                 paymentMethod: 'COD',
                 total: totalPay,
+                discountAmount: discount?.value as number,
+                coupon: discount?._id as string,
             };
             dispatch(createOrder(item));
             localStorage.removeItem('itemOrders');
@@ -293,7 +301,7 @@ const Order = () => {
                 >
                     Discount
                 </button>
-                <span>Discount: </span>
+                <span>Discount: {discount?.name}</span>
                 <span className="opacity-50">Shipping fee: Free</span>
             </div>
             <div className="flex items-center justify-end w-full font-bold gap-5 text-white">
@@ -317,7 +325,12 @@ const Order = () => {
                 />
             )}
             {active && (
-                <Coupons setActive={setActive} listCoupons={listCoupons as ListCoupon} setDiscount={setDiscount} />
+                <Coupons
+                    setActive={setActive}
+                    listCoupons={listCoupons as ListCoupon}
+                    setDiscount={setDiscount}
+                    setFlag={setFlag}
+                />
             )}
         </div>
     );

@@ -11,7 +11,16 @@ const productsApi = {
         return axios.get(url);
     },
     getAllProductByCateId: (category: productByCate) => {
-        const url = `/products/find/by-category?category=${category.category}&pageSize=5`;
+        let url = `/products/find/by-category?category=${category.category}&pageSize=5`;
+        if (category.color) {
+            url += `&color=${category.color}`;
+        }
+        if (category.brand) {
+            url += `&brand=${category.brand}`;
+        }
+        if (category.sort) {
+            url += `&sort=${category.sort}`;
+        }
         return axios.get(url);
         // , {
         //     params: {

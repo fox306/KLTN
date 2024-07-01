@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { userNav } from '@/constants';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -14,16 +14,16 @@ const UserNav = () => {
     const dispatch = useDispatch<AppDispatch>;
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
-    let user: User | null = null;
-
-    if (userString !== null) {
-        try {
-            user = JSON.parse(userString) as User;
-        } catch (error) {
-            console.error('Error parsing user data:', error);
+    const [user, setUser] = useState<User>();
+    useEffect(() => {
+        if (userString !== null) {
+            try {
+                setUser(JSON.parse(userString) as User);
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+            }
         }
-    }
-    const id = user?._id as string;
+    }, []);
 
     return (
         <div className="py-5 px-[16px] bg-deal drop-shadow-lg w-max h-max rounded-md">
@@ -31,6 +31,7 @@ const UserNav = () => {
                 <Image src={user?.avatar ?? ''} alt="AVT" width={60} height={60} className="rounded-full" />
                 <span className="font-bold text-[14px] text-sm">{user?.fullName}</span>
             </div>
+
             {userNav.map((item) => (
                 <div
                     key={item.label}

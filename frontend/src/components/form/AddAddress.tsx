@@ -94,10 +94,10 @@ const AddAddress = ({
         }));
 
         if (selectedProvince) {
-            setProvinceID(selectedProvince.province_id);
+            setProvinceID(selectedProvince.provinceId);
         }
         if (selectedDistrict) {
-            setDistrictID(selectedDistrict.district_id);
+            setDistrictID(selectedDistrict.districtId);
         }
 
         console.log(e.target.value);
@@ -164,17 +164,21 @@ const AddAddress = ({
     };
     useEffect(() => {
         const fetchDistrict = async () => {
-            const { data } = await axios.get(`https://vapi.vnappmob.com/api/province/district/${provinceID}`);
-            setDistrict(data.results);
+            const { data } = await axios.get(`/utils/provinces/districts/${provinceID}`);
+            setDistrict(data.result);
         };
-        fetchDistrict();
+        if (provinceID) {
+            fetchDistrict();
+        }
     }, [provinceID]);
     useEffect(() => {
         const fetchWard = async () => {
-            const { data } = await axios.get(`https://vapi.vnappmob.com/api/province/ward/${districtID}`);
-            setWard(data.results);
+            const { data } = await axios.get(`/utils/provinces/districts/wards/${districtID}`);
+            setWard(data.result);
         };
-        fetchWard();
+        if (districtID) {
+            fetchWard();
+        }
     }, [districtID]);
 
     return (
@@ -213,7 +217,7 @@ const AddAddress = ({
                             onChange={handleChangeSelect}
                         >
                             {province?.map((item: Province) => (
-                                <MenuItem key={item.province_id} value={item.province_name}>
+                                <MenuItem key={item.provinceId} value={item.province_name}>
                                     {item.province_name}
                                 </MenuItem>
                             ))}
@@ -227,7 +231,7 @@ const AddAddress = ({
                             onChange={handleChangeSelect}
                         >
                             {district?.map((item: District) => (
-                                <MenuItem key={item.district_id} value={item.district_name}>
+                                <MenuItem key={item.districtId} value={item.district_name}>
                                     {item.district_name}
                                 </MenuItem>
                             ))}
@@ -240,7 +244,7 @@ const AddAddress = ({
                             onChange={handleChangeSelect}
                         >
                             {ward?.map((item: Ward) => (
-                                <MenuItem key={item.ward_id} value={item.ward_name}>
+                                <MenuItem key={item.wardId} value={item.ward_name}>
                                     {item.ward_name}
                                 </MenuItem>
                             ))}

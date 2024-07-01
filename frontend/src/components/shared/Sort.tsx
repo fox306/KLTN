@@ -23,9 +23,11 @@ type Props = {
     setSort: Dispatch<SetStateAction<string>>;
     view: string;
     setView: Dispatch<SetStateAction<string>>;
+    setColor: Dispatch<SetStateAction<string>>;
+    setBrand: Dispatch<SetStateAction<string>>;
 };
 
-const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
+const Sort = ({ setActive, active, sort, setSort, view, setView, setColor, setBrand }: Props) => {
     const [sorts, setSorts] = useState<string[]>(['']);
     const name = ['Low to High', 'High to Low'];
     const pathname = usePathname();
@@ -47,13 +49,21 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
                     className={`${
                         view === 'NEW' || view === '' ? 'bg-blue' : 'bg-[#ADD6FA]'
                     } w-[120px] h-9 font-bold rounded-md`}
-                    onClick={() => setView('NEW')}
+                    onClick={() => {
+                        setView('NEW');
+                        setColor('');
+                        setBrand('');
+                    }}
                 >
                     New
                 </button>
                 <button
                     className={`${view === 'HOT' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
-                    onClick={() => setView('HOT')}
+                    onClick={() => {
+                        setView('HOT');
+                        setColor('');
+                        setBrand('');
+                    }}
                 >
                     Hot
                 </button>

@@ -21,6 +21,7 @@ import {
 import { getAllCategory } from '@/slices/categorySlice';
 import { Category, Product, findProduct, productByCate } from '@/types/type';
 import { useParams, usePathname } from 'next/navigation';
+import { CircularProgress } from '@mui/material';
 
 const unProp = {
     productHots: [],
@@ -36,7 +37,12 @@ const unProp = {
 };
 
 const ManShoes = () => {
-    const { products, brands, pages }: { products: Product[]; brands: Brand[]; pages: number } = useSelector(
+    const {
+        products,
+        brands,
+        pages,
+        loading,
+    }: { products: Product[]; brands: Brand[]; pages: number; loading: boolean } = useSelector(
         (state: any) => state.products,
     );
 
@@ -60,7 +66,7 @@ const ManShoes = () => {
                 keyword: keyword,
                 brand: brand,
                 color: color,
-                sort: sort,
+                sort: view,
                 pageNumber: pageNum,
             };
 
@@ -101,7 +107,7 @@ const ManShoes = () => {
         <div className="flex px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5 w-[260px]">
                 <Price minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} />
-                <Color color={color} setColor={setColor} />
+                <Color color={color} setColor={setColor} setView={setView} />
                 <Brand brands={brands} brand={brand} setBrand={setBrand} />
             </div>
             <div className="w-[1010px]">
@@ -115,8 +121,14 @@ const ManShoes = () => {
                     setSort={setSort}
                     view={view}
                     setView={setView}
+                    setBrand={setBrand}
+                    setColor={setColor}
                 />
-                {active ? (
+                {loading ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                        <CircularProgress color="secondary" size={60} />
+                    </div>
+                ) : active ? (
                     <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (
                     <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />

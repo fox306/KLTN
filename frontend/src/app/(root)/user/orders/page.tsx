@@ -44,7 +44,7 @@ const Orders = () => {
     }
     const id = user?._id as string;
 
-    const { orders }: { orders: Order[] } = useSelector((state: any) => state.orders);
+    const { orders, total }: { orders: Order[]; total: number } = useSelector((state: any) => state.orders);
     const dispatch = useDispatch<AppDispatch>();
     const [load, setLoad] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
@@ -69,16 +69,6 @@ const Orders = () => {
         setOrderId(id);
         setOpen(true);
         setCurrent('Received');
-
-        // const { data } = await axios.patch('/orders/received', {
-        //     order: id,
-        // });
-        // if (data.success) {
-        //     toast.success('Received order success');
-        //     setLoad((prev) => !prev);
-        // } else {
-        //     toast.error('Received order fail');
-        // }
     };
     const handleReturn = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
@@ -86,18 +76,6 @@ const Orders = () => {
         setOrderId(id);
         setOpen(true);
         setCurrent('Return');
-
-        // const { data } = await axios.patch('/orders/return', {
-        //     order: id,
-        // });
-        // console.log(data);
-
-        // if (data.success) {
-        //     toast.success('Return order success');
-        //     setLoad((prev) => !prev);
-        // } else {
-        //     toast.error('Return order fail');
-        // }
     };
     const handleCancel = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
@@ -116,20 +94,25 @@ const Orders = () => {
         <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
 
-            <div className="w-max flex flex-col">
-                <div className="flex gap-[18px] shadow-lg ">
+            <div className="w-[1100px] flex flex-col">
+                <div className="grid grid-flow-col overflow-x-scroll gap-[18px] shadow-lg scrollbar-hidden mb-5">
                     {statuses &&
                         statuses.map((item, i) => {
                             const isActive = status === item;
+
                             return (
                                 <span
-                                    className={`w-[140px] text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
+                                    className={`${
+                                        item === 'DeliveredSuccessfully' || item === 'ReturnSuccessfully'
+                                            ? 'w-[230px]'
+                                            : 'w-[140px]'
+                                    } text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                         isActive && 'text-blue border-b-2 border-b-blue'
                                     }`}
                                     onClick={() => setStatus(item)}
                                     key={i}
                                 >
-                                    {item}
+                                    {item} {isActive && `(${total})`}
                                 </span>
                             );
                         })}

@@ -1,5 +1,5 @@
 import revenueApi from '@/apis/revenue';
-import { day } from '@/types/type';
+import { brandYear, cateYear, day } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getRevenueToday = createAsyncThunk('revenue/getRevenueToday', async (_, { rejectWithValue }) => {
@@ -205,6 +205,39 @@ export const getDetailTotalProductSoldOfMonth = createAsyncThunk(
         }
     },
 );
+export const getEachBrand = createAsyncThunk('revenue/getEachBrand', async (item: day, { rejectWithValue }) => {
+    try {
+        const res = await revenueApi.getEachBrand(item);
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err.res.data);
+    }
+});
+export const getEachCate = createAsyncThunk('revenue/getEachCate', async (item: day, { rejectWithValue }) => {
+    try {
+        const res = await revenueApi.getEachCate(item);
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err.res.data);
+    }
+});
+export const detailBrand = createAsyncThunk('revenue/detailBrand', async (item: brandYear, { rejectWithValue }) => {
+    try {
+        const res = await revenueApi.detailBrand(item);
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err.res.data);
+    }
+});
+export const detailCate = createAsyncThunk('revenue/detailCate', async (item: cateYear, { rejectWithValue }) => {
+    try {
+        const res = await revenueApi.detailCate(item);
+        console.log(res);
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err.res.data);
+    }
+});
 
 export const revenueSlice = createSlice({
     name: 'revenue',
@@ -214,6 +247,9 @@ export const revenueSlice = createSlice({
         thisMonth: {},
         detailMonth: {},
         detailWeek: {},
+        eachBrand: {},
+        eachCate: {},
+        detailMonthCB: {},
         top: [],
         loading: false,
         error: null as string | null,
@@ -446,6 +482,54 @@ export const revenueSlice = createSlice({
         builder.addCase(getTopTotalProductSoldThisMonth.fulfilled, (state, action) => {
             state.loading = false;
             state.top = action.payload.data.data;
+        });
+
+        builder.addCase(getEachBrand.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getEachBrand.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getEachBrand.fulfilled, (state, action) => {
+            state.loading = false;
+            state.eachBrand = action.payload.data.data;
+        });
+
+        builder.addCase(getEachCate.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getEachCate.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getEachCate.fulfilled, (state, action) => {
+            state.loading = false;
+            state.eachCate = action.payload.data.data;
+        });
+
+        builder.addCase(detailBrand.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(detailBrand.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(detailBrand.fulfilled, (state, action) => {
+            state.loading = false;
+            state.detailMonthCB = action.payload.data.data;
+        });
+
+        builder.addCase(detailCate.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(detailCate.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(detailCate.fulfilled, (state, action) => {
+            state.loading = false;
+            state.detailMonthCB = action.payload.data.data;
         });
     },
 });

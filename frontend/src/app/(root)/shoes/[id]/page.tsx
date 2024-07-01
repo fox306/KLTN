@@ -204,7 +204,6 @@ const ShoesSinglePage = () => {
             id: id,
             size: items.size,
         };
-        console.log(item);
         if (item.size) {
             dispatch(getColorOfSize(item));
         }
@@ -222,7 +221,6 @@ const ShoesSinglePage = () => {
             fetchData();
         } else setIsFirstRender(true);
     }, [flag1]);
-    console.log(items.color);
     return (
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
@@ -369,7 +367,7 @@ const ShoesSinglePage = () => {
                         onClick={() => setActive(true)}
                     >
                         <span>Review</span>
-                        <span className="text-rv">0</span>
+                        <span className="text-rv">{comments?.length}</span>
                     </div>
                 </div>
                 {/* view about shoes info and review*/}

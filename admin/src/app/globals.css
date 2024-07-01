@@ -16,3 +16,14 @@
 .modal-container {
     @apply px-[60px] py-10 bg-white rounded-lg;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+    -moz-appearance: textfield;
+}
