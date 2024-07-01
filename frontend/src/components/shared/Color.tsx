@@ -19,8 +19,9 @@ const colors: { [key: string]: string } = {
 type Props = {
     color: string;
     setColor: Dispatch<SetStateAction<string>>;
+    setView: Dispatch<SetStateAction<string>>;
 };
-const Color = ({ color, setColor }: Props) => {
+const Color = ({ color, setColor, setView }: Props) => {
     console.log(color);
     return (
         <div className="p-5 bg-deal rounded-lg">
@@ -29,7 +30,9 @@ const Color = ({ color, setColor }: Props) => {
                 {Object.keys(colors).map((c, index) => (
                     <div
                         key={index}
-                        onClick={() => setColor(c)}
+                        onClick={() => {
+                            setColor(c), setView('NEW');
+                        }}
                         className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[c]}`}
                     >
                         <div

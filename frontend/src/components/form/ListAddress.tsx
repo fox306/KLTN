@@ -45,8 +45,10 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
     const [open, setOpen] = useState(false);
     const [province, setProvince] = useState<Province[]>();
     const [provinceID, setProvinceID] = useState<string>('');
+    const [active, setActive] = useState<string>('');
+    const [id, setId] = useState<string>('');
 
-    const handleDefault = async (id: string) => {
+    const handleDefault = async () => {
         const { data } = await axios.patch(`/deliveryAddress/default/${id}`);
         if (data.success) {
             toast.success('Set default address success');
@@ -56,14 +58,30 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
             toast.error('Set default address fail');
         }
     };
+    const handleClick = (id: string) => {
+        const notDo = address.find((item) => item.isDefault === true) as Address;
+        if (notDo._id !== id) {
+            setId(id);
+            setActive(id);
+        } else {
+            setId('');
+            setActive(id);
+        }
+    };
+    console.log(id);
     useEffect(() => {
         const fetchProvince = async () => {
-            const data = await axios.get('https://vapi.vnappmob.com/api/province');
-            setProvince(data.data.results);
+            const { data } = await axios.get('/utils/provinces');
+            setProvince(data.result);
             // console.log(data);
         };
         fetchProvince();
     }, []);
+    useEffect(() => {
+        const id = address.find((item) => item.isDefault === true) as Address;
+        console.log(id._id);
+        setActive(id._id as string);
+    }, [address]);
 
     return (
         <div className="modal">
@@ -74,6 +92,14 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
                         <span className="font-bold">Where you can receive your orders!!!</span>
                     </div>
                     <div className="flex gap-2">
+                        {id && (
+                            <div
+                                className="w-[186px] h-10 cursor-pointer bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium hover:bg-opacity-100 hover:text-white"
+                                onClick={handleDefault}
+                            >
+                                <span>Comfirm</span>
+                            </div>
+                        )}
                         <div
                             onClick={() => setOpen(true)}
                             className="w-[186px] h-10 cursor-pointer bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium hover:bg-opacity-100 hover:text-white"
@@ -94,24 +120,25 @@ const ListAddress = ({ setLoad, address, setChange }: Props) => {
                         <div
                             key={item._id}
                             className={`border ${
-                                item.default ? 'border-[#FF00B4]' : 'border-black'
-                            } border-opacity-20 px-10 pt-8 pb-6 rounded-full relative`}
+                                active === item._id ? 'border-[#FF00B4]' : 'border-black'
+                            } border-opacity-20 px-10 pt-8 pb-6 rounded-full relative cursor-pointer`}
+                            onClick={() => handleClick(item._id as string)}
                         >
                             <span
                                 className={`opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center ${
-                                    item.default ? 'text-[#FF00B4]' : ''
+                                    active === item._id ? 'text-[#FF00B4]' : ''
                                 }`}
                             >
                                 Address {index + 1}
                             </span>
-                            <div className="flex gap-[10px] absolute top-[-14px] right-20">
+                            {/* <div className="flex gap-[10px] absolute top-[-14px] right-20">
                                 <div
                                     className="text-[#FF00B4] px-1 bg-white cursor-pointer hover:opacity-60"
                                     onClick={() => handleDefault(item._id as string)}
                                 >
                                     <DoneRoundedIcon />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="ml-5 flex items-center gap-[180px] font-bold text-lg">
                                 <div className="flex gap-3">
                                     <span>Receiver:</span>

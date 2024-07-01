@@ -41,4 +41,14 @@ export const adminNav = [
         route: '/coupons',
         label: 'Coupons',
     },
+    {
+        icon: MonetizationOnRoundedIcon,
+        route: '/supplier',
+        label: 'Supplier',
+    },
+    {
+        icon: MonetizationOnRoundedIcon,
+        route: '/goodReceipt',
+        label: 'Good Receipt',
+    },
 ];

@@ -126,8 +126,8 @@ const Order = () => {
     console.log(discount);
     useEffect(() => {
         const fetchProvince = async () => {
-            const data = await axios.get('https://vapi.vnappmob.com/api/province');
-            setProvince(data.data.results);
+            const { data } = await axios.get('/utils/provinces');
+            setProvince(data.result);
             // console.log(data);
         };
         fetchProvince();
@@ -153,6 +153,8 @@ const Order = () => {
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
                 total: totalPay,
+                discountAmount: discount?.value as number,
+                coupon: discount?._id as string,
             };
             console.log(item);
 
@@ -172,6 +174,8 @@ const Order = () => {
                 deliveryAddress: idAddress,
                 paymentMethod: 'COD',
                 total: totalPay,
+                discountAmount: discount?.value as number,
+                coupon: discount?._id as string,
             };
             dispatch(createOrder(item));
             localStorage.removeItem('itemOrders');

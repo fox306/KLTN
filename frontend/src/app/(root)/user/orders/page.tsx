@@ -94,8 +94,8 @@ const Orders = () => {
         <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
 
-            <div className="w-max flex flex-col">
-                <div className="flex gap-[18px] shadow-lg w-max">
+            <div className="w-[1100px] flex flex-col">
+                <div className="grid grid-flow-col overflow-x-scroll gap-[18px] shadow-lg scrollbar-hidden mb-5">
                     {statuses &&
                         statuses.map((item, i) => {
                             const isActive = status === item;

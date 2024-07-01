@@ -83,7 +83,7 @@ export type Address = {
     districts: string;
     wards: string;
     specific: string;
-    default?: boolean;
+    isDefault?: boolean;
 };
 
 export type AddressLess = {
@@ -156,6 +156,8 @@ export type checkoutOrder = {
     deliveryAddress: string;
     paymentMethod: string;
     total: number;
+    discountAmount: number;
+    coupon: string;
 };
 
 export type RemoveItemCart = {
@@ -289,16 +291,16 @@ export type ListCoupon = {
 };
 
 export type Province = {
-    province_id: string;
+    provinceId: string;
     province_name: string;
     province_type: string;
 };
 
 export type District = {
-    district_id: string;
+    districtId: string;
     district_name: string;
 };
 export type Ward = {
-    ward_id: string;
+    wardId: string;
     ward_name: string;
 };

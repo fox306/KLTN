@@ -6,13 +6,13 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function Home() {
-    const [page, setPage] = useState<string>('Sold Of Brand');
+const soldOfCategory = () => {
+    const [page, setPage] = useState<string>('Sold Of Category');
     const router = useRouter();
 
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
-        router.push('/soldOfCategory');
+        router.push('/');
     };
 
     return (
@@ -32,11 +32,13 @@ export default function Home() {
                 </Select>
             </FormControl>
             <div>
-                <RevenueChartTime path="Brand" />
+                <RevenueChartTime path="Cate" />
             </div>
             <div>
-                <RevenueChartTime path="Brand & No Month" />
+                <RevenueChartTime path="Cate & No Month" />
             </div>
         </div>
     );
-}
+};
+
+export default soldOfCategory;

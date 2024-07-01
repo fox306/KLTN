@@ -53,13 +53,13 @@ const DiscountPage = () => {
         <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
             <div className="flex flex-col items-center">
-                <div className="flex gap-[18px] shadow-lg w-max mb-5">
+                <div className="flex gap-[18px] shadow-lg w-full mb-5">
                     {statuses &&
                         statuses.map((item, i) => {
                             const isActive = status === item;
                             return (
                                 <span
-                                    className={`w-[140px] text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
+                                    className={`w-1/3 text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                         isActive && 'text-blue border-b-2 border-b-blue'
                                     }`}
                                     onClick={() => setStatus(item)}
