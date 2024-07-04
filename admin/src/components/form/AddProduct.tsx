@@ -8,7 +8,7 @@ import { CreateVariant } from '@/types/type';
 
 type Props = {
     value: number;
-    vars: CreateVariant[];
+    vars: CreateVariant;
     setVars: Dispatch<SetStateAction<CreateVariant[]>>;
     setAddVariants: Dispatch<SetStateAction<{}[]>>;
 };
@@ -30,10 +30,7 @@ const colors = [
 ];
 
 const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
-    const [image, setImage] = useState<File>();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [sizes, setSizes] = useState<{}[][]>([]);
-
     const handleToggleInput = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
@@ -53,54 +50,39 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
         }
     };
     const handleAddSizes = () => {
-        setSizes((prev) => {
-            const updatedSizes = [...prev];
-            updatedSizes[value] = [...(updatedSizes[value] || []), {}];
-            return updatedSizes;
-        });
-        setVars((prevVars) => {
-            const updatedVars = [...prevVars];
-            if (!updatedVars[value].details) {
-                updatedVars[value].details = [];
-            }
-            return updatedVars;
-        });
+        setVars((prevVars) =>
+            prevVars.map((variant, i) =>
+                i === value
+                    ? {
+                          ...variant,
+                          details: [
+                              ...variant.details,
+                              {
+                                  quantity: 0,
+                                  size: '',
+                              },
+                          ],
+                      }
+                    : variant,
+            ),
+        );
     };
     const handleDeleteSize = (index: number) => {
-        setSizes((prev) => {
-            const updatedVariants = [...prev];
-            updatedVariants.splice(index, 1);
-            return updatedVariants;
-        });
-        setVars((prevVars) => {
-            const updatedVars = [...prevVars];
-            if (updatedVars[value] && updatedVars[value].details) {
-                const details = [...updatedVars[value].details];
-                details.splice(index, 1);
-                updatedVars[value].details = details;
-            }
-            return updatedVars;
-        });
+        setVars((prevVars) =>
+            prevVars.map((variant, i) =>
+                i === value
+                    ? {
+                          ...variant,
+                          details: variant.details.filter((_, j) => j !== index),
+                      }
+                    : variant,
+            ),
+        );
     };
     const handleDeleteColor = () => {
-        setAddVariants((prev) => {
-            const updatedVariants = [...prev];
-            updatedVariants.splice(value, 1);
-            return updatedVariants;
-        });
         setVars((prevVars) => {
             const updatedVariants = [...prevVars];
             updatedVariants.splice(value, 1);
-            return updatedVariants;
-        });
-    };
-    const handleDeleteImage = () => {
-        setVars((prevVars) => {
-            const updatedVariants = [...prevVars];
-            updatedVariants[value] = {
-                ...updatedVariants[value],
-                image: null,
-            };
             return updatedVariants;
         });
     };
@@ -118,9 +100,6 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
             return updatedVars;
         });
     };
-    // const handleChangeColor = () => {
-
-    // }
     const handleColorChange = (index: number, field: string, value: string) => {
         setVars((prevVariants) => {
             const updatedVariants = [...prevVariants];
@@ -131,8 +110,6 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
             return updatedVariants;
         });
     };
-    console.log(vars);
-
     return (
         <div className={`grid grid-cols-2 shadow-product3 bg-white px-10 py-5 ${value > 0 ? 'mt-[10px]' : ''}`}>
             <div className="flex flex-col items-center">
@@ -142,7 +119,7 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
                         <Select
                             labelId="colorId"
                             id="color"
-                            value={vars[value]?.color ?? ''}
+                            value={vars?.color ?? ''}
                             label="Color"
                             onChange={(event) => handleColorChange(value, 'color', event.target.value)}
                             className="font-bold"
@@ -165,9 +142,9 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
                 <div className="mt-5">
                     <div className="flex gap-[10px]">
                         <div className="flex gap-5 w-[120px] h-[120px]">
-                            {vars[value]?.image && (
+                            {vars?.image && (
                                 <Image
-                                    src={URL.createObjectURL(vars[value].image)}
+                                    src={URL.createObjectURL(vars.image)}
                                     alt="Shoes"
                                     width={100}
                                     height={100}
@@ -175,11 +152,11 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
                                 />
                             )}
                         </div>
-                        {vars[value]?.image === null ? (
+                        {vars?.image === null ? (
                             <div>
                                 <div
                                     onClick={handleToggleInput}
-                                    className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-10"
+                                    className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-10 cursor-pointer"
                                 >
                                     <AddPhotoAlternateOutlinedIcon />
                                     <span>Add Image</span>
@@ -209,7 +186,7 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
                     </button>
                 </div>
                 <div>
-                    {sizes[value]?.map((item, index) => (
+                    {vars?.details?.map((item, index) => (
                         <div key={index} className="flex items-center gap-[25px] justify-center mt-[10px]">
                             <TextField
                                 label="Size"
@@ -217,6 +194,7 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
                                 inputProps={{
                                     className: 'w-[200px]',
                                 }}
+                                value={item.size}
                                 onChange={(event) => handleVariantChange(value, index, 'size', event.target.value)}
                             />
                             <TextField
@@ -225,6 +203,7 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
                                 inputProps={{
                                     className: 'w-[200px]',
                                 }}
+                                value={item.quantity}
                                 onChange={(event) => handleVariantChange(value, index, 'quantity', event.target.value)}
                             />
                             <CloseOutlinedIcon

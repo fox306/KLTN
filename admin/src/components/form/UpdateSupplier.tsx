@@ -15,23 +15,12 @@ const banks = ['Money', 'Bank'];
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
     setLoad: Dispatch<SetStateAction<boolean>>;
+    supplier: Supplier;
+    setSupplier: Dispatch<SetStateAction<Supplier>>;
 };
 
-const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
+const UpdateSupplier = ({ setOpen, setLoad, supplier, setSupplier }: Props) => {
     const router = useRouter();
-    const [bank, setBank] = useState<string>('');
-    const [supplier, setSupplier] = useState<Supplier>({
-        address: '',
-        billing_infomation: {
-            bank: '',
-            bank_account: '',
-            method: '',
-        },
-        contacter_name: '',
-        email: '',
-        phone: '',
-        supplier_name: '',
-    });
     const handleChange = (field: string, value: string) => {
         setSupplier((prev) => ({ ...prev, [field]: value }));
     };
@@ -49,9 +38,9 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
         if (data.success) {
             setOpen(false);
             setLoad(true);
-            toast.success('Create new Supplier success');
+            toast.success('Update Supplier success');
         } else {
-            toast.error('Create new Supplier fail');
+            toast.error('Update Supplier fail');
         }
     };
 
@@ -72,6 +61,7 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                         variant="outlined"
                         onChange={(e) => handleChange('supplier_name', e.target.value)}
                         className="w-[600px] shadow-input"
+                        value={supplier.supplier_name}
                     />
                     <TextField
                         id="contacter_name"
@@ -79,6 +69,7 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                         variant="outlined"
                         onChange={(e) => handleChange('contacter_name', e.target.value)}
                         className="w-[600px] shadow-input"
+                        value={supplier.contacter_name}
                     />
                     <div className="flex gap-[10px]">
                         <TextField
@@ -87,6 +78,7 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                             variant="outlined"
                             className="w-2/3 shadow-input"
                             onChange={(e) => handleChange('email', e.target.value)}
+                            value={supplier.email}
                         />
                         <TextField
                             id="phone"
@@ -95,6 +87,7 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                             type="tel"
                             onChange={(e) => handleChange('phone', e.target.value)}
                             className="w-1/3 shadow-input"
+                            value={supplier.phone}
                         />
                     </div>
                     <TextField id="address" label="Address" variant="outlined" className="w-[600px] shadow-input" />
@@ -104,7 +97,7 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                             <Select
                                 labelId="billingMethod"
                                 id="method"
-                                value={bank}
+                                value={supplier.billing_infomation.method}
                                 label="billingMethod"
                                 onChange={(e) => handleChangeBank('method', e.target.value)}
                                 className="font-bold"
@@ -121,7 +114,7 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                             <Select
                                 labelId="bankName"
                                 id="bank"
-                                value={bank}
+                                value={supplier.billing_infomation.bank}
                                 label="bankName"
                                 onChange={(e) => handleChangeBank('bank', e.target.value)}
                                 className="font-bold"
@@ -140,6 +133,7 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                             type="tel"
                             onChange={(e) => handleChangeBank('bank_account', e.target.value)}
                             className="w-2/4 shadow-input"
+                            value={supplier.billing_infomation.bank_account}
                         />
                     </div>
                 </div>
@@ -162,4 +156,4 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
     );
 };
 
-export default CreateNewSupplier;
+export default UpdateSupplier;

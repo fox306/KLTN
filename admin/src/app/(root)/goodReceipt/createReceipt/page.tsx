@@ -15,14 +15,15 @@ import { toast } from 'react-toastify';
 const CreateGoodReceipt = () => {
     const router = useRouter();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-    const [comfirmers, setComfirmers] = useState<User[]>([]);
-    const [comfirmer, setComfirmer] = useState<string>('');
+    const [confirmers, setConfirmers] = useState<User[]>([]);
+    const [confirmer, setConfirmer] = useState<string>('');
     const [supplier, setSupplier] = useState<string>('');
     const date = new Date();
-    const day = date.getDay();
-    const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    const dateString = `${year}/${month}/${day}`;
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    console.log(dateString);
     const [another, setAnother] = useState<{
         confirmation_date: string;
         total: number;
@@ -44,10 +45,8 @@ const CreateGoodReceipt = () => {
         },
     ]);
 
-    const [addVariants, setAddVariants] = useState<{}[]>([]);
-
     const handleChangeConfirmer = (event: SelectChangeEvent) => {
-        setComfirmer(event.target.value as string);
+        setConfirmer(event.target.value as string);
     };
     const handleChangeSupplier = (event: SelectChangeEvent) => {
         setSupplier(event.target.value as string);
@@ -59,13 +58,28 @@ const CreateGoodReceipt = () => {
         }));
     };
     const addVariant = () => {
-        setAddVariants((prevVariants) => [...prevVariants, {}]);
+        setVars([
+            ...vars,
+            {
+                color: '',
+                receipt_variant: [
+                    {
+                        quantity: 0,
+                        size: '',
+                    },
+                ],
+                name_product: '',
+                total_price: 0,
+                total_quantity: 0,
+                unit_price: 0,
+            },
+        ]);
     };
 
     const handleSubmit = async () => {
         const item = {
             supplier: supplier,
-            comfirmer: comfirmer,
+            confirmer: confirmer,
             confirmation_date: another.confirmation_date,
             total: another.total,
             details: vars,
@@ -89,7 +103,7 @@ const CreateGoodReceipt = () => {
         const fetchComfirmer = async () => {
             const { data } = await axios.get(`/users/find/role-admin`);
             if (data.success) {
-                setComfirmers(data.data);
+                setConfirmers(data.data);
             }
         };
         fetchSuppliers();
@@ -130,12 +144,12 @@ const CreateGoodReceipt = () => {
                     <Select
                         labelId="confirmerId"
                         id="confirmer"
-                        value={comfirmer}
+                        value={confirmer}
                         label="Confirmer"
                         onChange={handleChangeConfirmer}
                         className="font-bold"
                     >
-                        {comfirmers.map((item) => (
+                        {confirmers.map((item) => (
                             <MenuItem key={item._id} value={item._id}>
                                 {item.fullName}
                             </MenuItem>
@@ -149,7 +163,7 @@ const CreateGoodReceipt = () => {
                         variant="outlined"
                         className="w-1/2"
                         type="date"
-                        defaultValue={dateString}
+                        value={dateString}
                         onChange={handleChange}
                     />
                     <TextField
@@ -176,14 +190,8 @@ const CreateGoodReceipt = () => {
                 </button>
             </div>
             <div className="flex flex-col gap-5">
-                {addVariants.map((variant, index) => (
-                    <AddProducts
-                        key={index}
-                        value={index}
-                        vars={vars}
-                        setVars={setVars}
-                        setAddVariants={setAddVariants}
-                    />
+                {vars.map((variant, index) => (
+                    <AddProducts key={index} value={index} vars={variant} setVars={setVars} />
                 ))}
             </div>
             <div className="flex gap-[26px] justify-end">

@@ -22,12 +22,20 @@ const WareHouseStatis = () => {
 
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
-        router.push('/warehouse/manage');
     };
 
     useEffect(() => {
         dispatch(getTopTotalProductSoldThisMonth());
     }, [dispatch]);
+
+    useEffect(() => {
+        if (page === 'Inventory') {
+            router.push('/warehouse/inventory');
+        }
+        if (page === 'Management') {
+            router.push('/warehouse/manage');
+        }
+    }, [page]);
     return (
         <div className="flex flex-col gap-[10px]">
             <FormControl className="w-[150px]">
@@ -42,6 +50,7 @@ const WareHouseStatis = () => {
                 >
                     <MenuItem value="Statistical">Statistical</MenuItem>
                     <MenuItem value="Management">Management</MenuItem>
+                    <MenuItem value="Inventory">Inventory</MenuItem>
                 </Select>
             </FormControl>
             <div>
