@@ -229,7 +229,7 @@ export type Coupon = {
     minAmount: number;
     maxDiscount: number;
     validityDuration: number;
-    status: 'Active';
+    status: string;
     selected?: boolean;
 };
 
@@ -290,4 +290,36 @@ export type Receipt = {
     confirmer: string;
     confirmation_date: string;
     total_receipt: number;
+};
+
+export type Inventory = {
+    product: string;
+    name: string;
+    totalInventory: number;
+    sold: number;
+};
+
+export type FullDetailReceipt = {
+    receiptId: string;
+    supplier: string;
+    confirmer: string;
+    confirmation_date: string;
+    total_receipt: number;
+    details: DetailReceipt[];
+};
+export type DetailReceipt = {
+    _id: string;
+    receipt: string;
+    name_product: string;
+    color: string;
+    receipt_variant: detailSize[];
+    unit_price: number;
+    total_quantity: number;
+    total_price: number;
+};
+
+export type detailSize = {
+    _id: string;
+    size: string;
+    quantity: number;
 };

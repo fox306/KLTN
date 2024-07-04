@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import CreateNewSupplier from '@/components/form/CreateNewSupplier';
 import axios from '@/utils/axios';
 import { Supplier } from '@/types/type';
+import UpdateSupplier from '@/components/form/UpdateSupplier';
 
 const theme = createTheme({
     palette: {
@@ -24,11 +25,24 @@ const theme = createTheme({
 
 const SupplierPage = () => {
     const [open, setOpen] = useState(false);
+    const [open1, setOpen1] = useState(false);
     const [load, setLoad] = useState(false);
     const [pages, setPages] = useState(1);
     const [count, setCount] = useState(1);
 
-    const [supliers, setSupliers] = useState<Supplier[]>([]);
+    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+    const [supplier, setSupplier] = useState<Supplier>({
+        address: '',
+        billing_infomation: {
+            bank: '',
+            bank_account: '',
+            method: '',
+        },
+        contacter_name: '',
+        email: '',
+        phone: '',
+        supplier_name: '',
+    });
     const handleChangePage = (i: number) => {
         setPages(i);
     };
@@ -37,7 +51,7 @@ const SupplierPage = () => {
         const fetchData = async () => {
             const { data } = await axios.get(`/good-receipts/suppliers?pageSize=6&pageNumber=${pages}`);
             if (data.success) {
-                setSupliers(data.data);
+                setSuppliers(data.data);
                 setCount(data.pages);
             }
         };
@@ -93,8 +107,8 @@ const SupplierPage = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {supliers &&
-                                supliers.map((item, i) => (
+                            {suppliers &&
+                                suppliers.map((item, i) => (
                                     <TableRow>
                                         <TableCell align="center" className="text-sm font-bold">
                                             {i + 1}
@@ -115,7 +129,11 @@ const SupplierPage = () => {
                                             {item.total_receipt}
                                         </TableCell>
                                         <TableCell align="center" className="text-blue">
-                                            <SearchOutlinedIcon />
+                                            <SearchOutlinedIcon
+                                                onClick={() => {
+                                                    setSupplier(item);
+                                                }}
+                                            />
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -135,6 +153,14 @@ const SupplierPage = () => {
                 </ThemeProvider>
             </div>
             {open && <CreateNewSupplier setLoad={setLoad} setOpen={setOpen} />}
+            {open1 && (
+                <UpdateSupplier
+                    setLoad={setLoad}
+                    setOpen={setOpen1}
+                    supplier={supplier as Supplier}
+                    setSupplier={setSupplier}
+                />
+            )}
         </div>
     );
 };

@@ -12,6 +12,11 @@ import axios from '@/utils/axios';
 import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import AddCoupon from '@/components/form/AddCoupon';
+import LockOpenRoundedIcon from '@mui/icons-material/LockOpenRounded';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import SureForCoupon from '@/components/shared/SureForCoupon';
 
 const theme = createTheme({
     palette: {
@@ -29,6 +34,11 @@ const CouponsPage = () => {
     const [pages, setPages] = useState(0);
     const [checkedAll, setCheckedAll] = useState<boolean>(false);
     const [selected, setSelected] = useState<Coupon[]>([]);
+    const [open, setOpen] = useState(false);
+    const [load, setLoad] = useState(false);
+    const [id, setId] = useState<string>('');
+    const [action, setAction] = useState<string>('');
+    const [open1, setOpen1] = useState(false);
 
     const handleChangePage = (i: number) => {
         setPageNumber(i);
@@ -74,6 +84,16 @@ const CouponsPage = () => {
         const data = coupons?.every((item) => item.selected === true);
         setCheckedAll(data);
     };
+    const handleUnLock = (id: string) => {
+        setOpen(true);
+        setAction('UnLock');
+        setId(id);
+    };
+    const handleLock = (id: string) => {
+        setOpen(true);
+        setAction('Lock');
+        setId(id);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -85,16 +105,24 @@ const CouponsPage = () => {
             }
         };
         fetchData();
-    }, [pageNumber]);
+    }, [load, pageNumber]);
 
     useEffect(() => {
         validateSelectedAll();
     }, [selected]);
     return (
         <div>
-            <div>
+            <div className="mt-5 mb-[10px] flex gap-5">
+                <div className="flex-1 h-[50px] flex px-[15px] items-center bg-white shadow-product2">
+                    <input
+                        type="text"
+                        className="flex-1 font-bold text-sm outline-none"
+                        placeholder="Search Something..."
+                    />
+                    <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
+                </div>
                 <button
-                    onClick={() => router.push('/coupons/addnew')}
+                    onClick={() => setOpen(true)}
                     className="w-[150px] h-[50px] bg-blue bg-opacity-60 text-white font-bold text-xs rounded-[5px] hover:bg-opacity-100 mb-[10px]"
                 >
                     Add new
@@ -147,7 +175,22 @@ const CouponsPage = () => {
                                             </TableCell>
                                             <TableCell align="center">{item.validityDuration}</TableCell>
                                             <TableCell align="center">{item.status}</TableCell>
-                                            <TableCell align="center">{item.status}</TableCell>
+                                            <TableCell
+                                                align="center"
+                                                className={`${item.status !== 'Active' ? 'text-red' : 'text-green'}`}
+                                            >
+                                                {item.status !== 'Active' ? (
+                                                    <LockRoundedIcon
+                                                        onClick={() => handleUnLock(item._id)}
+                                                        className="cursor-pointer hover:text-green"
+                                                    />
+                                                ) : (
+                                                    <LockOpenRoundedIcon
+                                                        onClick={() => handleLock(item._id)}
+                                                        className="cursor-pointer hover:text-red"
+                                                    />
+                                                )}
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                             </TableBody>
@@ -166,6 +209,17 @@ const CouponsPage = () => {
                         />
                     </ThemeProvider>
                 </div>
+            )}
+            {open && <AddCoupon setLoad={setLoad} setOpen={setOpen} />}
+            {open1 && (
+                <SureForCoupon
+                    action={action}
+                    id={id}
+                    setAction={setAction}
+                    setId={setId}
+                    setLoad={setLoad}
+                    setOpen1={setOpen1}
+                />
             )}
         </div>
     );

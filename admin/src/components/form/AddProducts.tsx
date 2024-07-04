@@ -8,9 +8,8 @@ import { CreateVariants } from '@/types/type';
 
 type Props = {
     value: number;
-    vars: CreateVariants[];
+    vars: CreateVariants;
     setVars: Dispatch<SetStateAction<CreateVariants[]>>;
-    setAddVariants: Dispatch<SetStateAction<{}[]>>;
 };
 
 const colors = [
@@ -29,46 +28,41 @@ const colors = [
     'Silver',
 ];
 
-const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
+const AddProducts = ({ value, vars, setVars }: Props) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [sizes, setSizes] = useState<{}[][]>([]);
 
     const handleAddSizes = () => {
-        setSizes((prev) => {
-            const updatedSizes = [...prev];
-            updatedSizes[value] = [...(updatedSizes[value] || []), {}];
-            return updatedSizes;
-        });
-        setVars((prevVars) => {
-            const updatedVars = [...prevVars];
-            if (!updatedVars[value].receipt_variant) {
-                updatedVars[value].receipt_variant = [];
-            }
-            return updatedVars;
-        });
+        setVars((prevVars) =>
+            prevVars.map((variant, i) =>
+                i === value
+                    ? {
+                          ...variant,
+                          receipt_variant: [
+                              ...variant.receipt_variant,
+                              {
+                                  quantity: 0,
+                                  size: '',
+                              },
+                          ],
+                      }
+                    : variant,
+            ),
+        );
     };
     const handleDeleteSize = (index: number) => {
-        setSizes((prev) => {
-            const updatedVariants = [...prev];
-            updatedVariants.splice(index, 1);
-            return updatedVariants;
-        });
-        setVars((prevVars) => {
-            const updatedVars = [...prevVars];
-            if (updatedVars[value] && updatedVars[value].receipt_variant) {
-                const receipt_variant = [...updatedVars[value].receipt_variant];
-                receipt_variant.splice(index, 1);
-                updatedVars[value].receipt_variant = receipt_variant;
-            }
-            return updatedVars;
-        });
+        setVars((prevVars) =>
+            prevVars.map((variant, i) =>
+                i === value
+                    ? {
+                          ...variant,
+                          details: variant.receipt_variant.filter((_, j) => j !== index),
+                      }
+                    : variant,
+            ),
+        );
     };
     const handleDelete = () => {
-        setAddVariants((prev) => {
-            const updatedVariants = [...prev];
-            updatedVariants.splice(value, 1);
-            return updatedVariants;
-        });
         setVars((prevVars) => {
             const updatedVariants = [...prevVars];
             updatedVariants.splice(value, 1);
@@ -114,6 +108,7 @@ const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
                     inputProps={{
                         className: 'text-center',
                     }}
+                    value={vars.name_product}
                     onChange={(event) => handleChange(value, 'name', event.target.value)}
                 />
                 <div className="flex gap-5">
@@ -122,7 +117,7 @@ const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
                         <Select
                             labelId="colorId"
                             id="color"
-                            value={vars[value]?.color ?? ''}
+                            value={vars?.color ?? ''}
                             label="Color"
                             onChange={(event) => handleChange(value, 'color', event.target.value)}
                             inputProps={{
@@ -147,6 +142,7 @@ const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
                         inputProps={{
                             className: 'text-center',
                         }}
+                        value={vars.total_quantity}
                         onChange={(event) => handleChange(value, 'totalQuantity', event.target.value)}
                     />
                 </div>
@@ -160,6 +156,7 @@ const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
                         inputProps={{
                             className: 'text-center',
                         }}
+                        value={vars.unit_price}
                         onChange={(event) => handleChange(value, 'unitPrice', event.target.value)}
                     />
                     <TextField
@@ -171,6 +168,7 @@ const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
                         inputProps={{
                             className: 'text-center',
                         }}
+                        value={vars.total_price}
                         onChange={(event) => handleChange(value, 'totalPrice', event.target.value)}
                     />
                 </div>
@@ -194,7 +192,7 @@ const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
                     </div>
                 </div>
                 <div>
-                    {sizes[value]?.map((item, index) => (
+                    {vars.receipt_variant?.map((item, index) => (
                         <div key={index} className="flex items-center gap-[25px] justify-center mt-[10px]">
                             <TextField
                                 label="Size"
@@ -202,6 +200,7 @@ const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
                                 inputProps={{
                                     className: 'w-[200px]',
                                 }}
+                                value={item.size}
                                 onChange={(event) => handleVariantChange(value, index, 'size', event.target.value)}
                             />
                             <TextField
@@ -210,6 +209,7 @@ const AddProducts = ({ value, vars, setVars, setAddVariants }: Props) => {
                                 inputProps={{
                                     className: 'w-[200px]',
                                 }}
+                                value={item.quantity}
                                 onChange={(event) => handleVariantChange(value, index, 'quantity', event.target.value)}
                             />
                             <CloseOutlinedIcon

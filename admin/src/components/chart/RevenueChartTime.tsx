@@ -102,7 +102,9 @@ const RevenueChartTime = ({ path }: Props) => {
             year: year,
         };
         console.log(item3);
-        if (path === 'Brand & No Month' || path === 'Brand') {
+        if (path === 'Revenue') {
+            dispath(getDetailRevenueOfMonth(item1));
+        } else if (path === 'Brand & No Month' || path === 'Brand') {
             dispath(getEachBrand(item1));
             dispath(detailBrand(item2));
         } else if (path === 'Cate & No Month' || path === 'Cate') {

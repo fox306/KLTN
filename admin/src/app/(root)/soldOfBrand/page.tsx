@@ -5,25 +5,22 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Revenue from '@/components/chart/Revenue';
-import RevenueChart from '@/components/chart/RevenueChart';
 
-export default function Home() {
-    const [page, setPage] = useState<string>('Revenue');
+const soldOfBrand = () => {
+    const [page, setPage] = useState<string>('Sold Of Brand');
     const router = useRouter();
 
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
     };
     useEffect(() => {
-        if (page === 'Sold Of Brand') {
-            router.push('/soldOfBrand');
+        if (page === 'Revenue') {
+            router.push('/');
         }
         if (page === 'Sold Of Category') {
             router.push('/soldOfCategory');
         }
     }, [page]);
-
     return (
         <div className="flex flex-col gap-[10px]">
             <FormControl className="w-[150px] mb-[10px]">
@@ -42,15 +39,13 @@ export default function Home() {
                 </Select>
             </FormControl>
             <div>
-                <Revenue path="Revenue" />
-            </div>
-
-            <div>
-                <RevenueChart path="Revenue" />
+                <RevenueChartTime path="Brand" />
             </div>
             <div>
-                <RevenueChartTime path="Revenue" />
+                <RevenueChartTime path="Brand & No Month" />
             </div>
         </div>
     );
-}
+};
+
+export default soldOfBrand;

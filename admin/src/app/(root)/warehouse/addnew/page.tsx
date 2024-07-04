@@ -72,9 +72,21 @@ const AddNewProduct = () => {
         }));
     };
     const addVariant = () => {
-        setAddVariants((prevVariants) => [...prevVariants, {}]);
+        setVars([
+            ...vars,
+            {
+                color: '',
+                details: [
+                    {
+                        quantity: 0,
+                        size: '',
+                    },
+                ],
+                image: null,
+            },
+        ]);
     };
-    console.log(vars[0].image);
+
     const handleSubmit = async () => {
         const item = {
             name: product.name,
@@ -83,8 +95,6 @@ const AddNewProduct = () => {
             brand: brand,
             price: parseInt(product.price),
         };
-        console.log(item);
-        // let data
         const { data } = await axios.post('/products', item);
         // headers: {
         //     'Content-Type': 'multipart/form-data',
@@ -151,6 +161,8 @@ const AddNewProduct = () => {
     useEffect(() => {
         setInitialCategory();
     }, [categories]);
+
+    console.log(vars);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -232,11 +244,11 @@ const AddNewProduct = () => {
                 </button>
             </div>
             <div className="flex flex-col gap-5">
-                {addVariants.map((variant, index) => (
+                {vars.map((variant, index) => (
                     <AddProduct
                         key={index}
                         value={index}
-                        vars={vars}
+                        vars={variant}
                         setVars={setVars}
                         setAddVariants={setAddVariants}
                     />
