@@ -12,6 +12,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Sure from '@/components/shared/Sure';
+import Loading from '@/components/shared/Loading';
 
 const statuses = [
     'All',
@@ -51,6 +52,7 @@ const OrderManage = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [current, setCurrent] = useState<string>('');
     const [orderId, setOrderId] = useState<string>('');
+    const [loading, setLoading] = useState(true);
 
     const [page, setPage] = useState<string>('Management');
 
@@ -215,8 +217,14 @@ const OrderManage = () => {
             pageNumber: pageNumber,
         };
         if (status === 'All') {
+            setLoading(true);
             dispatch(getAllOrders(pageNumber));
-        } else dispatch(getAllOrderByOrderStatus(item));
+            setLoading(false);
+        } else {
+            setLoading(true);
+            dispatch(getAllOrderByOrderStatus(item));
+            setLoading(false);
+        }
     }, [dispatch, status, load, pageNumber]);
 
     return (
@@ -267,7 +275,11 @@ const OrderManage = () => {
             </div>
             <div className="flex flex-col gap-5">
                 {orders.length === 0 ? (
-                    <span>Nothing</span>
+                    <div className="flex justify-center items-center">
+                        <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
+                    </div>
+                ) : loading ? (
+                    <Loading />
                 ) : (
                     orders &&
                     orders.map((order) => (
@@ -386,17 +398,19 @@ const OrderManage = () => {
                     ))
                 )}
             </div>
-            <div className="flex justify-center shadow-product2 bg-white">
-                <ThemeProvider theme={theme}>
-                    <Pagination
-                        count={pages}
-                        shape="rounded"
-                        onChange={(_, page: number) => handleChangePage(page)}
-                        page={pageNumber}
-                        color="primary"
-                    />
-                </ThemeProvider>
-            </div>
+            {!loading && (
+                <div className="flex justify-center shadow-product2 bg-white">
+                    <ThemeProvider theme={theme}>
+                        <Pagination
+                            count={pages}
+                            shape="rounded"
+                            onChange={(_, page: number) => handleChangePage(page)}
+                            page={pageNumber}
+                            color="primary"
+                        />
+                    </ThemeProvider>
+                </div>
+            )}
             {open && (
                 <Sure
                     setOpen={setOpen}

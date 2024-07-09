@@ -37,19 +37,6 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
                 setAction('');
                 setId('');
             }
-        } else if (action === 'Delete') {
-            const { data } = await axios.delete('/users', {
-                params: {
-                    user: id,
-                },
-            });
-            if (data.success) {
-                toast.success('Delete User Success');
-                setLoad((prev) => !prev);
-                setOpen(false);
-                setAction('');
-                setId('');
-            }
         } else if (action === 'Hidden') {
             const { data } = await axios.patch(`/products/hide/${id}`);
             if (data.success) {
@@ -74,9 +61,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
     return (
         <div className="modal">
             <div className="flex flex-col bg-white items-center p-10 rounded-md shadow-form gap-5">
-                <span className="font-semibold text-xl">
-                    Are You Sure To {action} This {action === 'On Sale' || 'Hidden' ? 'Product' : 'User'} ?
-                </span>
+                <span className="font-semibold text-xl">Are You Sure ?</span>
                 <div className="flex gap-4">
                     <button
                         onClick={handleSubmit}

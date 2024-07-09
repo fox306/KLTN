@@ -50,16 +50,14 @@ const TableProduct = ({
 
     const handleOnSale = (e: MouseEvent<SVGSVGElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
-
         setOpen(true);
         setAction('On Sale');
         setId(id);
     };
     const handleHidden = (e: MouseEvent<SVGSVGElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
-
         setOpen(true);
-        setAction('Hidden');
+        setAction('Hide');
         setId(id);
     };
 
@@ -68,7 +66,9 @@ const TableProduct = ({
     return (
         <div>
             {products.length === 0 ? (
-                <div className="font-semibold text-2xl">No Shoes</div>
+                <div className="flex justify-center items-center">
+                    <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
+                </div>
             ) : (
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -137,13 +137,13 @@ const TableProduct = ({
                                         <TableCell align="center">{product.sold}</TableCell>
                                         <TableCell
                                             align="center"
-                                            className={`${product.status !== 'Available' ? 'text-red' : 'text-green'}`}
+                                            className={`${product.status !== 'Active' ? 'text-red' : 'text-green'}`}
                                         >
-                                            {product.status !== 'Available' ? 'Hidden' : 'On Sale'}
+                                            {product.status !== 'Active' ? 'Hidden' : 'On Sale'}
                                         </TableCell>
                                         <TableCell align="center">
                                             <div className="flex flex-col items-center gap-[10px]">
-                                                {product.status !== 'Available' ? (
+                                                {product.status !== 'Active' ? (
                                                     <VisibilityOffOutlinedIcon
                                                         onClick={(e) => handleOnSale(e, product._id)}
                                                         className="text-blue cursor-pointer"

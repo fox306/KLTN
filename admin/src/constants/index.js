@@ -44,11 +44,11 @@ export const adminNav = [
     {
         icon: MonetizationOnRoundedIcon,
         route: '/supplier',
-        label: 'Supplier',
+        label: 'Suppliers',
     },
     {
         icon: MonetizationOnRoundedIcon,
         route: '/goodReceipt',
-        label: 'Good Receipt',
+        label: 'Good Receipts',
     },
 ];

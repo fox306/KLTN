@@ -10,9 +10,11 @@ import TableProduct from '@/components/shared/TableProduct';
 import TypeSure from '@/components/shared/TypeSure';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
+import Loading from '@/components/shared/Loading';
 
-const nav = ['All', 'on sale', 'hidden', 'out of stock'];
-const status = ['All', 'Active', 'Hidden', 'outOfStock'];
+const nav = ['All', 'on sale', 'hidden'];
+const status = ['All', 'Active', 'Hide'];
 const brands = ['Nike', 'Vans', 'Puma', 'Adidas', 'Converse', 'Balenciaga'];
 
 const theme = createTheme({
@@ -44,8 +46,11 @@ const PricePage = () => {
 
     const [open, setOpen] = useState<boolean>(false);
     const [load, setLoad] = useState<boolean>(false);
+    const [load1, setLoad1] = useState<boolean>(false);
     const [open1, setOpen1] = useState(false);
     const [open2, setOpen2] = useState(false);
+
+    const [loading, setLoading] = useState(true);
 
     const handleChange = (event: SelectChangeEvent) => {
         setValue(event.target.value as string);
@@ -53,6 +58,12 @@ const PricePage = () => {
 
     const handleChangeType = (event: SelectChangeEvent) => {
         setType(event.target.value as string);
+    };
+    const handleChangeBrand = (event: SelectChangeEvent) => {
+        setBrand(event.target.value as string);
+    };
+    const handleChangeCate = (event: SelectChangeEvent) => {
+        setCategory(event.target.value as string);
     };
 
     const handleChangeOption = (event: SelectChangeEvent) => {
@@ -120,8 +131,14 @@ const PricePage = () => {
         }
         const { data } = await axios.put('/products/management/price', item);
         if (data.success) {
-            toast.success('Update Price Success');
-        } else toast.error('Update Price Fail');
+            {
+                toast.success('Update Price Success');
+                setLoad1((prev) => !prev);
+            }
+        } else {
+            toast.error('Update Price Fail');
+            setLoad1((prev) => !prev);
+        }
     };
     const changeSelected = async () => {
         let item = {};
@@ -144,8 +161,14 @@ const PricePage = () => {
         }
         const { data } = await axios.put('/products/management/price', item);
         if (data.success) {
-            toast.success('Update Price Success');
-        } else toast.error('Update Price Fail');
+            {
+                toast.success('Update Price Success');
+                setLoad1((prev) => !prev);
+            }
+        } else {
+            toast.error('Update Price Fail');
+            setLoad1((prev) => !prev);
+        }
     };
     const changeCate = async () => {
         let item = {};
@@ -167,8 +190,14 @@ const PricePage = () => {
         }
         const { data } = await axios.put('/products/management/price', item);
         if (data.success) {
-            toast.success('Update Price Success');
-        } else toast.error('Update Price Fail');
+            {
+                toast.success('Update Price Success');
+                setLoad1((prev) => !prev);
+            }
+        } else {
+            toast.error('Update Price Fail');
+            setLoad1((prev) => !prev);
+        }
     };
     const changeBrand = async () => {
         let item = {};
@@ -191,7 +220,11 @@ const PricePage = () => {
         const { data } = await axios.put('/products/management/price', item);
         if (data.success) {
             toast.success('Update Price Success');
-        } else toast.error('Update Price Fail');
+            setLoad1((prev) => !prev);
+        } else {
+            toast.error('Update Price Fail');
+            setLoad1((prev) => !prev);
+        }
     };
 
     const handleSubmit = () => {
@@ -211,20 +244,26 @@ const PricePage = () => {
     }, [selectedItem]);
     useEffect(() => {
         const fetchAll = async () => {
+            setLoading(true);
             const { data } = await axios.get(`/products?pageSize=5&pageNumber=${pageNumber}`);
             if (data.success) {
                 setProductList(data.data);
                 setPage(data.pages);
+                setLoading(false);
                 setCheckedAll(false);
             }
         };
         const fetchStatus = async () => {
+            setLoading(true);
+
             const { data } = await axios.get(
                 `/products/find/by-status?pageSize=5&pageNumber=${pageNumber}&status=${status[active]}`,
             );
             if (data.success) {
                 setProductList(data.data);
                 setPage(data.pages);
+                setLoading(false);
+
                 setCheckedAll(false);
             }
         };
@@ -233,7 +272,7 @@ const PricePage = () => {
         } else {
             fetchStatus();
         }
-    }, [active, pageNumber]);
+    }, [active, pageNumber, load, load1]);
     useEffect(() => {
         const fetchCate = async () => {
             const { data } = await axios.get('/categories');
@@ -243,7 +282,7 @@ const PricePage = () => {
             }
         };
         fetchCate();
-    }, []);
+    }, [load, load1]);
     useEffect(() => {
         if (value === 'New') setOpen1(false);
         else setOpen1(true);
@@ -348,7 +387,7 @@ const PricePage = () => {
                             id="demo-simple-select"
                             value={category}
                             label="Page"
-                            onChange={handleChangeType}
+                            onChange={handleChangeCate}
                             variant="outlined"
                             className="font-bold text-lg"
                             sx={{
@@ -377,7 +416,7 @@ const PricePage = () => {
                                 id="demo-simple-select"
                                 value={brand}
                                 label="Page"
-                                onChange={handleChangeType}
+                                onChange={handleChangeBrand}
                                 variant="outlined"
                                 className="font-bold text-lg"
                                 sx={{
@@ -419,16 +458,20 @@ const PricePage = () => {
                     </div>
                 ))}
             </div>
-            <TableProduct
-                products={prodcutList}
-                setOpen={setOpen}
-                setAction={setAction}
-                setId={setId}
-                handleSelectedItem={handleSelectedItem}
-                handleSelectAll={handleSelectAll}
-                checkedAll={checkedAll}
-            />
-            {page !== 0 && (
+            {loading ? (
+                <Loading />
+            ) : (
+                <TableProduct
+                    products={prodcutList}
+                    setOpen={setOpen}
+                    setAction={setAction}
+                    setId={setId}
+                    handleSelectedItem={handleSelectedItem}
+                    handleSelectAll={handleSelectAll}
+                    checkedAll={checkedAll}
+                />
+            )}
+            {!loading && page !== 0 && (
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination

@@ -102,6 +102,8 @@ const ShoesSinglePage = () => {
     const [flag, setFlag] = useState(false);
     const [flag1, setFlag1] = useState(false);
 
+    const [load, setLoad] = useState(false);
+
     const handleImage = (i: number) => {
         setNumber(i);
     };
@@ -193,7 +195,7 @@ const ShoesSinglePage = () => {
         return () => {
             mount = false;
         };
-    }, []);
+    }, [load]);
     useEffect(() => {
         setItems(randomItem);
         setFlag((prev) => !prev);
@@ -263,7 +265,6 @@ const ShoesSinglePage = () => {
                         <Rating value={4} readOnly emptyIcon={<StarIcon className="text-star" />} />
 
                         <span className="text-rv">0 review</span>
-                        <span className="text-blue cursor-pointer">Submit a review</span>
                     </div>
                     <BorderBlack />
                     <span className="text-base text-money font-bak mt-[25px] mb-[25px] block">
@@ -314,7 +315,7 @@ const ShoesSinglePage = () => {
 
                     <div className="font-medium mb-[25px] flex ">
                         <span className="flex-1">Availability:</span>
-                        <span>{items.quantity === 0 ? '' : items.quantity}</span>
+                        <span>{items.quantity}</span>
                     </div>
                     <BorderBlack />
                     <div className="flex justify-between gap-[120px] mt-5">
@@ -392,6 +393,7 @@ const ShoesSinglePage = () => {
                         back={back}
                         setBack={setBack}
                         {...unProp}
+                        setLoad={setLoad}
                     />
                 </div>
             </div>

@@ -58,9 +58,11 @@ const ListAddress = ({ setLoad, address, setChange, setDatas }: Props) => {
         if (notDo._id !== item._id) {
             setAds(item);
             setActive(item._id as string);
+            setChange(false);
         } else {
             setAds(undefined);
             setActive(item._id as string);
+            setChange(false);
         }
     };
     useEffect(() => {

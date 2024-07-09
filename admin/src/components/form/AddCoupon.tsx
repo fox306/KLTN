@@ -55,7 +55,7 @@ const AddCoupon = ({ setLoad, setOpen }: Props) => {
         <div className="modal">
             <div className="flex flex-col p-10 bg-white">
                 <div className="relative text-center mb-[34px]">
-                    <span className="font-bold text-lg">CREATE NEW SUPPLIER</span>
+                    <span className="font-bold text-lg">CREATE NEW COUPON</span>
                     <CloseOutlinedIcon
                         className="absolute right-0 top-[-24px] text-[40px] text-red opacity-50 hover:opacity-100 cursor-pointer"
                         onClick={() => setOpen(false)}
@@ -76,27 +76,29 @@ const AddCoupon = ({ setLoad, setOpen }: Props) => {
                         onChange={(e) => handleChange(e)}
                         className="w-[600px] shadow-input"
                     />
-                    <TextField
-                        id="value"
-                        label="Value"
-                        variant="outlined"
-                        onChange={(e) => handleChange(e)}
-                        className="w-[600px] shadow-input"
-                    />
-                    <FormControl className="w-[240px] h-[50px]">
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={value}
-                            label="Page"
-                            onChange={handleChangeType}
-                            variant="standard"
-                            className="font-bold text-lg h-[50px]"
-                        >
-                            <MenuItem value="percent">Percent</MenuItem>
-                            <MenuItem value="price">Price</MenuItem>
-                        </Select>
-                    </FormControl>
+                    <div className="flex gap-2 items-center">
+                        <TextField
+                            id="value"
+                            label="Value"
+                            variant="outlined"
+                            onChange={(e) => handleChange(e)}
+                            className="w-1/2 shadow-input"
+                        />
+                        <FormControl className="w-1/2 h-[50px]">
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={value}
+                                label="Page"
+                                onChange={handleChangeType}
+                                variant="standard"
+                                className="font-bold text-lg h-[50px]"
+                            >
+                                <MenuItem value="percent">Percent</MenuItem>
+                                <MenuItem value="price">Price</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
                     <TextField
                         id="minAmount"
                         label="Min Order"

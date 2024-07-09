@@ -78,7 +78,7 @@ const Profile = () => {
 
     const handleUpload = async () => {
         const formData = new FormData();
-        image && formData.append('avatar', image);
+        image && formData.append('file', image);
         formData.append('user', id);
 
         const { data } = await axios.patch('/users/upload-avatar', formData, {

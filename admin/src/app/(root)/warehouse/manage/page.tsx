@@ -10,6 +10,7 @@ import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import TypeSure from '@/components/shared/TypeSure';
 import axios from '@/utils/axios';
+import Loading from '@/components/shared/Loading';
 
 const nav = ['All', 'on sale', 'hidden', 'out of stock'];
 const status = ['All', 'Available', 'Hidden', 'outOfStock'];
@@ -35,6 +36,7 @@ const WareHouseManage = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [id, setId] = useState<string>('');
     const [load, setLoad] = useState<boolean>(false);
+    const [loading, setLoading] = useState(true);
 
     const router = useRouter();
 
@@ -132,20 +134,24 @@ const WareHouseManage = () => {
 
     useEffect(() => {
         const fetchAll = async () => {
+            setLoading(true);
             const { data } = await axios.get(`/products?pageSize=5&pageNumber=${pageNumber}`);
             if (data.success) {
                 setProductList(data.data);
                 setPage(data.pages);
+                setLoading(false);
                 setCheckedAll(false);
             }
         };
         const fetchStatus = async () => {
+            setLoading(true);
             const { data } = await axios.get(
                 `/products/find/by-status?pageSize=5&pageNumber=${pageNumber}&status=${status[active]}`,
             );
             if (data.success) {
                 setProductList(data.data);
                 setPage(data.pages);
+                setLoading(false);
                 setCheckedAll(false);
             }
         };
@@ -210,16 +216,20 @@ const WareHouseManage = () => {
                     Add Product
                 </button>
             </div>
-            <TableProduct
-                products={prodcutList}
-                setOpen={setOpen}
-                setAction={setAction}
-                setId={setId}
-                handleSelectedItem={handleSelectedItem}
-                handleSelectAll={handleSelectAll}
-                checkedAll={checkedAll}
-            />
-            {pages !== 0 && (
+            {loading ? (
+                <Loading />
+            ) : (
+                <TableProduct
+                    products={prodcutList}
+                    setOpen={setOpen}
+                    setAction={setAction}
+                    setId={setId}
+                    handleSelectedItem={handleSelectedItem}
+                    handleSelectAll={handleSelectAll}
+                    checkedAll={checkedAll}
+                />
+            )}
+            {!loading && pages !== 0 && (
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination

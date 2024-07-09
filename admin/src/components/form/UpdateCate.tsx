@@ -98,7 +98,7 @@ const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
                             <div className=" cursor-pointer">
                                 <div
                                     onClick={handleToggleInput}
-                                    className="opacity-50 w-[120px] h-[120px] border-4 border-dashed flex flex-col items-center justify-center gap-10"
+                                    className="opacity-50 w-[120px] h-[120px] border-4 border-dashed flex flex-col items-center justify-center gap-10 cursor-pointer"
                                 >
                                     <AddPhotoAlternateOutlinedIcon />
                                     <span>Add Image</span>

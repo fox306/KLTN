@@ -18,7 +18,7 @@ export const userNav = [
     {
         icon: PlaceOutlined,
         route: '/user/address',
-        label: 'Address',
+        label: 'Addresses',
     },
     {
         icon: ArticleOutlined,
@@ -28,6 +28,6 @@ export const userNav = [
     {
         icon: RequestQuoteOutlinedIcon,
         route: '/user/discount',
-        label: 'Discount',
+        label: 'Discounts',
     },
 ];

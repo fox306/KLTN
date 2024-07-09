@@ -6,11 +6,13 @@ import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
-import { Product } from '@/types/type';
+import { Product, User } from '@/types/type';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
+import { toast } from 'react-toastify';
+import axios from '@/utils/axios';
 
 type Props = {
     products: Product[];
@@ -24,6 +26,7 @@ type Props = {
     setNext: Dispatch<SetStateAction<number>>;
     back: number;
     setBack: Dispatch<SetStateAction<number>>;
+    setLoad: Dispatch<SetStateAction<boolean>>;
 };
 
 const SingleSellShoe = ({
@@ -38,26 +41,43 @@ const SingleSellShoe = ({
     setNext,
     back,
     setBack,
+    setLoad,
 }: Props) => {
     const dispatch = useDispatch<AppDispatch>();
     const pathname = usePathname();
     const router = useRouter();
-    // const [hoveredItems, setHoveredItems] = useState(Array(products.length).fill(false));
-    // const handleMouseEnter = (index: number) => {
-    //     setHoveredItems((prevHoveredItems) => {
-    //         const newHoveredItems = [...prevHoveredItems];
-    //         newHoveredItems[index] = true;
-    //         return newHoveredItems;
-    //     });
-    // };
-
-    // const handleMouseLeave = (index: number) => {
-    //     setHoveredItems((prevHoveredItems) => {
-    //         const newHoveredItems = [...prevHoveredItems];
-    //         newHoveredItems[index] = false;
-    //         return newHoveredItems;
-    //     });
-    // };
+    const [hoveredItems, setHoveredItems] = useState(Array(products.length).fill(false));
+    const [hoveredItemsHot, setHoveredItemsHot] = useState(Array(productHots.length).fill(false));
+    const handleMouseEnter = (index: number, isFavorite: boolean) => {
+        setHoveredItems((prevHoveredItems) => {
+            const newHoveredItems = [...prevHoveredItems];
+            newHoveredItems[index] = !isFavorite;
+            return newHoveredItems;
+        });
+    };
+    console.log(products);
+    const handleMouseLeave = (index: number) => {
+        setHoveredItems((prevHoveredItems) => {
+            const newHoveredItems = [...prevHoveredItems];
+            newHoveredItems[index] = false;
+            return newHoveredItems;
+        });
+    };
+    const handleMouseEnterHot = (index: number, isFavorite: boolean) => {
+        setHoveredItemsHot((prevHoveredItems) => {
+            const newHoveredItems = [...prevHoveredItems];
+            newHoveredItems[index] = !isFavorite;
+            return newHoveredItems;
+        });
+        console.log(isFavorite);
+    };
+    const handleMouseLeaveHot = (index: number) => {
+        setHoveredItemsHot((prevHoveredItems) => {
+            const newHoveredItems = [...prevHoveredItems];
+            newHoveredItems[index] = false;
+            return newHoveredItems;
+        });
+    };
 
     const handleNext = () => {
         if (active) {
@@ -100,6 +120,67 @@ const SingleSellShoe = ({
             }
         }
     };
+    const favorite = async (e, id, i) => {
+        e.stopPropagation();
+
+        if (i) {
+            i = false;
+            await axios.delete(`/favorites/un-favorite/${id}`);
+            return;
+        }
+        i = true;
+
+        const userString = localStorage.getItem('user');
+        if (userString !== null) {
+            const user: User = JSON.parse(userString);
+            const item = {
+                user: user._id,
+                product: id,
+            };
+            const { data } = await axios.post('/favorites', item);
+            if (data.success) {
+                i = true;
+            }
+        } else {
+            toast.error('You must login before favorite ');
+            router.push('/sign-in');
+            return;
+        }
+    };
+    const setFavor = async (e, id: string, i) => {
+        e.stopPropagation();
+        const userString = localStorage.getItem('user');
+        if (userString !== null) {
+            const user: User = JSON.parse(userString);
+            const item = {
+                user: user._id,
+                product: id,
+            };
+            const { data } = await axios.post('/favorites', item);
+            if (data.success) {
+                i = true;
+            }
+        } else {
+            toast.error('You must login before favorite ');
+            router.push('/sign-in');
+            return;
+        }
+    };
+    const unFavor = async (e, id, i) => {
+        e.stopPropagation();
+        const userString = localStorage.getItem('user');
+        if (userString !== null) {
+            const user: User = JSON.parse(userString);
+            const { data } = await axios.delete(`/favorites/un-favorite/${id}`);
+            if (data.success) {
+                i = false;
+            }
+        } else {
+            toast.error('You must login before favorite ');
+            router.push('/sign-in');
+            return;
+        }
+    };
     console.log(products);
     const handleDetail = (id: string) => {
         router.push(`/shoes/${id}`);
@@ -140,17 +221,16 @@ const SingleSellShoe = ({
                                       <div className="px-5 py-1 flex flex-col items-center gap-2">
                                           <div className="flex items-center justify-between mt-3 mb-3 w-full">
                                               <span className="text-gray text-lg font-bold">{product.brand}</span>
-                                              {/* {hoveredItems[index] ? (
-                                              <FavoriteRoundedIcon
-                                                  className="w-5 h-5 text-orange"
+                                              <div
+                                                  onMouseEnter={() => handleMouseEnter(index, product.isFavorite)}
                                                   onMouseLeave={() => handleMouseLeave(index)}
-                                              />
-                                          ) : (
-                                              <FavoriteBorderRoundedIcon
-                                                  className="w-5 h-5 text-orange"
-                                                  onMouseEnter={() => handleMouseEnter(index)}
-                                              />
-                                          )} */}
+                                              >
+                                                  {hoveredItems[index] ? (
+                                                      <FavoriteRoundedIcon className="w-5 h-5 text-orange" />
+                                                  ) : (
+                                                      <FavoriteBorderRoundedIcon className="w-5 h-5 text-orange" />
+                                                  )}
+                                              </div>
                                           </div>
 
                                           <p className="font-bold text-lg text-center truncate w-full">
@@ -168,7 +248,7 @@ const SingleSellShoe = ({
                               </div>
                           ))
                         : productHots &&
-                          productHots.slice(back, next).map((product: Product) => (
+                          productHots.slice(back, next).map((product: Product, index: number) => (
                               <div
                                   key={product._id}
                                   className="flex gap-2 cursor-pointer"
@@ -192,18 +272,18 @@ const SingleSellShoe = ({
                                       </div>
                                       <div className="px-5 py-1 flex flex-col items-center gap-2">
                                           <div className="flex items-center justify-between mt-3 mb-3 w-full">
-                                              <span className="text-gray text-[14px] font-bold">{product.brand}</span>
-                                              {/* {hoveredItems[index] ? (
-                                              <FavoriteRoundedIcon
-                                                  className="w-5 h-5 text-orange"
-                                                  onMouseLeave={() => handleMouseLeave(index)}
-                                              />
-                                          ) : (
-                                              <FavoriteBorderRoundedIcon
-                                                  className="w-5 h-5 text-orange"
-                                                  onMouseEnter={() => handleMouseEnter(index)}
-                                              />
-                                          )} */}
+                                              <span className="text-gray text-lg font-bold">{product.brand}</span>
+                                              <div
+                                                  onMouseEnter={() => handleMouseEnterHot(index, product.isFavorite)}
+                                                  onMouseLeave={() => handleMouseLeaveHot(index)}
+                                                  onClick={(e) => setFavor(e, product._id)}
+                                              >
+                                                  {product.isFavorite ? (
+                                                      <FavoriteRoundedIcon className="w-5 h-5 text-orange" />
+                                                  ) : (
+                                                      <FavoriteBorderRoundedIcon className="w-5 h-5 text-orange" />
+                                                  )}
+                                              </div>
                                           </div>
                                           <h1 className="font-bold text-[16px] text-center truncate w-full">
                                               {product.name}
@@ -242,9 +322,13 @@ const SingleSellShoe = ({
                 />
                 {products && products.length === 0 ? (
                     <div className="flex justify-center items-center">
-                        {/* <span className="text-base font-semibold">No Data</span>
-                         */}
-                        <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
+                        <Image
+                            src="/noData.jpg"
+                            alt="No Data"
+                            width={300}
+                            height={300}
+                            className="rounded-[5px] w-[300px] h-[300px]"
+                        />
                     </div>
                 ) : (
                     products.slice(back, next).map((product: Product, index: number) => (
@@ -308,7 +392,13 @@ const SingleSellShoe = ({
             <div className={`${products && products.length === 0 ? '' : 'grid grid-cols-3 gap-[20px]'}`}>
                 {products && products.length === 0 ? (
                     <div className="flex justify-center items-center">
-                        <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
+                        <Image
+                            src="/noData.jpg"
+                            alt="No Data"
+                            width={300}
+                            height={300}
+                            className="rounded-[5px] w-[300px] h-[300px]"
+                        />
                     </div>
                 ) : (
                     products.map((product: Product, index: number) => (
@@ -334,19 +424,22 @@ const SingleSellShoe = ({
                                     )}
                                 </div>
                                 <div className="px-5 py-1 flex flex-col items-center gap-2">
-                                    <div className="flex items-center justify-between mt-3 mb-3 w-full">
+                                    <div
+                                        className="flex items-center justify-between mt-3 mb-3 w-full"
+                                        onClick={() => xzzzzz(product)}
+                                    >
                                         <span className="text-gray text-base font-bold">{product.brand}</span>
-                                        {/* {hoveredItems[index] ? (
-                      <FavoriteRoundedIcon
-                        className="w-5 h-5 text-orange"
-                        onMouseLeave={() => handleMouseLeave(index)}
-                      />
-                    ) : (
-                      <FavoriteBorderRoundedIcon
-                        className="w-5 h-5 text-orange"
-                        onMouseEnter={() => handleMouseEnter(index)}
-                      />
-                    )} */}
+                                        <div onClick={(e) => favorite(e, product._id, product.isFavorite)}>
+                                            {product.isFavorite ? (
+                                                <div>
+                                                    <FavoriteRoundedIcon className="w-5 h-5 text-orange" />
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <FavoriteBorderRoundedIcon className="w-5 h-5 text-orange" />
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                     <h1 className="font-bold text-base text-center truncate w-full">{product.name}</h1>
                                     <Rating name="read-only" value={product.rating} readOnly />
@@ -368,7 +461,13 @@ const SingleSellShoe = ({
         <div className={`${products && products.length === 0 ? '' : 'grid grid-cols-3 gap-[20px]'}`}>
             {products && products.length === 0 ? (
                 <div className="flex justify-center items-center">
-                    <Image src="/noData.jpg" alt="No Data" width={500} height={300} className="rounded-[5px]" />
+                    <Image
+                        src="/noData.jpg"
+                        alt="No Data"
+                        width={500}
+                        height={300}
+                        className="rounded-[5px] w-[300px] h-[300px]"
+                    />
                 </div>
             ) : (
                 products.map((product: Product, index: number) => (
@@ -396,17 +495,14 @@ const SingleSellShoe = ({
                             <div className="px-5 py-1 flex flex-col items-center gap-2">
                                 <div className="flex items-center justify-between mt-3 mb-3 w-full">
                                     <span className="text-gray text-base font-bold">{product.brand}</span>
-                                    {/* {hoveredItems[index] ? (
-                      <FavoriteRoundedIcon
-                        className="w-5 h-5 text-orange"
-                        onMouseLeave={() => handleMouseLeave(index)}
-                      />
-                    ) : (
-                      <FavoriteBorderRoundedIcon
-                        className="w-5 h-5 text-orange"
-                        onMouseEnter={() => handleMouseEnter(index)}
-                      />
-                    )} */}
+                                    {product.isFavorite ? (
+                                        <FavoriteRoundedIcon className="w-5 h-5 text-orange" />
+                                    ) : (
+                                        <FavoriteBorderRoundedIcon
+                                            className="w-5 h-5 text-orange"
+                                            onClick={(e) => unFavor(e, product._id)}
+                                        />
+                                    )}
                                 </div>
                                 <h1 className="font-bold text-base text-center truncate w-full">{product.name}</h1>
                                 <Rating name="read-only" value={product.rating} readOnly />

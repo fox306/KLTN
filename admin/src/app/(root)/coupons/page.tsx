@@ -17,6 +17,8 @@ import AddCoupon from '@/components/form/AddCoupon';
 import LockOpenRoundedIcon from '@mui/icons-material/LockOpenRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import SureForCoupon from '@/components/shared/SureForCoupon';
+import Image from 'next/image';
+import Loading from '@/components/shared/Loading';
 
 const theme = createTheme({
     palette: {
@@ -39,6 +41,7 @@ const CouponsPage = () => {
     const [id, setId] = useState<string>('');
     const [action, setAction] = useState<string>('');
     const [open1, setOpen1] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const handleChangePage = (i: number) => {
         setPageNumber(i);
@@ -85,23 +88,25 @@ const CouponsPage = () => {
         setCheckedAll(data);
     };
     const handleUnLock = (id: string) => {
-        setOpen(true);
+        setOpen1(true);
         setAction('UnLock');
         setId(id);
     };
     const handleLock = (id: string) => {
-        setOpen(true);
+        setOpen1(true);
         setAction('Lock');
         setId(id);
     };
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const { data } = await axios.get(`/coupons?pageSize=${5}&pageNumber=${pageNumber}`);
             if (data.success) {
                 setCheckedAll(false);
                 setCoupons(data.data);
                 setPages(data.pages);
+                setLoading(false);
             }
         };
         fetchData();
@@ -129,73 +134,81 @@ const CouponsPage = () => {
                 </button>
             </div>
             {coupons && coupons.length === 0 ? (
-                <div className="font-semibold text-2xl">No Coupons</div>
+                <div className="flex justify-center items-center">
+                    <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
+                </div>
             ) : (
                 <div>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                            <TableHead className="mb-[10px]">
-                                <TableRow>
-                                    <TableCell align="left">
-                                        <input
-                                            type="checkbox"
-                                            className="w-[26px] h-[26px]"
-                                            checked={checkedAll}
-                                            onChange={handleSelectedAll}
-                                        />
-                                    </TableCell>
-                                    <TableCell align="center">Code</TableCell>
-                                    <TableCell align="center">Name of Coupon</TableCell>
-                                    <TableCell align="center">Value</TableCell>
-                                    <TableCell align="center">Time Remaining</TableCell>
-                                    <TableCell align="center">Status</TableCell>
-                                    <TableCell align="center">Action</TableCell>
-                                </TableRow>
-                            </TableHead>
+                    {loading ? (
+                        <Loading />
+                    ) : (
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <TableHead className="mb-[10px]">
+                                    <TableRow>
+                                        <TableCell align="left">
+                                            <input
+                                                type="checkbox"
+                                                className="w-[26px] h-[26px]"
+                                                checked={checkedAll}
+                                                onChange={handleSelectedAll}
+                                            />
+                                        </TableCell>
+                                        <TableCell align="center">Code</TableCell>
+                                        <TableCell align="center">Name of Coupon</TableCell>
+                                        <TableCell align="center">Value</TableCell>
+                                        <TableCell align="center">Time Remaining</TableCell>
+                                        <TableCell align="center">Status</TableCell>
+                                        <TableCell align="center">Action</TableCell>
+                                    </TableRow>
+                                </TableHead>
 
-                            <TableBody>
-                                {coupons &&
-                                    coupons.map((item, i) => (
-                                        <TableRow>
-                                            <TableCell align="left">
-                                                <input
-                                                    type="checkbox"
-                                                    className="w-[26px] h-[26px]"
-                                                    checked={item.selected}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleSelectedItem(item);
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell align="center">{item.code}</TableCell>
-                                            <TableCell align="center">{item.name}</TableCell>
-                                            <TableCell align="center">
-                                                {item.value} {item.type === 'percent' ? '%' : '$'}
-                                            </TableCell>
-                                            <TableCell align="center">{item.validityDuration}</TableCell>
-                                            <TableCell align="center">{item.status}</TableCell>
-                                            <TableCell
-                                                align="center"
-                                                className={`${item.status !== 'Active' ? 'text-red' : 'text-green'}`}
-                                            >
-                                                {item.status !== 'Active' ? (
-                                                    <LockRoundedIcon
-                                                        onClick={() => handleUnLock(item._id)}
-                                                        className="cursor-pointer hover:text-green"
+                                <TableBody>
+                                    {coupons &&
+                                        coupons.map((item, i) => (
+                                            <TableRow>
+                                                <TableCell align="left">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="w-[26px] h-[26px]"
+                                                        checked={item.selected}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleSelectedItem(item);
+                                                        }}
                                                     />
-                                                ) : (
-                                                    <LockOpenRoundedIcon
-                                                        onClick={() => handleLock(item._id)}
-                                                        className="cursor-pointer hover:text-red"
-                                                    />
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                                </TableCell>
+                                                <TableCell align="center">{item.code}</TableCell>
+                                                <TableCell align="center">{item.name}</TableCell>
+                                                <TableCell align="center">
+                                                    {item.value} {item.type === 'percent' ? '%' : '$'}
+                                                </TableCell>
+                                                <TableCell align="center">{item.validityDuration}</TableCell>
+                                                <TableCell align="center">{item.status}</TableCell>
+                                                <TableCell
+                                                    align="center"
+                                                    className={`${
+                                                        item.status !== 'Active' ? 'text-red' : 'text-green'
+                                                    }`}
+                                                >
+                                                    {item.status !== 'Active' ? (
+                                                        <LockRoundedIcon
+                                                            onClick={() => handleUnLock(item._id)}
+                                                            className="cursor-pointer hover:text-green"
+                                                        />
+                                                    ) : (
+                                                        <LockOpenRoundedIcon
+                                                            onClick={() => handleLock(item._id)}
+                                                            className="cursor-pointer hover:text-red"
+                                                        />
+                                                    )}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
                 </div>
             )}
             {pages !== 0 && (

@@ -18,6 +18,7 @@ const SellShoe = () => {
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
     const [loading, setLoading] = useState(false);
+    const [load, setLoad] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,7 +52,7 @@ const SellShoe = () => {
         };
 
         fetchData();
-    }, [active, dispatch]);
+    }, [active, dispatch, load]);
     console.log(loading);
     return (
         <div className="py-5 px-10">
@@ -91,6 +92,7 @@ const SellShoe = () => {
                         setNext={setNext}
                         back={back}
                         setBack={setBack}
+                        setLoad={setLoad}
                     />
                 )}
             </div>
