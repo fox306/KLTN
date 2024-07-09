@@ -1,7 +1,7 @@
 'use client';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
-import React, { MouseEvent } from 'react';
+import React, { Dispatch, MouseEvent, SetStateAction } from 'react';
 import Border from '../shared/Border';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -11,10 +11,13 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { addItemToCartRandomVariant } from '@/slices/cartSlice';
+import FavoriteIcon from '../shared/FavoriteIcon';
+import axios from '@/utils/axios';
 type Props = {
     listProduct: Product[];
+    setListProduct: Dispatch<SetStateAction<Product[]>>;
 };
-const ShoesWithTag = ({ listProduct }: Props) => {
+const ShoesWithTag = ({ listProduct, setListProduct }: Props) => {
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
 
     let user: User | null = null;
@@ -59,78 +62,100 @@ const ShoesWithTag = ({ listProduct }: Props) => {
         //     toast.success((res.payload as { status: string }).data.message)
         // }
     };
+    const favorite = async (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, id: string, i: boolean) => {
+        e.stopPropagation();
+        const updatedProducts = listProduct.map((product) =>
+            product._id === id ? { ...product, isFavorite: !product.isFavorite } : product,
+        );
+        setListProduct(updatedProducts);
+        if (i) {
+            await axios.delete(`/favorites/un-favorite/${id}`);
+            return;
+        }
+        const userString = localStorage.getItem('user');
+        if (userString !== null) {
+            const user: User = JSON.parse(userString);
+            const item = {
+                user: user._id,
+                product: id,
+            };
+            const { data } = await axios.post('/favorites', item);
+            if (data.success) {
+                i = true;
+            }
+        } else {
+            toast.error('You must login before favorite ');
+            router.push('/sign-in');
+            return;
+        }
+    };
     return (
         <div>
-            {listProduct && listProduct.length === 0 ? (
-                <div className="flex justify-center items-center">
-                    <span className="text-base font-semibold">No Data</span>
-                </div>
-            ) : (
-                listProduct.map((product) => (
-                    <div
-                        key={product._id}
-                        className="flex flex-col gap-5 mb-5 cursor-pointer"
-                        onClick={() => handleDetail(product._id)}
-                    >
-                        <div className="flex gap-5">
-                            <div className="bg-deal flex items-center justify-center relative overflow-hidden">
-                                <Image
-                                    src={product.image}
-                                    alt="Giày"
-                                    width={300}
-                                    height={280}
-                                    className="rounded-xl w-[300px] h-[280px] "
-                                />
-                                {product.isStock === false && (
-                                    <div className="absolute w-[300px] h-[280px] rounded-xl bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
-                                        Out Of Stock
+            {listProduct.map((product) => (
+                <div
+                    key={product._id}
+                    className="flex flex-col gap-5 mb-5 cursor-pointer"
+                    onClick={() => handleDetail(product._id)}
+                >
+                    <div className="flex gap-5">
+                        <div className="bg-deal flex items-center justify-center relative overflow-hidden">
+                            <Image
+                                src={product.image}
+                                alt="Giày"
+                                width={300}
+                                height={280}
+                                className="rounded-xl w-[300px] h-[280px] "
+                            />
+                            {product.isStock === false && (
+                                <div className="absolute w-[300px] h-[280px] rounded-xl bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
+                                    Out Of Stock
+                                </div>
+                            )}
+                        </div>
+                        <div className="w-[700px] flex flex-col">
+                            <span className="text-base font-bold truncate w-full block ">{product.name}</span>
+                            <div className="flex gap-10 items-center mt-[15px] mb-[27px] flex-grow">
+                                <Rating name="read-only" value={4} readOnly />
+                                <span className="text-rv font-medium">{product.review} reviews</span>
+                                <div className="flex-grow" />
+                                <div
+                                    className="w-10 h-10 rounded-lg text-center text-3xl bg-bluev2"
+                                    onClick={(e) => favorite(e, product._id, product.isFavorite)}
+                                >
+                                    <FavoriteIcon isFavorite={product.isFavorite} />
+                                </div>
+                            </div>
+                            <Border />
+                            <span className="text-base text-money font-bak my-[15px] block">${product.price}</span>
+                            <p className="text-justify mb-[11px] truncate w-full">{product.desc}</p>
+                            <Border />
+                            <div className="flex mt-[10px]">
+                                <div className="flex-grow"></div>
+                                {product.isStock === true ? (
+                                    <div
+                                        className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer hover:bg-blue hover:text-white"
+                                        onClick={(e) =>
+                                            handleAddtoCart(e, {
+                                                product: product._id,
+                                                user: user?._id as string,
+                                            })
+                                        }
+                                    >
+                                        <ShoppingCartOutlinedIcon />
+                                        <span className="font-bold">Add To Cart</span>
+                                    </div>
+                                ) : (
+                                    <div className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer">
+                                        <ShoppingCartOutlinedIcon />
+                                        <span className="font-bold">Add To Cart</span>
                                     </div>
                                 )}
                             </div>
-                            <div className="w-[700px] flex flex-col">
-                                <span className="text-base font-bold truncate w-full block ">{product.name}</span>
-                                <div className="flex gap-10 items-center mt-[15px] mb-[27px] flex-grow">
-                                    <Rating name="read-only" value={4} readOnly />
-                                    <span className="text-rv font-medium">0 reviews</span>
-                                    <span className="font-medium text-blue">Submit a review</span>
-
-                                    <div className="flex-grow" />
-                                    <div className="w-10 h-10 rounded-lg text-center text-3xl bg-bluev2 text-blue">
-                                        <FavoriteBorderOutlinedIcon />
-                                    </div>
-                                </div>
-                                <Border />
-                                <span className="text-base text-money font-bak my-[15px] block">${product.price}</span>
-                                <p className="text-justify mb-[11px] truncate w-full">{product.desc}</p>
-                                <Border />
-                                <div className="flex mt-[10px]">
-                                    <div className="flex-grow"></div>
-                                    {product.isStock === true ? (
-                                        <div
-                                            className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer hover:bg-blue hover:text-white"
-                                            onClick={(e) =>
-                                                handleAddtoCart(e, {
-                                                    product: product._id,
-                                                    user: user?._id as string,
-                                                })
-                                            }
-                                        >
-                                            <ShoppingCartOutlinedIcon />
-                                            <span className="font-bold">Add To Cart</span>
-                                        </div>
-                                    ) : (
-                                        <div className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer">
-                                            <ShoppingCartOutlinedIcon />
-                                            <span className="font-bold">Add To Cart</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
                         </div>
-                        <Border />
                     </div>
-                ))
-            )}
+                    <Border />
+                </div>
+            ))}
         </div>
     );
 };

@@ -16,6 +16,8 @@ import { getAllCategory } from '@/slices/categorySlice';
 import { Category, Product, productByCate } from '@/types/type';
 import { usePathname } from 'next/navigation';
 import { CircularProgress } from '@mui/material';
+import axios from '@/utils/axios';
+import NoData from '@/components/shared/NoData';
 
 const unProp = {
     productHots: [],
@@ -32,27 +34,22 @@ const unProp = {
 
 const ManShoes = () => {
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
-    const {
-        products,
-        brands,
-        hotdeals,
-        pages,
-        loading,
-    }: { products: Product[]; brands: Brand[]; hotdeals: Brand[]; pages: number; loading: boolean } = useSelector(
-        (state: any) => state.products,
-    );
+    const { brands }: { brands: Brand[] } = useSelector((state: any) => state.products);
 
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
     const [sort, setSort] = useState<string>('');
     const [view, setView] = useState<string>('NEW');
     const [listProduct, setListProduct] = useState<Product[]>([]);
+    const [fakeListProduct, setFakeListProduct] = useState<Product[]>([]);
     const [color, setColor] = useState<string>('');
     const [brand, setBrand] = useState<string>('');
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000);
     const pathname = usePathname();
+    const [load, setLoad] = useState(true);
+    const [count, setCount] = useState(0);
 
     const found = useMemo(
         () =>
@@ -75,28 +72,44 @@ const ManShoes = () => {
             };
 
             console.log('product of cate: ', item);
-            await dispatch(getAllProductByCateId(item)).unwrap();
+            // await dispatch(getAllProductByCateId(item)).unwrap();
+            let url = `/products/find/by-category?category=${item.category}&pageSize=6&pageNumber=${item.pageNumber}`;
+            if (item.color) {
+                url += `&color=${item.color}`;
+            }
+            if (item.brand) {
+                url += `&brand=${item.brand}`;
+            }
+            if (item.sort) {
+                url += `&sort=${item.sort}`;
+            }
+            setLoad(true);
+            const { data } = await axios.get(url);
+            if (data.success) {
+                setListProduct(data.data);
+                setFakeListProduct(data.data);
+                setCount(data.pages);
+                setLoad(false);
+            }
         };
         if (idCate) {
             fetchData();
         }
-    }, [dispatch, idCate, pageNum, view, brand, color]);
-
+    }, [idCate, pageNum, view, brand, color]);
     useEffect(() => {
-        if (sort === '') {
-            setListProduct(products);
-        } else if (sort === 'Low to High') {
-            const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+        if (sort === 'Low to High') {
+            const filtered = listProduct.filter((product) => product.price >= minPrice && product.price <= maxPrice);
             const sorted = filtered.sort((a, b) => a.price - b.price);
+
             setListProduct(sorted);
         } else {
-            const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+            const filtered = listProduct.filter((product) => product.price >= minPrice && product.price <= maxPrice);
             const sorted = filtered.sort((a, b) => b.price - a.price);
             setListProduct(sorted);
         }
-    }, [products, sort]);
+    }, [sort]);
     useEffect(() => {
-        const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+        const filtered = fakeListProduct.filter((product) => product.price >= minPrice && product.price <= maxPrice);
         setListProduct(filtered);
     }, [minPrice, maxPrice]);
 
@@ -127,17 +140,19 @@ const ManShoes = () => {
                     view={view}
                     setView={setView}
                 />
-                {loading ? (
+                {load ? (
                     <div className="w-full h-full flex items-center justify-center">
                         <CircularProgress color="secondary" size={60} />
                     </div>
+                ) : load === false && listProduct.length === 0 ? (
+                    <NoData />
                 ) : active ? (
-                    <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
+                    <ShoesWithTag listProduct={listProduct} setListProduct={setListProduct} />
                 ) : (
-                    <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />
+                    <SingleSellShoe products={listProduct} setListProduct={setListProduct} {...unProp} />
                 )}
                 <div className="flex-grow"></div>
-                {products.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={pages} /> : ''}
+                {listProduct.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={count} /> : ''}
             </div>
         </div>
     );

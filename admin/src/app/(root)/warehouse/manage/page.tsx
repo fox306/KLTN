@@ -12,10 +12,8 @@ import TypeSure from '@/components/shared/TypeSure';
 import axios from '@/utils/axios';
 import Loading from '@/components/shared/Loading';
 
-const nav = ['All', 'on sale', 'hidden', 'out of stock'];
-const status = ['All', 'Available', 'Hidden', 'outOfStock'];
-
-const buttons = ['Select All', 'Hide All', 'Hide Selected', 'On Sale All', 'On Sale Selected'];
+const nav = ['All', 'on sale', 'hidden'];
+const status = ['All', 'Available', 'Hidden'];
 
 const theme = createTheme({
     palette: {
@@ -53,40 +51,6 @@ const WareHouseManage = () => {
     const [checkedAll, setCheckedAll] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Product[]>([]);
     const [pages, setPages] = useState<number>();
-
-    const handleButtonClick = (button: string) => {
-        switch (button) {
-            case 'Select All':
-                handleSelectAll();
-                break;
-            case 'Hide All':
-                // handleHideAll();
-                break;
-            case 'Hide Selected':
-                handleHideSelected();
-                break;
-            case 'On Sale All':
-                handleOnSaleAll();
-                break;
-            case 'On Sale Selected':
-                handleOnSaleSelected();
-                break;
-            default:
-                break;
-        }
-    };
-
-    const handleHideSelected = () => {
-        console.log('Hide Selected button clicked');
-    };
-
-    const handleOnSaleAll = () => {
-        console.log('On Sale All button clicked');
-    };
-
-    const handleOnSaleSelected = () => {
-        console.log('On Sale Selected button clicked');
-    };
 
     const handleFilterData = (data: Product[]) => {
         const fillerData = data.filter((item) => {
@@ -192,23 +156,7 @@ const WareHouseManage = () => {
                 ))}
             </div>
             <div className="flex justify-between">
-                <div className="ml-[15px] flex items-center gap-5">
-                    <input
-                        type="checkbox"
-                        className="w-[26px] h-[26px] cursor-pointer"
-                        checked={checkedAll}
-                        onChange={handleSelectAll}
-                    />
-                    {buttons.map((item) => (
-                        <button
-                            key={item}
-                            className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg hover:bg-opacity-100"
-                            onClick={() => handleButtonClick(item)}
-                        >
-                            {item}
-                        </button>
-                    ))}
-                </div>
+                <div className="flex-grow"></div>
                 <button
                     className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg hover:bg-opacity-100"
                     onClick={() => router.push('/warehouse/addnew')}

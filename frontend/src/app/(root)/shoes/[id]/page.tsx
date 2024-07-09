@@ -30,6 +30,7 @@ import { toast } from 'react-toastify';
 import { addItemToCartByUserId } from '@/slices/cartSlice';
 import { useRouter } from 'next/navigation';
 import axios from '@/utils/axios';
+import FavoriteIcon from '@/components/shared/FavoriteIcon';
 
 const unProp = {
     productHots: [],
@@ -53,19 +54,6 @@ const colors: { [key: string]: string } = {
 };
 
 const ShoesSinglePage = () => {
-    const {
-        products,
-        productHots,
-        productDetail,
-        variants,
-        randomItem,
-    }: {
-        products: Product[];
-        productHots: Product[];
-        productDetail: Product;
-        variants: Variant;
-        randomItem: RVariant;
-    } = useSelector((state: any) => state.products);
     const { variantBySize }: { variantBySize: VariantBySize[] } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
@@ -96,13 +84,14 @@ const ShoesSinglePage = () => {
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
     const [active, setActive] = useState<boolean>(false);
+    const [productDetail, setProductDetail] = useState<Product>();
+    const [productHots, setProductHots] = useState<Product[]>([]);
+    const [variants, setVariants] = useState<Variant>();
     const [comments, setComments] = useState<Comment[]>();
 
     const [isFirstRender, setIsFirstRender] = useState(true);
     const [flag, setFlag] = useState(false);
     const [flag1, setFlag1] = useState(false);
-
-    const [load, setLoad] = useState(false);
 
     const handleImage = (i: number) => {
         setNumber(i);
@@ -158,8 +147,8 @@ const ShoesSinglePage = () => {
         const item: ItemCartFake = {
             user: user._id,
             product: id,
-            image: productDetail.image,
-            name: productDetail.name,
+            image: productDetail?.image as string,
+            name: productDetail?.name as string,
             color: items.color,
             size: items.size,
             quantity: manageQuantity,
@@ -172,34 +161,66 @@ const ShoesSinglePage = () => {
         }
     };
 
+    const favorite = async (id: string, i: boolean) => {
+        setProductDetail({ ...productDetail, isFavorite: !i });
+        const updatedProducts = productHots.map((product) =>
+            product._id === id ? { ...product, isFavorite: !i } : product,
+        );
+        setProductHots(updatedProducts);
+        if (i) {
+            await axios.delete(`/favorites/un-favorite/${id}`);
+            return;
+        }
+        const userString = localStorage.getItem('user');
+        if (userString !== null) {
+            const user: User = JSON.parse(userString);
+            const item = {
+                user: user._id,
+                product: id,
+            };
+            const { data } = await axios.post('/favorites', item);
+            if (data.success) {
+                i = true;
+            }
+        } else {
+            toast.error('You must login before favorite ');
+            router.push('/sign-in');
+            return;
+        }
+    };
+
     const [count, setCount] = useState(0);
     useEffect(() => {
-        let mount = true;
-        dispatch(getProductHotDeal()).unwrap();
-        dispatch(getProductById(id)).then(() => {
-            if (mount) {
-                setCount((prev) => prev + 1);
-            }
-            if (variants.listColor) {
-                const index = variants.listColor.findIndex((item) => item.image === randomItem.image);
+        const fetchProductDetail = async () => {
+            const { data } = await axios.get(`/products/${id}`);
+            if (data.success) {
+                console.log(data);
+                setProductDetail(data.data);
+                setItems(data.data.randomVariant);
+                setVariants(data.data.variants);
+                const index = data.data.variants.listColor.findIndex(
+                    (item: any) => item.image === data.data.randomVariant.image,
+                );
                 setNumber(index);
+                setFlag((prev) => !prev);
             }
-        });
+        };
         const fetchData = async () => {
             const { data } = await axios.get(`/comments/find/by-product?pageSize=5&product=${id}`);
             if (data.success) {
                 setComments(data.data);
             }
         };
-        fetchData();
-        return () => {
-            mount = false;
+        const fetchProduct = async () => {
+            const { data } = await axios.get(`/revenue/products/hot`);
+            if (data.success) {
+                setProductHots(data.data);
+            }
         };
-    }, [load]);
-    useEffect(() => {
-        setItems(randomItem);
-        setFlag((prev) => !prev);
-    }, [count]);
+        fetchProductDetail();
+        fetchData();
+        fetchProduct();
+    }, []);
 
     useEffect(() => {
         const item: getQtyOfSizeColor = {
@@ -229,21 +250,21 @@ const ShoesSinglePage = () => {
                 <div className="w-[420px]">
                     <div className="relative bg-bg_sell rounded-lg border-gray border-2 overflow-hidden">
                         <Image
-                            src={variants.listColor && variants.listColor[number].image}
+                            src={variants?.listColor[number].image as string}
                             alt="giày"
                             width={420}
                             height={328}
                             className="h-[328px] w-[420px] rounded-lg"
                         />
-                        {productDetail.isStock === false && (
+                        {productDetail?.isStock === false && (
                             <div className="absolute w-[420px] h-[328px] rounded-lg bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
                                 Out Of Stock
                             </div>
                         )}
                     </div>
                     <div className="flex gap-5 mt-5">
-                        {variants.listColor &&
-                            variants.listColor.map((item, i) => (
+                        {variants?.listColor &&
+                            variants?.listColor.map((item, i) => (
                                 <div
                                     key={i}
                                     className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4 overflow-hidden"
@@ -260,7 +281,7 @@ const ShoesSinglePage = () => {
                     </div>
                 </div>
                 <div>
-                    <h1 className="text-base font-bold">{productDetail.name}</h1>
+                    <h1 className="text-base font-bold">{productDetail?.name}</h1>
                     <div className="flex items-center gap-10 mt-[23px] mb-[25px]">
                         <Rating value={4} readOnly emptyIcon={<StarIcon className="text-star" />} />
 
@@ -268,7 +289,7 @@ const ShoesSinglePage = () => {
                     </div>
                     <BorderBlack />
                     <span className="text-base text-money font-bak mt-[25px] mb-[25px] block">
-                        ${productDetail.price}
+                        ${productDetail?.price}
                     </span>
                     <span className="font-medium mb-[25px] block">free shipping</span>
                     <BorderBlack />
@@ -344,8 +365,13 @@ const ShoesSinglePage = () => {
                                 <ShoppingCartOutlinedIcon />
                                 <span className="font-bold">Add To Cart</span>
                             </div>
-                            <div className="w-[50px] h-[50px] bg-buy flex items-center justify-center rounded-md cursor-pointer">
-                                <FavoriteBorderOutlinedIcon className="text-blue" />
+                            <div
+                                className="w-[50px] h-[50px] bg-buy flex items-center justify-center rounded-md cursor-pointer"
+                                onClick={() =>
+                                    favorite(productDetail?._id as string, productDetail?.isFavorite as boolean)
+                                }
+                            >
+                                <FavoriteIcon isFavorite={productDetail?.isFavorite as boolean} />
                             </div>
                         </div>
                     </div>
@@ -373,7 +399,7 @@ const ShoesSinglePage = () => {
                 </div>
                 {/* view about shoes info and review*/}
                 {active === false ? (
-                    <ShoeInfo detail={productDetail.desc} />
+                    <ShoeInfo detail={productDetail?.desc as string} />
                 ) : (
                     <Reviews comments={comments as Comment[]} />
                 )}
@@ -393,7 +419,7 @@ const ShoesSinglePage = () => {
                         back={back}
                         setBack={setBack}
                         {...unProp}
-                        setLoad={setLoad}
+                        setListProduct={setProductHots}
                     />
                 </div>
             </div>

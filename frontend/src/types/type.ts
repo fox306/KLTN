@@ -61,6 +61,7 @@ export type Product = {
     variant: Variant;
     isStock?: boolean;
     isFavorite: boolean;
+    review?: number;
 };
 
 export type Variant = {

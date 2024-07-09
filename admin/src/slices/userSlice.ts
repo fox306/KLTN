@@ -2,9 +2,9 @@ import usersApi from '@/apis/user';
 import { User, findUser, upAvatar, updatePassword } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const getAllUser = createAsyncThunk('users/getAllUser', async (_, { rejectWithValue }) => {
+export const getAllUser = createAsyncThunk('users/getAllUser', async (pageNumber: number, { rejectWithValue }) => {
     try {
-        const res = await usersApi.getAllUser();
+        const res = await usersApi.getAllUser(pageNumber);
         return res;
     } catch (err: any) {
         return rejectWithValue(err.res.data);
@@ -14,7 +14,7 @@ export const getAllUser = createAsyncThunk('users/getAllUser', async (_, { rejec
 export const lockUser = createAsyncThunk('users/lockUser', async (user: string, { dispatch, rejectWithValue }) => {
     try {
         const res = await usersApi.lockUser(user);
-        await dispatch(getAllUser);
+        // await dispatch(getAllUser);
         return res;
     } catch (err: any) {
         return rejectWithValue(err.res.data);
@@ -24,7 +24,7 @@ export const lockUser = createAsyncThunk('users/lockUser', async (user: string, 
 export const unlockUser = createAsyncThunk('users/unlockUser', async (user: string, { dispatch, rejectWithValue }) => {
     try {
         const res = await usersApi.unlockUser(user);
-        await dispatch(getAllUser);
+        // await dispatch(getAllUser);
         return res;
     } catch (err: any) {
         return rejectWithValue(err.res.data);
@@ -72,6 +72,7 @@ export const userSlice = createSlice({
     initialState: {
         user: {},
         users: [],
+        pages: 0,
         loading: false,
         error: null as string | null,
     },
@@ -87,6 +88,7 @@ export const userSlice = createSlice({
         builder.addCase(getAllUser.fulfilled, (state, action) => {
             state.loading = false;
             state.users = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(lockUser.pending, (state) => {
             state.loading = true;
