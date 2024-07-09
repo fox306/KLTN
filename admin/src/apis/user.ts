@@ -2,8 +2,8 @@ import { findUser } from '@/types/type';
 import axios from '@/utils/axios';
 
 const userApi = {
-    getAllUser: () => {
-        const url = '/users?pageSize=10&pageNumber=1';
+    getAllUser: (pageNumber: number) => {
+        const url = `/users?pageSize=10&pageNumber=${pageNumber}`;
         return axios.get(url);
     },
     lockUser: (user: string) => {

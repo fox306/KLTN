@@ -24,10 +24,20 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
 import TypeSure from '@/components/shared/TypeSure';
 import Loading from '@/components/shared/Loading';
+import Pagination from '@mui/material/Pagination';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#40BFFF',
+        },
+    },
+});
 
 const UserManage = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { users }: { users: User[] } = useSelector((state: any) => state.users);
+    const { users, pages }: { users: User[]; pages: number } = useSelector((state: any) => state.users);
     const [page, setPage] = useState<string>('Management');
 
     const router = useRouter();
@@ -43,6 +53,7 @@ const UserManage = () => {
     const [id, setId] = useState<string>('');
     const [load, setLoad] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
+    const [pageNumber, setPageNumber] = useState<number>(1);
 
     const handleLock = (id: string) => {
         setOpen(true);
@@ -58,6 +69,10 @@ const UserManage = () => {
 
     //Check
     const [checkedAll, setCheckedAll] = useState(false);
+
+    const handleChangePage = (i: number) => {
+        setPageNumber(i);
+    };
 
     const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
 
@@ -135,7 +150,7 @@ const UserManage = () => {
 
     useEffect(() => {
         setLoading(true);
-        dispatch(getAllUser());
+        dispatch(getAllUser(pageNumber));
         setLoading(false);
         localStorage.setItem('tickUser', '');
     }, [dispatch, load]);
@@ -156,23 +171,6 @@ const UserManage = () => {
                     <MenuItem value="Management">Management</MenuItem>
                 </Select>
             </FormControl>
-            <div className="flex gap-5 items-center ml-[15px]">
-                <input
-                    type="checkbox"
-                    checked={checkedAll}
-                    onChange={handleCheckedAll}
-                    className="w-[26px] h-[26px] border-[#D9D9D9] cursor-pointer"
-                />
-                <button className="h-[40px] w-[100px] font-medium text-sm bg-blue bg-opacity-60 text-white rounded-lg">
-                    Select All
-                </button>
-                <button className="h-[40px] w-[110px] font-medium text-sm bg-blue bg-opacity-60 text-white  rounded-lg">
-                    Delete All
-                </button>
-                <button className="h-[40px] w-[150px] font-medium text-sm bg-blue bg-opacity-60 text-white  rounded-lg">
-                    Delete Selected
-                </button>
-            </div>
             <div>
                 {loading ? (
                     <Loading />
@@ -243,6 +241,18 @@ const UserManage = () => {
                     </TableContainer>
                 )}
             </div>
+            {!loading && pages !== 0 && (
+                <div className="flex justify-center shadow-product2 bg-white">
+                    <ThemeProvider theme={theme}>
+                        <Pagination
+                            count={pages}
+                            shape="rounded"
+                            onChange={(_, page: number) => handleChangePage(page)}
+                            color="primary"
+                        />
+                    </ThemeProvider>
+                </div>
+            )}
             {open && (
                 <TypeSure
                     setOpen={setOpen}

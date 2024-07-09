@@ -22,6 +22,8 @@ import { getAllCategory } from '@/slices/categorySlice';
 import { Category, Product, findProduct, productByCate } from '@/types/type';
 import { useParams, usePathname } from 'next/navigation';
 import { CircularProgress } from '@mui/material';
+import axios from '@/utils/axios';
+import NoData from '@/components/shared/NoData';
 
 const unProp = {
     productHots: [],
@@ -37,14 +39,7 @@ const unProp = {
 };
 
 const ManShoes = () => {
-    const {
-        products,
-        brands,
-        pages,
-        loading,
-    }: { products: Product[]; brands: Brand[]; pages: number; loading: boolean } = useSelector(
-        (state: any) => state.products,
-    );
+    const { brands }: { brands: Brand[] } = useSelector((state: any) => state.products);
 
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
@@ -56,13 +51,14 @@ const ManShoes = () => {
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000);
-    const pathname = usePathname();
-    const [load, setLoad] = useState(false);
+    const [fakeListProduct, setFakeListProduct] = useState<Product[]>([]);
+    const [load, setLoad] = useState(true);
+    const [count, setCount] = useState(0);
 
     const { keyword }: { keyword: string } = useParams();
 
     useEffect(() => {
-        const fetchData = () => {
+        const fetchData = async () => {
             const item: findProduct = {
                 keyword: keyword,
                 brand: brand,
@@ -72,27 +68,42 @@ const ManShoes = () => {
             };
 
             console.log('product of cate: ', item);
-            dispatch(findProductByKeyword(item)).unwrap();
+            let url = `/products/find/by-keyword?keyword=${item.keyword}&pageSize=6&pageNumber=1`;
+
+            if (item.color) {
+                url += `&color=${item.color}`;
+            }
+            if (item.brand) {
+                url += `&brand=${item.brand}`;
+            }
+            if (item.sort) {
+                url += `&sort=${item.sort}`;
+            }
+            const { data } = await axios.get(url);
+            if (data.success) {
+                setListProduct(data.data);
+                setFakeListProduct(data.data);
+                setCount(data.pages);
+                setLoad(false);
+            }
         };
         fetchData();
-    }, [keyword, pageNum, view, brand, color, load]);
+    }, [keyword, pageNum, view, brand, color]);
 
     useEffect(() => {
-        if (sort === '') {
-            setListProduct(products);
-        } else if (sort === 'Low to High') {
-            const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+        if (sort === 'Low to High') {
+            const filtered = listProduct.filter((product) => product.price >= minPrice && product.price <= maxPrice);
             const sorted = filtered.sort((a, b) => a.price - b.price);
             setListProduct(sorted);
         } else {
-            const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+            const filtered = listProduct.filter((product) => product.price >= minPrice && product.price <= maxPrice);
             const sorted = filtered.sort((a, b) => b.price - a.price);
             setListProduct(sorted);
         }
-    }, [products, sort]);
+    }, [sort]);
 
     useEffect(() => {
-        const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+        const filtered = fakeListProduct.filter((product) => product.price >= minPrice && product.price <= maxPrice);
         setListProduct(filtered);
     }, [minPrice, maxPrice]);
 
@@ -123,16 +134,18 @@ const ManShoes = () => {
                     view={view}
                     setView={setView}
                 />
-                {loading ? (
+                {load ? (
                     <div className="w-full h-full flex items-center justify-center">
                         <CircularProgress color="secondary" size={60} />
                     </div>
+                ) : load === false && listProduct.length === 0 ? (
+                    <NoData />
                 ) : active ? (
-                    <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
+                    <ShoesWithTag listProduct={listProduct} setListProduct={setListProduct} />
                 ) : (
-                    <SingleSellShoe products={listProduct} {...unProp} setLoad={setLoad} />
+                    <SingleSellShoe products={listProduct} setListProduct={setListProduct} {...unProp} />
                 )}
-                {products.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={pages} /> : ''}
+                {listProduct.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={count} /> : ''}
             </div>
         </div>
     );

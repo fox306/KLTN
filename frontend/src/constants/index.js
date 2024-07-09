@@ -27,7 +27,12 @@ export const userNav = [
     },
     {
         icon: RequestQuoteOutlinedIcon,
-        route: '/user/discount',
+        route: '/user/discounts',
         label: 'Discounts',
+    },
+    {
+        icon: RequestQuoteOutlinedIcon,
+        route: '/user/favorites',
+        label: 'Favorites',
     },
 ];
