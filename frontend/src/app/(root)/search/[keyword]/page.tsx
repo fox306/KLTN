@@ -57,6 +57,7 @@ const ManShoes = () => {
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000);
     const pathname = usePathname();
+    const [load, setLoad] = useState(false);
 
     const { keyword }: { keyword: string } = useParams();
 
@@ -74,7 +75,7 @@ const ManShoes = () => {
             dispatch(findProductByKeyword(item)).unwrap();
         };
         fetchData();
-    }, [keyword, pageNum, view, brand, color]);
+    }, [keyword, pageNum, view, brand, color, load]);
 
     useEffect(() => {
         if (sort === '') {
@@ -121,8 +122,6 @@ const ManShoes = () => {
                     setSort={setSort}
                     view={view}
                     setView={setView}
-                    setBrand={setBrand}
-                    setColor={setColor}
                 />
                 {loading ? (
                     <div className="w-full h-full flex items-center justify-center">
@@ -131,7 +130,7 @@ const ManShoes = () => {
                 ) : active ? (
                     <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (
-                    <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />
+                    <SingleSellShoe products={listProduct} {...unProp} setLoad={setLoad} />
                 )}
                 {products.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={pages} /> : ''}
             </div>

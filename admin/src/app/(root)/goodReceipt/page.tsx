@@ -14,6 +14,8 @@ import CreateNewSupplier from '@/components/form/CreateNewSupplier';
 import { useRouter } from 'next/navigation';
 import { Receipt } from '@/types/type';
 import axios from '@/utils/axios';
+import Image from 'next/image';
+import Loading from '@/components/shared/Loading';
 
 const theme = createTheme({
     palette: {
@@ -28,14 +30,17 @@ const GoodReceiptPage = () => {
 
     const [pages, setPages] = useState(1);
     const [count, setCount] = useState(1);
+    const [loading, setLoading] = useState(true);
 
     const [receipts, setReceipts] = useState<Receipt[]>([]);
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const { data } = await axios.get(`/good-receipts/receipts?pagesize=6&pageNumber=${pages}`);
             if (data.success) {
                 setReceipts(data.data);
                 setCount(data.pages);
+                setLoading(false);
             }
         };
         fetchData();
@@ -64,76 +69,84 @@ const GoodReceiptPage = () => {
                     Create New Receipt
                 </button>
             </div>
-            <div>
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead className="mb-[10px]">
-                            <TableRow>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    STT
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Receipt Id
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Supplier Name
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Confimer
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Confirmation Date
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Total Receipt
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Action
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {receipts &&
-                                receipts.map((item, i) => (
-                                    <TableRow>
-                                        <TableCell align="center" className="text-sm font-bold">
-                                            {i + 1}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.receiptId}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.supplier}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.confirmer}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.confirmation_date}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm font-bak text-orange">
-                                            ${item.total_receipt}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-blue">
-                                            <SearchOutlinedIcon />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </div>
-            <div className="flex justify-center shadow-product2 bg-white mt-[10px]">
-                <ThemeProvider theme={theme}>
-                    <Pagination
-                        count={count}
-                        shape="rounded"
-                        onChange={(_, page: number) => handleChangePage(page)}
-                        page={pages}
-                        color="primary"
-                    />
-                </ThemeProvider>
-            </div>
+            {loading ? (
+                <Loading />
+            ) : (
+                <div>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead className="mb-[10px]">
+                                <TableRow>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        STT
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Receipt Id
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Supplier Name
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Confimer
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Confirmation Date
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Total Receipt
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Action
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {receipts &&
+                                    receipts.map((item, i) => (
+                                        <TableRow>
+                                            <TableCell align="center" className="text-sm font-bold">
+                                                {i + 1}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.receiptId}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.supplier}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.confirmer}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.confirmation_date}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm font-bak text-orange">
+                                                ${item.total_receipt}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-blue">
+                                                <SearchOutlinedIcon
+                                                    onClick={() => router.push(`/goodReceipt/${item.receiptId}`)}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </div>
+            )}
+            {!loading && (
+                <div className="flex justify-center shadow-product2 bg-white mt-[10px]">
+                    <ThemeProvider theme={theme}>
+                        <Pagination
+                            count={count}
+                            shape="rounded"
+                            onChange={(_, page: number) => handleChangePage(page)}
+                            page={pages}
+                            color="primary"
+                        />
+                    </ThemeProvider>
+                </div>
+            )}
         </div>
     );
 };

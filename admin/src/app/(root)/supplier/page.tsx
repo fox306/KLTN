@@ -14,6 +14,7 @@ import CreateNewSupplier from '@/components/form/CreateNewSupplier';
 import axios from '@/utils/axios';
 import { Supplier } from '@/types/type';
 import UpdateSupplier from '@/components/form/UpdateSupplier';
+import Loading from '@/components/shared/Loading';
 
 const theme = createTheme({
     palette: {
@@ -29,6 +30,12 @@ const SupplierPage = () => {
     const [load, setLoad] = useState(false);
     const [pages, setPages] = useState(1);
     const [count, setCount] = useState(1);
+    const [banks, setBanks] = useState<
+        {
+            _id: string;
+            bank_name: string;
+        }[]
+    >([{ _id: '', bank_name: '' }]);
 
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [supplier, setSupplier] = useState<Supplier>({
@@ -43,19 +50,30 @@ const SupplierPage = () => {
         phone: '',
         supplier_name: '',
     });
+
+    const [loading, setLoading] = useState(true);
     const handleChangePage = (i: number) => {
         setPages(i);
     };
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const { data } = await axios.get(`/good-receipts/suppliers?pageSize=6&pageNumber=${pages}`);
             if (data.success) {
                 setSuppliers(data.data);
                 setCount(data.pages);
+                setLoading(false);
+            }
+        };
+        const fetchBanks = async () => {
+            const { data } = await axios.get('/utils/banks');
+            if (data.success) {
+                setBanks(data.data);
             }
         };
         fetchData();
+        fetchBanks();
     }, [load, pages]);
     return (
         <div>
@@ -79,86 +97,93 @@ const SupplierPage = () => {
                 </button>
             </div>
             <div>
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead className="mb-[10px]">
-                            <TableRow>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    STT
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Supplier Name
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Contacter Name
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Email
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Phone
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Total Receipt
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Action
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {suppliers &&
-                                suppliers.map((item, i) => (
-                                    <TableRow>
-                                        <TableCell align="center" className="text-sm font-bold">
-                                            {i + 1}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.supplier_name}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.contacter_name}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.email}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.phone}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-sm">
-                                            {item.total_receipt}
-                                        </TableCell>
-                                        <TableCell align="center" className="text-blue">
-                                            <SearchOutlinedIcon
-                                                onClick={() => {
-                                                    setSupplier(item);
-                                                }}
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                {loading ? (
+                    <Loading />
+                ) : (
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead className="mb-[10px]">
+                                <TableRow>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        STT
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Supplier Name
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Contacter Name
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Email
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Phone
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Total Receipt
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Action
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {suppliers &&
+                                    suppliers.map((item, i) => (
+                                        <TableRow>
+                                            <TableCell align="center" className="text-sm font-bold">
+                                                {i + 1}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.supplier_name}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.contacter_name}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.email}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.phone}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm">
+                                                {item.total_receipt}
+                                            </TableCell>
+                                            <TableCell align="center" className="text-blue">
+                                                <SearchOutlinedIcon
+                                                    onClick={() => {
+                                                        setSupplier(item);
+                                                    }}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
             </div>
-            <div className="flex justify-center shadow-product2 bg-white mt-[10px]">
-                <ThemeProvider theme={theme}>
-                    <Pagination
-                        count={count}
-                        shape="rounded"
-                        onChange={(_, page: number) => handleChangePage(page)}
-                        page={pages}
-                        color="primary"
-                    />
-                </ThemeProvider>
-            </div>
-            {open && <CreateNewSupplier setLoad={setLoad} setOpen={setOpen} />}
+            {!loading && (
+                <div className="flex justify-center shadow-product2 bg-white mt-[10px]">
+                    <ThemeProvider theme={theme}>
+                        <Pagination
+                            count={count}
+                            shape="rounded"
+                            onChange={(_, page: number) => handleChangePage(page)}
+                            page={pages}
+                            color="primary"
+                        />
+                    </ThemeProvider>
+                </div>
+            )}
+            {open && <CreateNewSupplier setLoad={setLoad} setOpen={setOpen} banks={banks} />}
             {open1 && (
                 <UpdateSupplier
                     setLoad={setLoad}
                     setOpen={setOpen1}
                     supplier={supplier as Supplier}
                     setSupplier={setSupplier}
+                    banks={banks}
                 />
             )}
         </div>

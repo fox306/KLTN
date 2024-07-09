@@ -11,15 +11,14 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 
-const banks = ['Money', 'Bank'];
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
     setLoad: Dispatch<SetStateAction<boolean>>;
+    banks: { _id: string; bank_name: string }[];
 };
+const methods = ['TRANSFER', 'CASH'];
 
-const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
-    const router = useRouter();
-    const [bank, setBank] = useState<string>('');
+const CreateNewSupplier = ({ setOpen, setLoad, banks }: Props) => {
     const [supplier, setSupplier] = useState<Supplier>({
         address: '',
         billing_infomation: {
@@ -104,12 +103,12 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                             <Select
                                 labelId="billingMethod"
                                 id="method"
-                                value={bank}
+                                value={supplier.billing_infomation.method}
                                 label="billingMethod"
                                 onChange={(e) => handleChangeBank('method', e.target.value)}
                                 className="font-bold"
                             >
-                                {banks.map((item) => (
+                                {methods.map((item) => (
                                     <MenuItem key={item} value={item}>
                                         {item}
                                     </MenuItem>
@@ -121,14 +120,14 @@ const CreateNewSupplier = ({ setOpen, setLoad }: Props) => {
                             <Select
                                 labelId="bankName"
                                 id="bank"
-                                value={bank}
+                                value={supplier.billing_infomation.bank}
                                 label="bankName"
                                 onChange={(e) => handleChangeBank('bank', e.target.value)}
                                 className="font-bold"
                             >
                                 {banks.map((item) => (
-                                    <MenuItem key={item} value={item}>
-                                        {item}
+                                    <MenuItem key={item._id} value={item.bank_name}>
+                                        {item.bank_name}
                                     </MenuItem>
                                 ))}
                             </Select>

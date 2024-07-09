@@ -29,9 +29,6 @@ const colors = [
 ];
 
 const AddProducts = ({ value, vars, setVars }: Props) => {
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [sizes, setSizes] = useState<{}[][]>([]);
-
     const handleAddSizes = () => {
         setVars((prevVars) =>
             prevVars.map((variant, i) =>
@@ -51,12 +48,14 @@ const AddProducts = ({ value, vars, setVars }: Props) => {
         );
     };
     const handleDeleteSize = (index: number) => {
+        console.log(index);
+        console.log(value);
         setVars((prevVars) =>
             prevVars.map((variant, i) =>
                 i === value
                     ? {
                           ...variant,
-                          details: variant.receipt_variant.filter((_, j) => j !== index),
+                          receipt_variant: variant.receipt_variant.filter((_, j) => j !== index),
                       }
                     : variant,
             ),
@@ -109,7 +108,7 @@ const AddProducts = ({ value, vars, setVars }: Props) => {
                         className: 'text-center',
                     }}
                     value={vars.name_product}
-                    onChange={(event) => handleChange(value, 'name', event.target.value)}
+                    onChange={(event) => handleChange(value, 'name_product', event.target.value)}
                 />
                 <div className="flex gap-5">
                     <FormControl className="w-1/2">
@@ -138,12 +137,12 @@ const AddProducts = ({ value, vars, setVars }: Props) => {
                         label="Total Quantity"
                         variant="outlined"
                         className="w-1/2"
-                        type="tel"
+                        type="number"
                         inputProps={{
                             className: 'text-center',
                         }}
                         value={vars.total_quantity}
-                        onChange={(event) => handleChange(value, 'totalQuantity', event.target.value)}
+                        onChange={(event) => handleChange(value, 'total_quantity', event.target.value)}
                     />
                 </div>
                 <div className="flex gap-5">
@@ -152,24 +151,24 @@ const AddProducts = ({ value, vars, setVars }: Props) => {
                         label="Unit Price"
                         variant="outlined"
                         className="w-1/2"
-                        type="tel"
+                        type="number"
                         inputProps={{
                             className: 'text-center',
                         }}
                         value={vars.unit_price}
-                        onChange={(event) => handleChange(value, 'unitPrice', event.target.value)}
+                        onChange={(event) => handleChange(value, 'unit_price', event.target.value)}
                     />
                     <TextField
                         id="total_price"
                         label="Total Price"
                         variant="outlined"
                         className="w-1/2"
-                        type="tel"
+                        type="number"
                         inputProps={{
                             className: 'text-center',
                         }}
                         value={vars.total_price}
-                        onChange={(event) => handleChange(value, 'totalPrice', event.target.value)}
+                        onChange={(event) => handleChange(value, 'total_price', event.target.value)}
                     />
                 </div>
             </div>
@@ -209,6 +208,7 @@ const AddProducts = ({ value, vars, setVars }: Props) => {
                                 inputProps={{
                                     className: 'w-[200px]',
                                 }}
+                                type="number"
                                 value={item.quantity}
                                 onChange={(event) => handleVariantChange(value, index, 'quantity', event.target.value)}
                             />

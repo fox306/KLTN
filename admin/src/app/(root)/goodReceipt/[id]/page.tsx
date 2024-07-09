@@ -4,7 +4,7 @@ import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import AddProducts from '@/components/form/AddProducts';
@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 
 const detailReceipt = () => {
     const router = useRouter();
+    const { id } = useParams();
     const [detail, setDetail] = useState<FullDetailReceipt>();
     const date = new Date();
     const year = date.getFullYear();
@@ -24,7 +25,7 @@ const detailReceipt = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await axios.get(`/good-receipts/suppliers?pageSize=6&pageNumber=1`);
+            const { data } = await axios.get(`/good-receipts/receipts/${id}`);
             if (data.success) {
                 setDetail(data.data);
             }

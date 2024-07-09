@@ -11,16 +11,16 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 
-const banks = ['Money', 'Bank'];
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
     setLoad: Dispatch<SetStateAction<boolean>>;
     supplier: Supplier;
     setSupplier: Dispatch<SetStateAction<Supplier>>;
+    banks: { _id: string; bank_name: string }[];
 };
+const methods = ['TRANSFER', 'CASH'];
 
-const UpdateSupplier = ({ setOpen, setLoad, supplier, setSupplier }: Props) => {
-    const router = useRouter();
+const UpdateSupplier = ({ setOpen, setLoad, supplier, setSupplier, banks }: Props) => {
     const handleChange = (field: string, value: string) => {
         setSupplier((prev) => ({ ...prev, [field]: value }));
     };
@@ -102,7 +102,7 @@ const UpdateSupplier = ({ setOpen, setLoad, supplier, setSupplier }: Props) => {
                                 onChange={(e) => handleChangeBank('method', e.target.value)}
                                 className="font-bold"
                             >
-                                {banks.map((item) => (
+                                {methods.map((item) => (
                                     <MenuItem key={item} value={item}>
                                         {item}
                                     </MenuItem>
@@ -120,8 +120,8 @@ const UpdateSupplier = ({ setOpen, setLoad, supplier, setSupplier }: Props) => {
                                 className="font-bold"
                             >
                                 {banks.map((item) => (
-                                    <MenuItem key={item} value={item}>
-                                        {item}
+                                    <MenuItem key={item._id} value={item.bank_name}>
+                                        {item.bank_name}
                                     </MenuItem>
                                 ))}
                             </Select>

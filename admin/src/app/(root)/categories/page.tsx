@@ -18,6 +18,7 @@ import Paper from '@mui/material/Paper';
 import Image from 'next/image';
 import AddCate from '@/components/form/AddCate';
 import UpdateCate from '@/components/form/UpdateCate';
+import Loading from '@/components/shared/Loading';
 
 const theme = createTheme({
     palette: {
@@ -105,6 +106,7 @@ const Categories = () => {
         name: '',
         selected: false,
     });
+    const [loading, setLoading] = useState(true);
 
     const handleChangePage = (i: number) => {
         setPages(i);
@@ -117,10 +119,12 @@ const Categories = () => {
 
     useEffect(() => {
         const fetchCate = async () => {
+            setLoading(true);
             const { data } = await axios.get('/categories');
             if (data.success) {
                 setCategories(data.data);
                 setCount(Math.ceil(data.total / 6));
+                setLoading(false);
             }
         };
         fetchCate();
@@ -169,66 +173,72 @@ const Categories = () => {
                 </div>
             </div>
             <div>
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead className="mb-[10px]">
-                            <TableRow>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    STT
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Category Image
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Category Name
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Total Product
-                                </TableCell>
-                                <TableCell align="center" className="font-bold text-sm">
-                                    Action
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {categories.map((item, i) => (
+                {loading ? (
+                    <Loading />
+                ) : (
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead className="mb-[10px]">
                                 <TableRow>
-                                    <TableCell align="center" className="text-sm font-bold">
-                                        {i + 1}
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        STT
                                     </TableCell>
-                                    <TableCell align="center" className="flex justify-center">
-                                        <div className="shadow-cate w-[200px] h-[60px] flex justify-center">
-                                            <Image src={item.img} alt="Anh" width={60} height={60} />
-                                        </div>
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Category Image
                                     </TableCell>
-                                    <TableCell align="center" className="text-sm">
-                                        {item.name}
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Category Name
                                     </TableCell>
-                                    <TableCell align="center" className="text-sm">
-                                        1
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Total Product
                                     </TableCell>
-                                    <TableCell align="center" className="text-blue">
-                                        <SearchOutlinedIcon onClick={() => updateCate(item)} />
+                                    <TableCell align="center" className="font-bold text-sm">
+                                        Action
                                     </TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {categories.map((item, i) => (
+                                    <TableRow>
+                                        <TableCell align="center" className="text-sm font-bold">
+                                            {i + 1}
+                                        </TableCell>
+                                        <TableCell align="center" className="flex justify-center">
+                                            <div className="shadow-cate w-[200px] h-[60px] flex justify-center">
+                                                <Image src={item.img} alt="Anh" width={60} height={60} />
+                                            </div>
+                                        </TableCell>
+                                        <TableCell align="center" className="text-sm">
+                                            {item.name}
+                                        </TableCell>
+                                        <TableCell align="center" className="text-sm">
+                                            1
+                                        </TableCell>
+                                        <TableCell align="center" className="text-blue">
+                                            <SearchOutlinedIcon onClick={() => updateCate(item)} />
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
             </div>
-            <div className="flex justify-center shadow-product2 bg-white mt-[10px]">
-                <ThemeProvider theme={theme}>
-                    <Pagination
-                        count={count}
-                        shape="rounded"
-                        onChange={(_, page: number) => handleChangePage(page)}
-                        page={pages}
-                        color="primary"
-                    />
-                </ThemeProvider>
-            </div>
+            {!loading && (
+                <div className="flex justify-center shadow-product2 bg-white mt-[10px]">
+                    <ThemeProvider theme={theme}>
+                        <Pagination
+                            count={count}
+                            shape="rounded"
+                            onChange={(_, page: number) => handleChangePage(page)}
+                            page={pages}
+                            color="primary"
+                        />
+                    </ThemeProvider>
+                </div>
+            )}
             {open && <AddCate setOpen={setOpen} setLoad={setLoad} />}
-            {open1 && <UpdateCate item={cate} setOpen={setOpen} setLoad={setLoad} />}
+            {open1 && <UpdateCate item={cate} setOpen={setOpen1} setLoad={setLoad} />}
         </div>
     );
 };

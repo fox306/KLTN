@@ -115,9 +115,9 @@ const Order = () => {
         if (discount) {
             if (discount.type === 'percent') {
                 const money = (totalPrice * discount.value) / 100;
-                console.log(money);
-                setTotalPay(totalPrice - money);
-                console.log(totalPay);
+                if (money > discount.maxDiscount) {
+                    setTotalPay(totalPrice - discount.maxDiscount);
+                } else setTotalPay(totalPrice - money);
             } else {
                 setTotalPay(totalPrice - discount.value);
             }

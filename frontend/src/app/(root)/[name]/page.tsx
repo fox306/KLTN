@@ -126,8 +126,6 @@ const ManShoes = () => {
                     setSort={setSort}
                     view={view}
                     setView={setView}
-                    setColor={setColor}
-                    setBrand={setBrand}
                 />
                 {loading ? (
                     <div className="w-full h-full flex items-center justify-center">
