@@ -37,8 +37,9 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
                 setAction('');
                 setId('');
             }
-        } else if (action === 'Hidden') {
+        } else if (action === 'Hide') {
             const { data } = await axios.patch(`/products/hide/${id}`);
+            console.log(id);
             if (data.success) {
                 toast.success('Hidden Product Success');
                 setLoad((prev) => !prev);
