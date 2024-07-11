@@ -110,7 +110,7 @@ const AddProducts = ({ value, vars, setVars }: Props) => {
                     value={vars.name_product}
                     onChange={(event) => handleChange(value, 'name_product', event.target.value)}
                 />
-                <div className="flex gap-5">
+                <div className="flex justify-between gap-5">
                     <FormControl className="w-1/2">
                         <InputLabel id="colorId">Color</InputLabel>
                         <Select

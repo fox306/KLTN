@@ -157,11 +157,7 @@ const ShoesSinglePage = () => {
             quantity: manageQuantity,
         };
 
-        const { data } = await axiosPrivate.post('/carts/addToCart', item, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const { data } = await axiosPrivate.post('/carts/addToCart', item);
         if (data.success) {
             toast.success('Add item to cart success');
         }
@@ -289,7 +285,7 @@ const ShoesSinglePage = () => {
                 <div>
                     <h1 className="text-base font-bold">{productDetail?.name}</h1>
                     <div className="flex items-center gap-10 mt-[23px] mb-[25px]">
-                        <Rating value={4} readOnly emptyIcon={<StarIcon className="text-star" />} />
+                        <Rating value={productDetail?.rating} readOnly emptyIcon={<StarIcon className="text-star" />} />
 
                         <span className="text-rv">0 review</span>
                     </div>

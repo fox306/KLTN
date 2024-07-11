@@ -14,9 +14,10 @@ const theme = createTheme({
 type Props = {
     setPageNum: Dispatch<SetStateAction<number>>;
     pages: number;
+    pageNum: number;
 };
 
-const Pagetination = ({ setPageNum, pages }: Props) => {
+const Pagetination = ({ setPageNum, pages, pageNum }: Props) => {
     const handleChangePage = (i: number) => {
         setPageNum(i);
     };
@@ -26,6 +27,7 @@ const Pagetination = ({ setPageNum, pages }: Props) => {
                 <Pagination
                     count={pages}
                     shape="rounded"
+                    page={pageNum}
                     onChange={(_, page: number) => handleChangePage(page)}
                     color="primary"
                 />

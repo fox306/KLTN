@@ -274,7 +274,7 @@ const CartShoe = ({
                                         alt=" Ảnh"
                                         width={120}
                                         height={120}
-                                        className="bg-bg_sell rounded-lg cursor-pointer"
+                                        className="bg-bg_sell rounded-lg cursor-pointer w-[120px] h-[120px]"
                                         onClick={() => router.push(`/shoes/${item.product}`)}
                                     />
                                     {item.name}
@@ -302,14 +302,18 @@ const CartShoe = ({
                                 </TableCell>
                                 <TableCell align="center">{item.size}</TableCell>
                                 <TableCell align="center">{item.quantity}</TableCell>
-                                <TableCell align="center">${item.price}</TableCell>
-                                <TableCell align="center">${item.quantity * item.price}</TableCell>
+                                <TableCell align="center" className="font-bak text-money">
+                                    ${item.price}
+                                </TableCell>
+                                <TableCell align="center" className="font-bak text-money">
+                                    ${item.quantity * item.price}
+                                </TableCell>
                                 <TableCell
                                     align="center"
                                     onClick={() =>
                                         handleChange(item.product, item.color as string, item.size, item.quantity)
                                     }
-                                    className="cursor-pointer hover:text-blue"
+                                    className="cursor-pointer hover:text-blue font-bold"
                                 >
                                     Change
                                 </TableCell>

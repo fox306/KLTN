@@ -58,11 +58,7 @@ const ShoesWithTag = ({ listProduct, setListProduct }: Props) => {
             product,
         };
         const token = localStorage.getItem('token');
-        const { data } = await axiosPrivate.post('/carts/addToCart/withoutVariant', cart, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const { data } = await axiosPrivate.post('/carts/addToCart/withoutVariant', cart);
         if (data.success) {
             toast.success('Add to cart success');
         }

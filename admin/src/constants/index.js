@@ -4,6 +4,9 @@ import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded';
 import ListAltRoundedIcon from '@mui/icons-material/ListAltRounded';
 import WarehouseRoundedIcon from '@mui/icons-material/WarehouseRounded';
 import MonetizationOnRoundedIcon from '@mui/icons-material/MonetizationOnRounded';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import DiscountOutlinedIcon from '@mui/icons-material/DiscountOutlined';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 
 export const adminNav = [
     {
@@ -37,17 +40,17 @@ export const adminNav = [
         label: 'Price',
     },
     {
-        icon: MonetizationOnRoundedIcon,
+        icon: DiscountOutlinedIcon,
         route: '/coupons',
         label: 'Coupons',
     },
     {
-        icon: MonetizationOnRoundedIcon,
+        icon: Inventory2OutlinedIcon,
         route: '/supplier',
         label: 'Suppliers',
     },
     {
-        icon: MonetizationOnRoundedIcon,
+        icon: LocalShippingOutlinedIcon,
         route: '/goodReceipt',
         label: 'Good Receipts',
     },

@@ -55,11 +55,6 @@ const DiscountPage = () => {
         const fetchStatus = async () => {
             const { data } = await axiosPrivate.get(
                 `/coupons/find/by-user/by-status?user=${id}&pageSize=5&pageNumber=1&status=${status}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
             );
             if (data.success) {
                 setCoupon(data.data);
@@ -98,7 +93,7 @@ const DiscountPage = () => {
                         })}
                 </div>
 
-                <div className="flex flex-col w-[1100px]">
+                <div className="flex flex-col w-[1100px] mb-[10px]">
                     {loading ? (
                         <div className="w-full h-full flex items-center justify-center">
                             <CircularProgress color="secondary" size={60} />

@@ -30,11 +30,6 @@ const page = () => {
                 setLoad(true);
                 const { data } = await axiosPrivate.get(
                     `/products/find/by-favorites?pageSize=6&pageNumber=${pageNum}&user=${user._id}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    },
                 );
                 if (data.success) {
                     setProducts(data.data);
@@ -125,7 +120,7 @@ const page = () => {
                         ))}
                     </div>
                 )}
-                {!load && <Pagetination setPageNum={setPageNum} pages={count} />}
+                {!load && <Pagetination pageNum={pageNum} setPageNum={setPageNum} pages={count} />}
             </div>
         </div>
     );

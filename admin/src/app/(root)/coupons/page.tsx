@@ -157,7 +157,7 @@ const CouponsPage = () => {
                                         <TableCell align="center">Code</TableCell>
                                         <TableCell align="center">Name of Coupon</TableCell>
                                         <TableCell align="center">Value</TableCell>
-                                        <TableCell align="center">Time Remaining</TableCell>
+                                        <TableCell align="center">Time Remaining (day)</TableCell>
                                         <TableCell align="center">Status</TableCell>
                                         <TableCell align="center">Action</TableCell>
                                     </TableRow>
@@ -218,6 +218,7 @@ const CouponsPage = () => {
                             count={pages}
                             shape="rounded"
                             onChange={(_, page: number) => handleChangePage(page)}
+                            page={pageNumber}
                             color="primary"
                         />
                     </ThemeProvider>

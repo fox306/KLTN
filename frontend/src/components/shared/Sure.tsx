@@ -22,15 +22,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
     const handleStatus = async () => {
         const token = localStorage.getItem('token');
         if (current === 'Received') {
-            const { data } = await axiosPrivate.patch(
-                `/orders/received/${orderId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
-            );
+            const { data } = await axiosPrivate.patch(`/orders/received/${orderId}`);
             if (data.success) {
                 toast.success('Received order success');
                 setLoad((prev) => !prev);
@@ -41,15 +33,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 toast.error('Received order fail');
             }
         } else if (current === 'Return') {
-            const { data } = await axiosPrivate.patch(
-                `/orders/return/${orderId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
-            );
+            const { data } = await axiosPrivate.patch(`/orders/return/${orderId}`);
             console.log(data);
 
             if (data.success) {
@@ -62,15 +46,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 toast.error('Return order fail');
             }
         } else {
-            const { data } = await axiosPrivate.patch(
-                `/orders/cancel/${orderId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
-            );
+            const { data } = await axiosPrivate.patch(`/orders/cancel/${orderId}`);
             console.log(data);
 
             if (data.success) {

@@ -122,8 +122,9 @@ const GoodReceiptPage = () => {
                                             <TableCell align="center" className="text-sm font-bak text-orange">
                                                 ${item.total_receipt}
                                             </TableCell>
-                                            <TableCell align="center" className="text-blue">
+                                            <TableCell align="center">
                                                 <SearchOutlinedIcon
+                                                    className="text-blue cursor-pointer hover:opacity-50"
                                                     onClick={() => router.push(`/goodReceipt/${item.receiptId}`)}
                                                 />
                                             </TableCell>

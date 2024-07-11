@@ -145,7 +145,11 @@ const ManShoes = () => {
                 ) : (
                     <SingleSellShoe products={listProduct} setListProduct={setListProduct} {...unProp} />
                 )}
-                {listProduct.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={count} /> : ''}
+                {listProduct.length !== 0 ? (
+                    <Pagetination pageNum={pageNum} setPageNum={setPageNum} pages={count} />
+                ) : (
+                    ''
+                )}
             </div>
         </div>
     );

@@ -158,7 +158,7 @@ const Cart = () => {
                         <span>${total}</span>
                     </div>
                     <button
-                        className="bg-bluev4 w-full h-[60px] rounded-lg font-bold text-white"
+                        className="bg-bluev4 w-full h-[60px] rounded-lg font-bold text-white hover:bg-blue"
                         onClick={handleCheckout}
                     >
                         Check out

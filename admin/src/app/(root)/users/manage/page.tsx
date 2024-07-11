@@ -216,7 +216,7 @@ const UserManage = () => {
                                         >
                                             {item.gender === 'Male' ? <MaleRoundedIcon /> : <FemaleRoundedIcon />}
                                         </TableCell>
-                                        <TableCell align="center">${item.spent}</TableCell>
+                                        <TableCell align="center">${item.spent ? item.spent : 0}</TableCell>
                                         <TableCell align="center">{item.role}</TableCell>
                                         <TableCell
                                             align="center"
@@ -241,13 +241,14 @@ const UserManage = () => {
                     </TableContainer>
                 )}
             </div>
-            {!loading && pages !== 0 && (
+            {!loading && (
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination
                             count={pages}
                             shape="rounded"
                             onChange={(_, page: number) => handleChangePage(page)}
+                            page={pageNumber}
                             color="primary"
                         />
                     </ThemeProvider>

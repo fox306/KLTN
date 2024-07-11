@@ -111,7 +111,7 @@ const ChangeVariant = ({
 
     useEffect(() => {
         const fetchProductDetail = async () => {
-            const { data } = await axios.get(`/products/${id}`);
+            const { data } = await axios.get(`/products/${productId}`);
             if (data.success) {
                 console.log(data);
                 setVariants(data.data.variants);
@@ -136,7 +136,7 @@ const ChangeVariant = ({
         if (!isFirstRender) {
             const fetchData = async () => {
                 const { data } = await axios.get(
-                    `/variants/find/by-info?product=${id}&size=${items.size}&color=${items.color}`,
+                    `/variants/find/by-info?product=${productId}&size=${items.size}&color=${items.color}`,
                 );
                 if (data.success) {
                     setItems({ ...items, quantity: data.data.quantity });
