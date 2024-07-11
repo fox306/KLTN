@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import HomeShoeCard from '../cards/HomeShoeCard';
 import Image from 'next/image';
 import { Rating } from '@mui/material';
@@ -7,15 +7,15 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemCart, Product, RVariant, User, itemCartRandomVari } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
-import { getProductById } from '@/slices/productSlice';
+import { getProductById, getProductHotDeal } from '@/slices/productSlice';
 import { addItemToCartByUserId, addItemToCartRandomVariant } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import useAxiosPrivate from '@/utils/intercepter';
+import axios from '@/utils/axios';
+import FavoriteIcon from '../shared/FavoriteIcon';
 
 const HomeShoe = () => {
-    const { productHots, productDetail }: { productHots: Product[]; productDetail: Product } = useSelector(
-        (state: any) => state.products,
-    );
     const dispatch = useDispatch<AppDispatch>();
     const [id, setId] = useState<string>('');
     const [count, setCount] = useState(0);
@@ -24,6 +24,7 @@ const HomeShoe = () => {
     const [isBack, setIsBack] = useState<boolean>(false);
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
+    const [productHots, setProductHots] = useState<Product[]>([]);
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
 
@@ -60,6 +61,42 @@ const HomeShoe = () => {
             setIsNext(false);
         }
     }, [productHots.length, setIsNext]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const { data } = await axios.get('/revenue/products/hot');
+            if (data.success) {
+                setProductHots(data.data);
+            }
+        };
+        fetchData();
+    }, []);
+    const favorite = async (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, id: string, i: boolean) => {
+        e.stopPropagation();
+        const updatedProducts = productHots.map((product) =>
+            product._id === id ? { ...product, isFavorite: !product.isFavorite } : product,
+        );
+        setProductHots(updatedProducts);
+        if (i) {
+            await axios.delete(`/favorites/un-favorite/${id}`);
+            return;
+        }
+        const userString = localStorage.getItem('user');
+        if (userString !== null) {
+            const user: User = JSON.parse(userString);
+            const item = {
+                user: user._id,
+                product: id,
+            };
+            const { data } = await axios.post('/favorites', item);
+            if (data.success) {
+                i = true;
+            }
+        } else {
+            toast.error('You must login before favorite ');
+            router.push('/sign-in');
+            return;
+        }
+    };
 
     const handleAddtoCart = async ({ product, user }: itemCartRandomVari) => {
         if (!user) {
@@ -138,7 +175,9 @@ const HomeShoe = () => {
                                             <Rating size="small" name="read-only" value={productHot.rating} readOnly />
                                             <span className="text-money font-bak">$ {productHot.price}</span>
                                         </div>
-                                        <FavoriteBorderOutlinedIcon className="w-5 h-5 text-orange" />
+                                        <div onClick={(e) => favorite(e, productHot._id, productHot.isFavorite)}>
+                                            <FavoriteIcon isFavorite={productHot.isFavorite} />
+                                        </div>
                                     </div>
                                     <button
                                         className="mt-3 px-2 py-2 border-2 border-orange text-[12px] font-bold text-orange rounded-lg w-full hover:opacity-60"

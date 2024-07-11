@@ -23,12 +23,15 @@ import { AppDispatch } from '@/utils/store';
 import { getUser, updateUser } from '@/slices/userSlice';
 import { DateValidationError, PickerChangeHandlerContext } from '@mui/x-date-pickers';
 import Border from '@/components/shared/Border';
+import useAxiosPrivate from '@/utils/intercepter';
+import Loading from '@/components/shared/Loading';
 
 const unProp = {
     setRegis: () => {},
 };
 
 const Profile = () => {
+    const axiosPrivate = useAxiosPrivate();
     const [load, setLoad] = useState<boolean>(false);
     const [open, setOpen] = useState(false);
     const [open1, setOpen1] = useState(false);
@@ -38,7 +41,8 @@ const Profile = () => {
     const [update, setUpdate] = useState(false);
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     const dispatch = useDispatch<AppDispatch>();
-    const { loading, user }: { user: User; loading: boolean } = useSelector((state: any) => state.users);
+    const { user }: { user: User } = useSelector((state: any) => state.users);
+    const [loading, setLoading] = useState(true);
 
     let userlocal: User | null = null;
 
@@ -81,7 +85,7 @@ const Profile = () => {
         image && formData.append('file', image);
         formData.append('user', id);
 
-        const { data } = await axios.patch('/users/upload-avatar', formData, {
+        const { data } = await axiosPrivate.patch('/users/upload-avatar', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -104,6 +108,8 @@ const Profile = () => {
         setSelectedDate(value || undefined);
     };
     const handleSumbit = async () => {
+        setLoading(true);
+        const token = localStorage.getItem('token');
         const item = {
             user: id,
             fullName: items.fullName,
@@ -111,11 +117,15 @@ const Profile = () => {
             gender: selectedGender,
             birthDay: selectedDate?.format('YYYY-MM-DD') ?? '',
         };
-        // const { data } = await axios.put('/users', item);
-        const res = await dispatch(updateUser(item));
-        if ((res.payload as { status: number }).status === 200) {
+        const { data } = await axiosPrivate.patch('/users', item, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if (data.success) {
             toast.success('Update profile success');
             setLoad((prev) => !prev);
+            setLoading(false);
         } else {
             toast.error('Update profile fail');
         }
@@ -131,6 +141,7 @@ const Profile = () => {
     };
     useEffect(() => {
         dispatch(getUser(id));
+        setLoading(false);
     }, [dispatch, load]);
     useEffect(() => {
         if (change) {
@@ -147,16 +158,27 @@ const Profile = () => {
     }, [change]);
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
         if (update) {
             const updateEmail = async () => {
-                const { data } = await axios.patch('/users/email', {
-                    user: id,
-                    newEmail: email,
-                });
+                setLoading(true);
+                const { data } = await axiosPrivate.patch(
+                    '/users/email',
+                    {
+                        user: id,
+                        newEmail: email,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
+                );
 
                 if (data.success) {
                     toast.success('Update email success');
                     setLoad((prev) => !prev);
+                    setLoading(false);
                 } else {
                     toast.error('Update email fail');
                 }
@@ -187,7 +209,9 @@ const Profile = () => {
     }, [loading, dispatch, user]);
     return (
         <div>
-            {!loading ? (
+            {loading ? (
+                <Loading />
+            ) : (
                 <div className="flex justify-center px-20 mt-10 gap-5">
                     <UserNav />
                     <div className="shadow-lg py-[40px] pl-[90px] pr-[120px] flex rounded-lg items-center w-[1100px]">
@@ -337,14 +361,13 @@ const Profile = () => {
                             setOpen2={setOpen2}
                             change={change}
                             setChange={setChange}
-                            setUpdate={setUpdate}
                             {...unProp}
                         />
                     )}
-                    {open2 && <Form3 setEmail={setEmail} setOpen={setOpen} setOpen2={setOpen2} setChange={setChange} />}
+                    {open2 && (
+                        <Form3 setEmail={setEmail} setUpdate={setUpdate} setOpen2={setOpen2} setChange={setChange} />
+                    )}
                 </div>
-            ) : (
-                <span>Wating</span>
             )}
         </div>
     );

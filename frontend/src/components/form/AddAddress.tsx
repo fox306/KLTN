@@ -162,18 +162,25 @@ const AddAddress = ({
             setOpen(false);
         }
     };
+    console.log(provinceID);
     useEffect(() => {
         const fetchDistrict = async () => {
             const { data } = await axios.get(`/utils/provinces/districts/${provinceID}`);
+
+            console.log(data.result);
             setDistrict(data.result);
         };
         if (provinceID) {
+            console.log('Hi');
+            console.log(provinceID);
             fetchDistrict();
         }
     }, [provinceID]);
+    console.log(district);
     useEffect(() => {
         const fetchWard = async () => {
             const { data } = await axios.get(`/utils/provinces/districts/wards/${districtID}`);
+
             setWard(data.result);
         };
         if (districtID) {

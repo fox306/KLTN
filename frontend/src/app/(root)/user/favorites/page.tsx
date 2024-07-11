@@ -7,6 +7,7 @@ import Pagetination from '@/components/shared/Pagetination';
 import UserNav from '@/components/shared/UserNav';
 import { Product, User } from '@/types/type';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -14,19 +15,26 @@ import { MouseEvent, useEffect, useState } from 'react';
 
 const page = () => {
     const router = useRouter();
+    const axiosPrivate = useAxiosPrivate();
     const [products, setProducts] = useState<Product[]>([]);
-    const [load, setLoad] = useState(false);
+    const [load, setLoad] = useState(true);
     const [count, setCount] = useState(0);
     const [pageNum, setPageNum] = useState(1);
 
     useEffect(() => {
         const fetchData = async () => {
             const userString = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
             if (userString !== null) {
                 const user: User = JSON.parse(userString);
                 setLoad(true);
-                const { data } = await axios.get(
+                const { data } = await axiosPrivate.get(
                     `/products/find/by-favorites?pageSize=6&pageNumber=${pageNum}&user=${user._id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
                 );
                 if (data.success) {
                     setProducts(data.data);
@@ -39,13 +47,15 @@ const page = () => {
     }, []);
     const favorite = async (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, id: string, i: boolean) => {
         e.stopPropagation();
+        const token = localStorage.getItem('token');
+
         const updatedProducts = products.map((product) =>
             product._id === id ? { ...product, isFavorite: !product.isFavorite } : product,
         );
         setProducts(updatedProducts);
         console.log('Change', products);
         if (i) {
-            await axios.delete(`/favorites/un-favorite/${id}`);
+            await axiosPrivate.delete(`/favorites/un-favorite/${id}`);
             return;
         }
         const userString = localStorage.getItem('user');
@@ -55,7 +65,7 @@ const page = () => {
                 user: user._id,
                 product: id,
             };
-            await axios.post('/favorites', item);
+            await axiosPrivate.post('/favorites', item);
         }
     };
     const handleDetail = (id: string) => {
@@ -115,7 +125,7 @@ const page = () => {
                         ))}
                     </div>
                 )}
-                {products.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={count} /> : ''}
+                {!load && <Pagetination setPageNum={setPageNum} pages={count} />}
             </div>
         </div>
     );

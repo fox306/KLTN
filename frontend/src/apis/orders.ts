@@ -1,5 +1,6 @@
 import { Order, checkoutOrder, orderStatus, updateOrder } from '@/types/type';
 import axios from '../utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const ordersApi = {
     getAllOrderByUserId: (userId: string) => {
@@ -15,6 +16,7 @@ const ordersApi = {
         return axios.get(url);
     },
     createOrder: (item: checkoutOrder) => {
+        const axiosPrivate = useAxiosPrivate();
         const url = '/orders';
         const data = {
             user: item.user,
@@ -22,9 +24,10 @@ const ordersApi = {
             items: item.items,
             total: item.total,
             paymentMethod: item.paymentMethod,
+            discountAmount: item.discountAmount,
+            coupon: item.coupon,
         };
-        console.log(data);
-        return axios.post(url, data);
+        return axiosPrivate.post(url, data);
     },
     cancelOrderByOrderId: (order: string) => {
         const url = `/orders/cancel/${order}`;

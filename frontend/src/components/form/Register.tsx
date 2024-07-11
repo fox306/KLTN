@@ -79,6 +79,11 @@ const Register = () => {
             setOpen(true);
         }
     };
+    const convertDate = (date: string) => {
+        const [day, month, year] = date.split('/');
+
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    };
 
     useEffect(() => {
         const submitForm = async () => {
@@ -86,7 +91,9 @@ const Register = () => {
                 if (!regis) return;
                 const { rePassword, ...items } = form.getValues();
                 console.log(items);
+                items.birthDay = convertDate(items.birthDay);
                 const res = await dispatch(signUp(items));
+                console.log(res);
 
                 if ((res.payload as { status: number }).status === 201) {
                     toast.success('Register Success');

@@ -17,7 +17,6 @@ import FavoriteIcon from '../shared/FavoriteIcon';
 
 type Props = {
     products: Product[];
-    productHots: Product[];
     active: boolean;
     isNext: boolean;
     setIsNext: Dispatch<SetStateAction<boolean>>;
@@ -32,7 +31,6 @@ type Props = {
 
 const SingleSellShoe = ({
     products,
-    productHots,
     active,
     isNext,
     setIsNext,
@@ -56,7 +54,7 @@ const SingleSellShoe = ({
                 setIsBack(true);
             }
         } else {
-            if (productHots.length === next) {
+            if (products.length === next) {
                 setIsNext(false);
             } else {
                 setNext((prev) => prev + 1);
@@ -171,8 +169,8 @@ const SingleSellShoe = ({
                                   </div>
                               </div>
                           ))
-                        : productHots &&
-                          productHots.slice(back, next).map((product: Product, index: number) => (
+                        : products &&
+                          products.slice(back, next).map((product: Product, index: number) => (
                               <div
                                   key={product._id}
                                   className="flex gap-2 cursor-pointer"
@@ -222,7 +220,7 @@ const SingleSellShoe = ({
                     />
                 ) : (
                     <ArrowForwardIosRoundedIcon
-                        className={`text-3xl ${next < productHots.length ? 'cursor-pointer' : 'text-gray'}`}
+                        className={`text-3xl ${next < products.length ? 'cursor-pointer' : 'text-gray'}`}
                         onClick={isNext ? handleNext : undefined}
                     />
                 )}

@@ -6,11 +6,9 @@ import { AppDispatch } from '@/utils/store';
 import { getAllProduct, getProductHotDeal } from '@/slices/productSlice';
 import { Product } from '@/types/type';
 import { CircularProgress } from '@mui/material';
+import axios from '@/utils/axios';
 
 const SellShoe = () => {
-    const { products, productHots }: { products: Product[]; productHots: Product[]; loading: boolean } = useSelector(
-        (state: any) => state.products,
-    );
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
     const [isNext, setIsNext] = useState<boolean>(false);
@@ -18,15 +16,18 @@ const SellShoe = () => {
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
     const [loading, setLoading] = useState(false);
-    const [load, setLoad] = useState(false);
+    const [listProduct, setListProduct] = useState<Product[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             if (active) {
                 setLoading(true);
-                await dispatch(getAllProduct());
-                setLoading(false);
-                if (products.length > 4) {
+                const { data } = await axios.get('/products?pageSize=10&pageNumber=1');
+                if (data.success) {
+                    setListProduct(data.data);
+                    setLoading(false);
+                }
+                if (listProduct.length > 4) {
                     setIsNext(true);
                     setBack(0);
                     setNext(4);
@@ -37,9 +38,12 @@ const SellShoe = () => {
                 }
             } else {
                 setLoading(true);
-                await dispatch(getProductHotDeal());
-                setLoading(false);
-                if (productHots.length > 4) {
+                const { data } = await axios.get('/revenue/products/hot');
+                if (data.success) {
+                    setListProduct(data.data);
+                    setLoading(false);
+                }
+                if (listProduct.length > 4) {
                     setIsNext(true);
                     setBack(0);
                     setNext(4);
@@ -52,8 +56,8 @@ const SellShoe = () => {
         };
 
         fetchData();
-    }, [active, dispatch, load]);
-    console.log(loading);
+    }, [active]);
+    console.log(listProduct);
     return (
         <div className="py-5 px-10">
             <div className="flex justify-center mb-5 font-bold text-base gap-5 text-center">
@@ -81,8 +85,7 @@ const SellShoe = () => {
                     </div>
                 ) : (
                     <SingleSellShoe
-                        products={products}
-                        productHots={productHots}
+                        products={listProduct}
                         active={active}
                         isNext={isNext}
                         setIsNext={setIsNext}
@@ -92,7 +95,7 @@ const SellShoe = () => {
                         setNext={setNext}
                         back={back}
                         setBack={setBack}
-                        setLoad={setLoad}
+                        setListProduct={setListProduct}
                     />
                 )}
             </div>

@@ -2,6 +2,7 @@
 
 import { ItemCart } from '@/types/type';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import { Rating } from '@mui/material';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -13,17 +14,20 @@ type Props = {
 };
 
 const Review = ({ item, setActive, id }: Props) => {
+    const axiosPrivate = useAxiosPrivate();
     const [text, setText] = useState<string>('');
     const [value, setValue] = useState<number | null>(0);
     const handleSubmit = async () => {
+        const token = localStorage.getItem('token');
         const formData = new FormData();
         formData.append('commentator', id);
         formData.append('product', item.product);
         formData.append('rating', value?.toString() || '');
         formData.append('content', text);
-        const { data } = await axios.post('/comments', formData, {
+        const { data } = await axiosPrivate.post('/comments', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
             },
         });
         if (data.success) {

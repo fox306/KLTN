@@ -31,6 +31,7 @@ import { addItemToCartByUserId } from '@/slices/cartSlice';
 import { useRouter } from 'next/navigation';
 import axios from '@/utils/axios';
 import FavoriteIcon from '@/components/shared/FavoriteIcon';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const unProp = {
     productHots: [],
@@ -57,6 +58,8 @@ const ShoesSinglePage = () => {
     const { variantBySize }: { variantBySize: VariantBySize[] } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
+
+    const axiosPrivate = useAxiosPrivate();
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
@@ -143,7 +146,7 @@ const ShoesSinglePage = () => {
             toast.error('Out of stock');
             return;
         }
-
+        const token = localStorage.getItem('token');
         const item: ItemCartFake = {
             user: user._id,
             product: id,
@@ -154,9 +157,12 @@ const ShoesSinglePage = () => {
             quantity: manageQuantity,
         };
 
-        const res = await dispatch(addItemToCartByUserId(item));
-        console.log(res);
-        if ((res.payload as { status: number }).status === 201) {
+        const { data } = await axiosPrivate.post('/carts/addToCart', item, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if (data.success) {
             toast.success('Add item to cart success');
         }
     };

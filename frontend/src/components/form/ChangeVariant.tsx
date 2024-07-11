@@ -4,6 +4,7 @@ import { getProductById } from '@/slices/productSlice';
 import { getColorOfSize } from '@/slices/variantSlice';
 import { RVariant, User, Variant, getQtyOfSizeColor } from '@/types/type';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -43,12 +44,11 @@ const ChangeVariant = ({
     setItems,
     setManageQuantity,
 }: Props) => {
-    const { variants }: { variants: Variant } = useSelector((state: any) => state.products);
     const { quantity }: { quantity: number } = useSelector((state: any) => state.variants);
     const { loading } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
     console.log(loading);
-
+    const axiosPrivate = useAxiosPrivate();
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
     if (userString !== null) {
@@ -59,9 +59,11 @@ const ChangeVariant = ({
         }
     }
     const id = user?._id as string;
-    const [flag, setFlag] = useState<boolean>(false);
+    const [variants, setVariants] = useState<Variant>();
+
     const [isFirstRender, setIsFirstRender] = useState(true);
-    const [dispatchCount, setDispatchCount] = useState(0);
+    const [flag, setFlag] = useState(false);
+    const [flag1, setFlag1] = useState(false);
 
     const handleInsc = () => {
         if (!items.color || !items.size) {
@@ -81,15 +83,17 @@ const ChangeVariant = ({
 
     const handleSetSize = (newSize: string) => {
         setItems({ size: newSize, color: '', quantity: 0, hex: '', image: '' });
+        setFlag((prev) => !prev);
     };
     const handleSetColor = (newColor: string, hex: string) => {
         setItems({ ...items, color: newColor, hex: hex });
-        setFlag((prev) => !prev);
-        console.log('Hi');
+        setFlag1((prev) => !prev);
+        setIsFirstRender(false);
     };
 
     const handleChange = async () => {
-        const { data } = await axios.patch('/carts/updateVariant', {
+        const token = localStorage.getItem('token');
+        const { data } = await axiosPrivate.patch('/carts/updateVariant', {
             user: id,
             product: productId,
             color: items.color,
@@ -106,35 +110,41 @@ const ChangeVariant = ({
     };
 
     useEffect(() => {
-        let isMounted = true;
-        if (!isFirstRender) {
-            const item: getQtyOfSizeColor = {
-                id: productId,
-                color: items.color,
-                size: items.size,
-            };
-
-            dispatch(getColorOfSize(item))
-                .then(() => {
-                    if (isMounted) {
-                        setDispatchCount((prevCount) => prevCount + 1);
-                    }
-                })
-                .catch((error) => {
-                    // Xử lý lỗi nếu có
-                });
-        } else {
-            setIsFirstRender(false);
+        const fetchProductDetail = async () => {
+            const { data } = await axios.get(`/products/${id}`);
+            if (data.success) {
+                console.log(data);
+                setVariants(data.data.variants);
+                const index = data.data.variants.listColor.findIndex(
+                    (item: any) => item.image === data.data.randomVariant.image,
+                );
+                setFlag((prev) => !prev);
+            }
+        };
+        fetchProductDetail();
+    }, []);
+    useEffect(() => {
+        const item: getQtyOfSizeColor = {
+            id: id,
+            size: items.size,
+        };
+        if (item.size) {
+            dispatch(getColorOfSize(item));
         }
     }, [flag]);
     useEffect(() => {
-        dispatch(getProductById(productId));
-    }, []);
-    useEffect(() => {
-        if (dispatchCount > 0) {
-            setItems({ ...items, quantity: quantity });
-        }
-    }, [dispatchCount]);
+        if (!isFirstRender) {
+            const fetchData = async () => {
+                const { data } = await axios.get(
+                    `/variants/find/by-info?product=${id}&size=${items.size}&color=${items.color}`,
+                );
+                if (data.success) {
+                    setItems({ ...items, quantity: data.data.quantity });
+                }
+            };
+            fetchData();
+        } else setIsFirstRender(true);
+    }, [flag1]);
 
     return (
         <div className="modal">
@@ -181,7 +191,7 @@ const ChangeVariant = ({
                     </div>
                     <div className="font-medium mb-[25px] flex w-full ">
                         <span className="flex-1">Availability:</span>
-                        <span>{items.quantity === 0 ? '' : items.quantity}</span>
+                        <span>{items.quantity}</span>
                     </div>
 
                     <div className="flex h-[50px] text-xl font-bold">

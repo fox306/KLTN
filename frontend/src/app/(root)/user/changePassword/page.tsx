@@ -10,6 +10,7 @@ import { User } from '@/types/type';
 import axios from '@/utils/axios';
 import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
+import useAxiosPrivate from '@/utils/intercepter';
 
 type Pass = {
     oldPass: string;
@@ -19,6 +20,7 @@ type Pass = {
 
 const ChangePassword = () => {
     const dispatch = useDispatch<AppDispatch>;
+    const axiosPrivate = useAxiosPrivate();
 
     const [passwords, setPasswords] = useState<Pass>({
         oldPass: '',
@@ -57,6 +59,7 @@ const ChangePassword = () => {
 
     const handleSubmit = async () => {
         try {
+            const token = localStorage.getItem('token');
             const item = {
                 user: id,
                 oldPass: passwords.oldPass,
@@ -68,7 +71,7 @@ const ChangePassword = () => {
                 return;
             }
 
-            const { data } = await axios.patch('/users/update-password', item);
+            const { data } = await axiosPrivate.patch('/users/update-password', item);
             console.log(data);
             if (data.success) {
                 toast.success('Update Password Success');

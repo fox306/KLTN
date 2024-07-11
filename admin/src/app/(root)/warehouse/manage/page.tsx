@@ -50,7 +50,7 @@ const WareHouseManage = () => {
     const [prodcutList, setProductList] = useState<Product[]>([]);
     const [checkedAll, setCheckedAll] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Product[]>([]);
-    const [pages, setPages] = useState<number>();
+    const [pages, setPages] = useState<number>(1);
 
     const handleFilterData = (data: Product[]) => {
         const fillerData = data.filter((item) => {
@@ -102,7 +102,7 @@ const WareHouseManage = () => {
             const { data } = await axios.get(`/products?pageSize=5&pageNumber=${pageNumber}`);
             if (data.success) {
                 setProductList(data.data);
-                setPage(data.pages);
+                setPages(data.pages);
                 setLoading(false);
                 setCheckedAll(false);
             }
@@ -114,7 +114,7 @@ const WareHouseManage = () => {
             );
             if (data.success) {
                 setProductList(data.data);
-                setPage(data.pages);
+                setPages(data.pages);
                 setLoading(false);
                 setCheckedAll(false);
             }
@@ -177,7 +177,7 @@ const WareHouseManage = () => {
                     checkedAll={checkedAll}
                 />
             )}
-            {!loading && pages !== 0 && (
+            {!loading && (
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination

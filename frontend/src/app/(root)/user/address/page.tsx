@@ -13,6 +13,7 @@ import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import SureForAddress from '@/components/shared/SureForAddress';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const Address = () => {
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
@@ -26,9 +27,11 @@ const Address = () => {
     }
     const id = user?._id as string;
 
+    const axiosPrivate = useAxiosPrivate();
     const [open, setOpen] = useState(false);
     const [open1, setOpen1] = useState(false);
     const [load, setLoad] = useState(false);
+    const [address, setAddress] = useState<Address[]>([]);
     const [idAds, setIdAds] = useState<string>('');
     const [update, setUpdate] = useState(false);
     const [addressId, setAddressId] = useState('');
@@ -38,15 +41,22 @@ const Address = () => {
     const [provinceID, setProvinceID] = useState<string>('');
     const [districtID, setDistrictID] = useState<string>('');
     const dispatch = useDispatch<AppDispatch>();
-    const { address, addressDetail }: { address: Address[]; addressDetail: Address } = useSelector(
-        (state: any) => state.address,
-    );
+    const { addressDetail }: { addressDetail: Address } = useSelector((state: any) => state.address);
     useEffect(() => {
-        dispatch(getAllAddressByUserId(id));
+        const fetchData = async () => {
+            const token = localStorage.getItem('token');
+
+            const { data } = await axiosPrivate.get(`/deliveryAddress/user/${id}`);
+            if (data.success) {
+                setAddress(data.data);
+            }
+        };
+        fetchData();
     }, [id, load]);
 
     const handleDefault = async (adsId: string) => {
-        const { data } = await axios.patch(`/deliveryAddress/default/${adsId}`);
+        const token = localStorage.getItem('token');
+        const { data } = await axiosPrivate.patch(`/deliveryAddress/default/${adsId}`);
         if (data.success) {
             toast.success('Set default address success');
             setLoad((prev) => !prev);

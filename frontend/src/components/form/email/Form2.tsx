@@ -17,21 +17,9 @@ type Props = {
     setOpen2: Dispatch<SetStateAction<boolean>>;
     change: boolean;
     setChange: Dispatch<SetStateAction<boolean>>;
-    setUpdate: Dispatch<SetStateAction<boolean>>;
 };
 
-const Form2 = ({
-    setOpen,
-    email,
-    setOpen1,
-    code,
-    setCode,
-    setRegis,
-    setOpen2,
-    change,
-    setChange,
-    setUpdate,
-}: Props) => {
+const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis, setOpen2, change, setChange }: Props) => {
     const [otp, setOtp] = useState<string>('');
     const [check, setCheck] = useState(false);
     const { codes } = useSelector((state: any) => state.auth);
@@ -50,7 +38,6 @@ const Form2 = ({
                 if (code.toString() === otp) {
                     setOpen1(false);
                     setChange(false);
-                    setUpdate(true);
                 } else {
                     setCheck(true);
                 }

@@ -50,7 +50,7 @@ export const authSlice = createSlice({
         builder.addCase(signIn.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload.data.data;
-            localStorage.setItem('token', action.payload.data.data.token);
+            localStorage.setItem('adminToken', action.payload.data.data.token);
             localStorage.setItem('admin', JSON.stringify(action.payload.data.data.user));
         });
         builder.addCase(refreshToken.pending, (state) => {
