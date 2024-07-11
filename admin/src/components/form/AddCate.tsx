@@ -4,6 +4,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import Image from 'next/image';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
@@ -26,6 +27,9 @@ const AddCate = ({ setOpen, setLoad }: Props) => {
         if (file) {
             setImage(file[0]);
         }
+    };
+    const handleDelImg = () => {
+        setImage(undefined);
     };
     const handleSubmit = async () => {
         const form = new FormData();
@@ -65,14 +69,20 @@ const AddCate = ({ setOpen, setLoad }: Props) => {
                         Image Of Category
                     </span>
                     <div className="flex gap-5">
-                        <div>
+                        <div className="relative">
                             {image && (
                                 <Image
                                     src={URL.createObjectURL(image)}
                                     alt="Shoes"
                                     width={120}
                                     height={120}
-                                    className="shadow-cate"
+                                    className="shadow-cate w-[120px] h-[120px]"
+                                />
+                            )}
+                            {image && (
+                                <CancelOutlinedIcon
+                                    className="absolute top-[-12px] right-[-10px] text-blue hover:opacity-50 cursor-pointer"
+                                    onClick={handleDelImg}
                                 />
                             )}
                         </div>

@@ -5,6 +5,7 @@ import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { CreateVariant } from '@/types/type';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 type Props = {
     value: number;
@@ -48,6 +49,16 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
                 return updatedVariants;
             });
         }
+    };
+    const handleDelImg = () => {
+        setVars((prevVariants) => {
+            const updatedVariants = [...prevVariants];
+            updatedVariants[value] = {
+                ...updatedVariants[value],
+                image: null,
+            };
+            return updatedVariants;
+        });
     };
     const handleAddSizes = () => {
         setVars((prevVars) =>
@@ -141,14 +152,20 @@ const AddProduct = ({ value, vars, setVars, setAddVariants }: Props) => {
                 </div>
                 <div className="mt-5">
                     <div className="flex gap-[10px]">
-                        <div className="flex gap-5 w-[120px] h-[120px]">
+                        <div className="flex gap-5 w-[120px] h-[120px] relative">
                             {vars?.image && (
                                 <Image
                                     src={URL.createObjectURL(vars.image)}
                                     alt="Shoes"
-                                    width={100}
-                                    height={100}
+                                    width={120}
+                                    height={120}
                                     className="shadow-cate"
+                                />
+                            )}
+                            {vars?.image && (
+                                <CancelOutlinedIcon
+                                    className="absolute top-[-12px] right-[-10px] text-blue hover:opacity-50 cursor-pointer"
+                                    onClick={handleDelImg}
                                 />
                             )}
                         </div>

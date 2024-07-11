@@ -191,7 +191,7 @@ const UserManage = () => {
                                     <TableCell align="center">Full Name</TableCell>
                                     <TableCell align="center">Email</TableCell>
                                     <TableCell align="center">Gender</TableCell>
-                                    <TableCell align="center">Spent</TableCell>
+
                                     <TableCell align="center">Role</TableCell>
                                     <TableCell align="center">Status</TableCell>
                                 </TableRow>
@@ -216,7 +216,7 @@ const UserManage = () => {
                                         >
                                             {item.gender === 'Male' ? <MaleRoundedIcon /> : <FemaleRoundedIcon />}
                                         </TableCell>
-                                        <TableCell align="center">${item.spent ? item.spent : 0}</TableCell>
+
                                         <TableCell align="center">{item.role}</TableCell>
                                         <TableCell
                                             align="center"

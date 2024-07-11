@@ -5,6 +5,7 @@ import Image from 'next/image';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import { Category } from '@/types/type';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 type Props = {
     item: Category;
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
-    const [image, setImage] = useState<File>();
+    const [image, setImage] = useState<File[]>();
     const [name, setName] = useState<string>('');
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -26,17 +27,24 @@ const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files;
-        if (file) {
-            const image = file[0];
-            const url = URL.createObjectURL(image);
-            const fileWithUrl = new File([image], url);
-            setImage(fileWithUrl);
+        const files = event.target.files;
+        const arr = [];
+        if (files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const url = URL.createObjectURL(file);
+                const fileWithUrl = new File([file], url);
+                arr.push(fileWithUrl);
+            }
         }
+        setImage(arr);
     };
     const handleSubmit = async () => {
         const formData = new FormData();
-        image && formData.append('images', image);
+        image &&
+            image.forEach((i) => {
+                formData.append('images', i);
+            });
         formData.append('category', item._id);
         formData.append('name', name);
         console.log(formData.get('category'));
@@ -52,9 +60,13 @@ const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
             toast.success('Edit Category Success');
         }
     };
+    const handleDelImg = () => {
+        setImage(undefined);
+    };
     useEffect(() => {
         setName(item.name);
     }, [item]);
+    console.log(image);
     return (
         <div className="modal">
             <div className="relative bg-white px-[60px] py-10 flex flex-col items-center gap-5 rounded-[10px]">
@@ -79,22 +91,36 @@ const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
                         Image Of Category
                     </span>
                     <div className="flex gap-5">
-                        <div>
+                        <div className="relative">
                             {item.img !== '' ? (
-                                <Image src={item.img} alt="Shoes" width={120} height={120} className="shadow-cate" />
+                                <Image
+                                    src={item.img}
+                                    alt="Shoes"
+                                    width={120}
+                                    height={120}
+                                    className="shadow-cate w-[120px] h-[120px]"
+                                />
                             ) : (
-                                image && (
+                                image &&
+                                image.map((item, i) => (
                                     <Image
-                                        src={item.name}
+                                        key={i}
+                                        src={item ? item.name : './noData'}
                                         alt="Shoes"
                                         width={120}
                                         height={120}
-                                        className="shadow-cate"
+                                        className="shadow-cate w-[120px] h-[120px] "
                                     />
-                                )
+                                ))
+                            )}
+                            {image && (
+                                <CancelOutlinedIcon
+                                    className="absolute top-[-12px] right-[-10px] text-blue hover:opacity-50 cursor-pointer"
+                                    onClick={handleDelImg}
+                                />
                             )}
                         </div>
-                        {image === undefined ? (
+                        {image === undefined || image.length < 1 ? (
                             <div className=" cursor-pointer">
                                 <div
                                     onClick={handleToggleInput}

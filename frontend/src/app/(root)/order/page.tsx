@@ -82,6 +82,7 @@ const Order = () => {
     const [active, setActive] = useState<boolean>(false);
     const [listCoupons, setListCoupons] = useState<ListCoupon>();
     const [discount, setDiscount] = useState<ValidCoupons>();
+    const [discountAmount, setDiscountAmount] = useState(0);
 
     const [flag, setFlag] = useState(false);
 
@@ -111,7 +112,7 @@ const Order = () => {
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
                 total: totalPay,
-                discountAmount: discount?.value as number,
+                discountAmount: discountAmount,
                 coupon: discount?._id as string,
             };
             console.log(item);
@@ -131,7 +132,7 @@ const Order = () => {
                 deliveryAddress: idAddress,
                 paymentMethod: 'COD',
                 total: totalPay,
-                discountAmount: discount?.value as number,
+                discountAmount: discountAmount,
                 coupon: discount?._id as string,
             };
             console.log(item);
@@ -180,9 +181,16 @@ const Order = () => {
             if (discount.type === 'percent') {
                 const money = (totalPrice * discount.value) / 100;
                 if (money > discount.maxDiscount) {
+                    setDiscountAmount(discount.maxDiscount);
+
                     setTotalPay(totalPrice - discount.maxDiscount);
-                } else setTotalPay(totalPrice - money);
+                } else {
+                    setDiscountAmount(money);
+
+                    setTotalPay(totalPrice - money);
+                }
             } else {
+                setDiscountAmount(discount.value);
                 setTotalPay(totalPrice - discount.value);
             }
         }

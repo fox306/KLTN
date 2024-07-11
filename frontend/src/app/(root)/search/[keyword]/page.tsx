@@ -116,7 +116,7 @@ const ManShoes = () => {
     }, [dispatch]);
 
     return (
-        <div className="flex px-[100px] gap-10 mt-5">
+        <div className="flex px-[100px] justify-center gap-10 mt-5">
             <div className="flex flex-col gap-5 w-[260px]">
                 <Price minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} />
                 <Color color={color} setColor={setColor} />
