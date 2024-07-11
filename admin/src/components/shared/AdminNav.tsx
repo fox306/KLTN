@@ -21,15 +21,7 @@ const AdminNav = () => {
 
     const handleLogout = async () => {
         const token = localStorage.getItem('token');
-        const { data } = await axios.post(
-            '/auths/logout',
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            },
-        );
+        const { data } = await axios.post('/auths/logout');
         if (data.success) {
             localStorage.clear();
             router.push('/sign-in');

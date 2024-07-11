@@ -19,6 +19,7 @@ import { getProductById } from '@/slices/productSlice';
 import { useRouter } from 'next/navigation';
 import { Preview } from '@mui/icons-material';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -72,6 +73,7 @@ type Props = {
     items: RVariant;
     setItems: React.Dispatch<React.SetStateAction<RVariant>>;
     setManageQuantity: React.Dispatch<React.SetStateAction<number>>;
+    setLoad: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const CartShoe = ({
     cartItem,
@@ -90,8 +92,10 @@ const CartShoe = ({
     items,
     setItems,
     setManageQuantity,
+    setLoad,
 }: Props) => {
     const dispatch = useDispatch<AppDispatch>();
+    const axiosPrivate = useAxiosPrivate();
     const { variants } = useSelector((state: any) => state.products) as {
         variants: Variant[];
     };
@@ -124,11 +128,13 @@ const CartShoe = ({
                     product: product,
                 };
                 console.log(item);
-                const { data } = await axios.delete(`/carts/removeFromCart?user=${item.user}&product=${item.product}`);
+                const { data } = await axiosPrivate.delete(
+                    `/carts/removeFromCart?user=${item.user}&product=${item.product}`,
+                );
                 storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
                 localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
-                if (data.success === 200) {
-                    dispatch(getCartByUserId(item.user));
+                if (data.success) {
+                    setLoad((prev) => !prev);
                     toast.success('Success');
                 } else {
                     toast.error('Error');
@@ -253,7 +259,7 @@ const CartShoe = ({
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {cartItem.items &&
+                    {cartItem?.items &&
                         cartItem.items.map((item) => (
                             <TableRow key={item.product} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row" className="flex items-center gap-[10px]">
@@ -288,7 +294,9 @@ const CartShoe = ({
                                 </Select> */}
                                     <div className="flex justify-center items-center">
                                         <div className="bg-gray rounded-full p-[1px]">
-                                            <div className={`w-6 h-6 rounded-full ${colors[item.color]} `}></div>
+                                            <div
+                                                className={`w-6 h-6 rounded-full ${colors[item.color as string]} `}
+                                            ></div>
                                         </div>
                                     </div>
                                 </TableCell>
@@ -298,7 +306,9 @@ const CartShoe = ({
                                 <TableCell align="center">${item.quantity * item.price}</TableCell>
                                 <TableCell
                                     align="center"
-                                    onClick={() => handleChange(item.product, item.color, item.size, item.quantity)}
+                                    onClick={() =>
+                                        handleChange(item.product, item.color as string, item.size, item.quantity)
+                                    }
                                     className="cursor-pointer hover:text-blue"
                                 >
                                     Change

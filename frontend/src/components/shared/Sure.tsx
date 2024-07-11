@@ -1,4 +1,5 @@
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import React, { Dispatch, SetStateAction } from 'react';
 import { toast } from 'react-toastify';
 
@@ -12,14 +13,24 @@ type Props = {
 };
 
 const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Props) => {
+    const axiosPrivate = useAxiosPrivate();
     const handleClose = () => {
         setOrderId('');
         setCurrent('');
         setOpen(false);
     };
     const handleStatus = async () => {
+        const token = localStorage.getItem('token');
         if (current === 'Received') {
-            const { data } = await axios.patch(`/orders/received/${orderId}`);
+            const { data } = await axiosPrivate.patch(
+                `/orders/received/${orderId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
             if (data.success) {
                 toast.success('Received order success');
                 setLoad((prev) => !prev);
@@ -30,7 +41,15 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 toast.error('Received order fail');
             }
         } else if (current === 'Return') {
-            const { data } = await axios.patch(`/orders/return/${orderId}`);
+            const { data } = await axiosPrivate.patch(
+                `/orders/return/${orderId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
             console.log(data);
 
             if (data.success) {
@@ -43,7 +62,15 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 toast.error('Return order fail');
             }
         } else {
-            const { data } = await axios.patch(`/orders/cancel/${orderId}`);
+            const { data } = await axiosPrivate.patch(
+                `/orders/cancel/${orderId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
             console.log(data);
 
             if (data.success) {

@@ -2,15 +2,34 @@
 import UserNav from '@/components/shared/UserNav';
 import { Coupon, User } from '@/types/type';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import { CircularProgress } from '@mui/material';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
+import Pagination from '@mui/material/Pagination';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import NoData from '@/components/shared/NoData';
 
 const statuses = ['ALL', 'VALID', 'EXPIRED'];
 
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#40BFFF',
+        },
+    },
+});
+
 const DiscountPage = () => {
+    const axiosPrivate = useAxiosPrivate();
     const [status, setStatus] = useState('ALL');
     const [loading, setLoading] = useState(true);
+    const [coupon, setCoupon] = useState<Coupon[]>();
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pages, setPages] = useState(1);
+    const handleChangePage = (i: number) => {
+        setPageNumber(i);
+    };
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
@@ -23,21 +42,28 @@ const DiscountPage = () => {
     }
     const id = user?._id as string;
 
-    const [coupon, setCoupon] = useState<Coupon[]>();
     useEffect(() => {
+        const token = localStorage.getItem('token');
         const fetchAll = async () => {
-            const { data } = await axios.get(`/coupons/find/by-user?pageSize=5&pageNumber=1&user=${id}`);
+            const { data } = await axiosPrivate.get(`/coupons/find/by-user?pageSize=5&pageNumber=1&user=${id}`);
             if (data.success) {
                 setCoupon(data.data);
+                setPages(data.pages);
                 setLoading(false);
             }
         };
         const fetchStatus = async () => {
-            const { data } = await axios.get(
+            const { data } = await axiosPrivate.get(
                 `/coupons/find/by-user/by-status?user=${id}&pageSize=5&pageNumber=1&status=${status}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             if (data.success) {
                 setCoupon(data.data);
+                setPages(data.pages);
                 setLoading(false);
             }
         };
@@ -78,9 +104,7 @@ const DiscountPage = () => {
                             <CircularProgress color="secondary" size={60} />
                         </div>
                     ) : coupon && coupon.length === 0 ? (
-                        <div className="w-full flex items-center justify-center">
-                            <span className="font-bold text-xl">Don't have Coupon</span>
-                        </div>
+                        <NoData />
                     ) : (
                         <div className="grid grid-cols-2 gap-4">
                             {coupon &&
@@ -102,6 +126,19 @@ const DiscountPage = () => {
                         </div>
                     )}
                 </div>
+                {!loading && (
+                    <div className="flex justify-center shadow-product2 bg-white">
+                        <ThemeProvider theme={theme}>
+                            <Pagination
+                                count={pages}
+                                shape="rounded"
+                                onChange={(_, page: number) => handleChangePage(page)}
+                                page={pageNumber}
+                                color="primary"
+                            />
+                        </ThemeProvider>
+                    </div>
+                )}
             </div>
         </div>
     );

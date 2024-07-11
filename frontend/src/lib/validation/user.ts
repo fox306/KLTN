@@ -18,6 +18,10 @@ export const LoginValidation = z.object({
     password: z.string().nonempty('Field required').min(6),
 });
 
+export const ForgotValidation = z.object({
+    email: z.string().nonempty('Field required').email({ message: 'Not email...' }),
+});
+
 export const RegisterValidation = z
     .object({
         email: z.string().nonempty('Field required').email({ message: 'Not email...' }),
@@ -53,6 +57,16 @@ export const RegisterValidation = z
                     message: 'Invalid birthday format. Format should be dd/mm/yyyy',
                 },
             ),
+    })
+    .refine((data) => data.password === data.rePassword, {
+        message: "Password doesn't match",
+        path: ['rePassword'],
+    });
+
+export const ForgotPass = z
+    .object({
+        password: z.string().nonempty('Field required').min(6, 'Password must be more than 6'),
+        rePassword: z.string().nonempty('Field required'),
     })
     .refine((data) => data.password === data.rePassword, {
         message: "Password doesn't match",

@@ -1,6 +1,9 @@
 'use client';
 import Review from '@/components/form/Review';
 import Border from '@/components/shared/Border';
+import Loading from '@/components/shared/Loading';
+import NoData from '@/components/shared/NoData';
+import Pagetination from '@/components/shared/Pagetination';
 import Sure from '@/components/shared/Sure';
 import UserNav from '@/components/shared/UserNav';
 import {
@@ -11,6 +14,7 @@ import {
 } from '@/slices/orderSlice';
 import { ItemCart, Order, User, orderStatus } from '@/types/type';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -43,25 +47,61 @@ const Orders = () => {
         }
     }
     const id = user?._id as string;
-
-    const { orders, total }: { orders: Order[]; total: number } = useSelector((state: any) => state.orders);
     const dispatch = useDispatch<AppDispatch>();
+    const axiosPrivate = useAxiosPrivate();
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [total, setTotal] = useState(0);
     const [load, setLoad] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
     const [current, setCurrent] = useState<string>('');
     const [orderId, setOrderId] = useState<string>('');
     const [active, setActive] = useState<boolean>(false);
     const [item, setItem] = useState<ItemCart>();
+    const [loading, setLoading] = useState(true);
+    const [count, setCount] = useState(0);
+    const [pageNum, setPageNum] = useState(1);
     const router = useRouter();
 
     useEffect(() => {
-        const item: orderStatus = {
-            status: status,
-            user: id,
+        const token = localStorage.getItem('token');
+        const fetchAll = async () => {
+            setLoading(true);
+            const { data } = await axiosPrivate.get(
+                `/orders/find/by-user?pageSize=4&pageNumber=${pageNum}&user=${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+            if (data.success) {
+                setOrders(data.data);
+                setTotal(data.total);
+                setCount(data.pages);
+                setLoading(false);
+            }
         };
-        if (status === 'All') dispatch(getAllOrderByUserId(id));
-        else dispatch(getAllOrderByUserAndStatus(item));
-    }, [status, load]);
+        const fetchStatus = async () => {
+            setLoading(true);
+
+            const { data } = await axiosPrivate.get(
+                `/orders/find/by-user-status?pageSize=4&pageNumber=${pageNum}&user=${id}&status=${status}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+            if (data.success) {
+                setOrders(data.data);
+                setTotal(data.total);
+                setCount(data.pages);
+                setLoading(false);
+            }
+        };
+        if (status === 'All') fetchAll();
+        else fetchStatus();
+    }, [status, load, pageNum]);
 
     const handleReceived = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
@@ -118,8 +158,10 @@ const Orders = () => {
                         })}
                 </div>
                 <div className="flex flex-col gap-5">
-                    {orders.length === 0 ? (
-                        <span className="text-base font-bold text-center block mt-[10px]">Nothing</span>
+                    {loading ? (
+                        <Loading />
+                    ) : orders.length === 0 ? (
+                        <NoData />
                     ) : (
                         orders.map((order) => (
                             <div
@@ -214,6 +256,7 @@ const Orders = () => {
                         ))
                     )}
                 </div>
+                {!loading && <Pagetination setPageNum={setPageNum} pages={count} />}
             </div>
             {open && (
                 <Sure

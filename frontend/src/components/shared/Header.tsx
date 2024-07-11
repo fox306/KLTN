@@ -15,6 +15,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import axios from '@/utils/axios';
 import { findProductByKeyword } from '@/slices/productSlice';
+import axiosPrivate from '@/utils/axiosPrivate';
 
 const Header = () => {
     const pathname = usePathname();
@@ -71,15 +72,7 @@ const Header = () => {
     };
     const handleLogout = async () => {
         const token = localStorage.getItem('token');
-        const { data } = await axios.post(
-            '/auths/logout',
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            },
-        );
+        const { data } = await axiosPrivate.post('/auths/logout');
         if (data.success) {
             localStorage.clear();
             router.push('/sign-in');

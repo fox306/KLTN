@@ -13,12 +13,14 @@ import { AppDispatch } from '@/utils/store';
 import { addItemToCartRandomVariant } from '@/slices/cartSlice';
 import FavoriteIcon from '../shared/FavoriteIcon';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 type Props = {
     listProduct: Product[];
     setListProduct: Dispatch<SetStateAction<Product[]>>;
 };
 const ShoesWithTag = ({ listProduct, setListProduct }: Props) => {
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+    const axiosPrivate = useAxiosPrivate();
 
     let user: User | null = null;
 
@@ -55,9 +57,15 @@ const ShoesWithTag = ({ listProduct, setListProduct }: Props) => {
             user,
             product,
         };
-
-        await dispatch(addItemToCartRandomVariant(cart));
-        toast.success('Add to cart success');
+        const token = localStorage.getItem('token');
+        const { data } = await axiosPrivate.post('/carts/addToCart/withoutVariant', cart, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if (data.success) {
+            toast.success('Add to cart success');
+        }
         // if((res.payload as { status: number }).status === 201){
         //     toast.success((res.payload as { status: string }).data.message)
         // }

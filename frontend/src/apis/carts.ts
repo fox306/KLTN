@@ -1,5 +1,6 @@
 import { Cart, ItemCart, ItemCartFake, RemoveItemCart, itemCartRandomVari } from '@/types/type';
 import axios from '../utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const cartsApi = {
     getCartByUserId: (userId: string) => {

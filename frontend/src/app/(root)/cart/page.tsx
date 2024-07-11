@@ -3,8 +3,9 @@ import CartShoe from '@/components/cards/CartShoe';
 import ChangeVariant from '@/components/form/ChangeVariant';
 import Border from '@/components/shared/Border';
 import { getCartByUserId } from '@/slices/cartSlice';
-import type { Cart, RVariant, User, variantColor } from '@/types/type';
+import type { Cart, ItemCart, RVariant, User, variantColor } from '@/types/type';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -13,8 +14,8 @@ import { toast } from 'react-toastify';
 
 const Cart = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
     const router = useRouter();
+    const [cartItem, setCartItem] = useState<Cart>();
     const [price, setPrice] = useState({});
     const [qty, setQty] = useState<number>(0);
     const [quantityCart, setQuantityCart] = useState({});
@@ -30,6 +31,7 @@ const Cart = () => {
         size: '',
     });
     const [manageQuantity, setManageQuantity] = useState(1);
+    const axiosPrivate = useAxiosPrivate();
 
     const [load, setLoad] = useState<boolean>(false);
 
@@ -44,13 +46,22 @@ const Cart = () => {
             console.error('Error parsing user data:', error);
         }
     }
-    const length = cartItem.items && cartItem.items.length;
+    const length = cartItem?.items && cartItem.items.length;
     const id = user?._id as string;
 
     useEffect(() => {
-        dispatch(getCartByUserId(id));
-        localStorage.setItem('itemOrders', '');
-        localStorage.setItem('totalPrice', '');
+        const token = localStorage.getItem('token');
+        const fetchData = async () => {
+            if (token) {
+                const { data } = await axiosPrivate.get(`/carts/user/${id}`);
+                if (data.success) {
+                    setCartItem(data.data);
+                    localStorage.setItem('itemOrders', '');
+                    localStorage.setItem('totalPrice', '');
+                }
+            }
+        };
+        fetchData();
     }, [length, load]);
 
     const handleCheckout = () => {
@@ -65,20 +76,20 @@ const Cart = () => {
         setCheckedAll((prev) => !prev);
 
         if (!checkedAll) {
-            setTotal(cartItem.total);
-            setQty(cartItem.items.reduce((acc, cur) => acc + cur.quantity, 0));
+            setTotal(cartItem?.total as number);
+            setQty(cartItem?.items.reduce((acc, cur) => acc + cur.quantity, 0) as number);
             const updatedCheckedItems: { [key: string]: boolean } = {};
-            for (const item of cartItem.items) {
+            for (const item of cartItem?.items as ItemCart[]) {
                 updatedCheckedItems[item.product] = true;
             }
-            localStorage.setItem('itemOrders', JSON.stringify(cartItem.items));
-            localStorage.setItem('totalPrice', JSON.stringify(cartItem.total));
+            localStorage.setItem('itemOrders', JSON.stringify(cartItem?.items));
+            localStorage.setItem('totalPrice', JSON.stringify(cartItem?.total));
             setCheckedItems(updatedCheckedItems);
         } else {
             setTotal(0);
             setQty(0);
             const updatedCheckedItems: { [key: string]: boolean } = {};
-            for (const item of cartItem.items) {
+            for (const item of cartItem?.items as ItemCart[]) {
                 updatedCheckedItems[item.product] = false;
             }
             localStorage.setItem('itemOrders', '');
@@ -88,12 +99,12 @@ const Cart = () => {
     };
 
     useEffect(() => {
-        const initialCheckedItems = (cartItem.items ?? []).reduce((acc, item) => {
+        const initialCheckedItems = ((cartItem?.items as ItemCart[]) ?? []).reduce((acc, item) => {
             acc[item.product] = false;
             return acc;
         }, {} as { [key: string]: boolean });
         setCheckedItems(initialCheckedItems);
-    }, [cartItem.items]);
+    }, [cartItem?.items]);
 
     return (
         <div className="flex flex-col items-center px-10 mt-6">
@@ -105,14 +116,11 @@ const Cart = () => {
                     onChange={handleCheckedAll}
                     className={`${checkedAll === true ? 'checked:accent-blue cursor-pointer' : 'cursor-pointer'}`}
                 />
-                <span>Select all</span>
-                <span>Delete all</span>
-                <span>Delete selected Items</span>
             </div>
 
             <div className="flex gap-5 w-full">
                 <CartShoe
-                    cartItem={cartItem}
+                    cartItem={cartItem as Cart}
                     checkedItems={checkedItems}
                     setCheckedItems={setCheckedItems}
                     checkedAll={checkedAll}
@@ -128,6 +136,7 @@ const Cart = () => {
                     items={items}
                     setItems={setItems}
                     setManageQuantity={setManageQuantity}
+                    setLoad={setLoad}
                 />
 
                 <div className="p-5 w-[310px] shadow-xl rounded-lg h-max">

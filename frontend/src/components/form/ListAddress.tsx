@@ -33,19 +33,16 @@ const unProps = {
         default: false,
     },
     addressId: '',
-    districtID: '',
-    setDistrictID: () => {},
-    district: undefined,
-    setDistrict: () => {},
-    ward: undefined,
-    setWard: () => {},
     setAddressId: () => {},
 };
 
 const ListAddress = ({ setLoad, address, setChange, setDatas }: Props) => {
     const [open, setOpen] = useState(false);
     const [province, setProvince] = useState<Province[]>();
+    const [district, setDistrict] = useState<District[]>();
+    const [ward, setWard] = useState<Ward[]>();
     const [provinceID, setProvinceID] = useState<string>('');
+    const [districtID, setDistrictID] = useState<string>('');
     const [active, setActive] = useState<string>('');
     const [ads, setAds] = useState<Address>();
 
@@ -167,12 +164,18 @@ const ListAddress = ({ setLoad, address, setChange, setDatas }: Props) => {
             {open && (
                 <AddAddress
                     setOpen={setOpen}
-                    {...unProps}
                     setLoad={setLoad}
                     province={province}
                     setProvince={setProvince}
                     provinceID={provinceID}
                     setProvinceID={setProvinceID}
+                    district={district}
+                    districtID={districtID}
+                    setDistrict={setDistrict}
+                    setDistrictID={setDistrictID}
+                    ward={ward}
+                    setWard={setWard}
+                    {...unProps}
                 />
             )}
         </div>

@@ -9,15 +9,18 @@ import { createOrder } from '@/slices/orderSlice';
 import type {
     Address,
     Cart,
+    District,
     ItemCart,
     ListCoupon,
     Order,
     Province,
     User,
     ValidCoupons,
+    Ward,
     checkoutOrder,
 } from '@/types/type';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -40,12 +43,6 @@ const unProps = {
         default: false,
     },
     addressId: '',
-    districtID: '',
-    setDistrictID: () => {},
-    district: undefined,
-    setDistrict: () => {},
-    ward: undefined,
-    setWard: () => {},
     setAddressId: () => {},
 };
 
@@ -61,29 +58,96 @@ const Order = () => {
         }
     }
     const id = user?._id as string;
+    const axiosPrivate = useAxiosPrivate();
     const dispatch = useDispatch<AppDispatch>();
     const { address }: { address: Address[] } = useSelector((state: any) => state.address);
     const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
     const [datas, setDatas] = useState<Address>();
     const router = useRouter();
 
+    const [province, setProvince] = useState<Province[]>();
+    const [district, setDistrict] = useState<District[]>();
+    const [ward, setWard] = useState<Ward[]>();
+    const [provinceID, setProvinceID] = useState<string>('');
+    const [districtID, setDistrictID] = useState<string>('');
+
     const itemOrders = typeof window !== 'undefined' ? localStorage.getItem('itemOrders') : null;
     const items: ItemCart[] = itemOrders ? JSON.parse(itemOrders) : [];
     const total = typeof window !== 'undefined' ? localStorage.getItem('totalPrice') : null;
     const totalPrice: number = total ? parseFloat(total) : 0;
+
     const [load, setLoad] = useState<boolean>(false);
     const [change, setChange] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
     const [active, setActive] = useState<boolean>(false);
     const [listCoupons, setListCoupons] = useState<ListCoupon>();
     const [discount, setDiscount] = useState<ValidCoupons>();
-    const [province, setProvince] = useState<Province[]>();
-    const [provinceID, setProvinceID] = useState<string>('');
+
     const [flag, setFlag] = useState(false);
 
     const [totalPay, setTotalPay] = useState(totalPrice);
 
     const [pay, setPay] = useState<string>('');
+    const idAddress = datas?._id as string;
+
+    const handleOrder = async () => {
+        if (!pay) {
+            toast.error('Please choose method payment');
+            return;
+        }
+        if (idAddress === '') {
+            toast.error('Please create address for order');
+            return;
+        }
+        const token = localStorage.getItem('token');
+        console.log(token);
+
+        if (pay === 'VNPAY') {
+            const updatedItems = items.map(({ _id, ...rest }) => rest);
+
+            const item: checkoutOrder = {
+                items: updatedItems,
+                user: id,
+                deliveryAddress: idAddress,
+                paymentMethod: pay,
+                total: totalPay,
+                discountAmount: discount?.value as number,
+                coupon: discount?._id as string,
+            };
+            console.log(item);
+
+            const { data } = await axiosPrivate.post('/orders', item);
+            if (data.success) {
+                window.open(data.data);
+                localStorage.removeItem('itemOrders');
+                localStorage.removeItem('totalPrice');
+                router.push('/');
+            }
+        } else {
+            const updatedItems = items.map(({ _id, ...rest }) => rest);
+            const item: checkoutOrder = {
+                items: updatedItems,
+                user: id,
+                deliveryAddress: idAddress,
+                paymentMethod: 'COD',
+                total: totalPay,
+                discountAmount: discount?.value as number,
+                coupon: discount?._id as string,
+            };
+            console.log(item);
+            const { data } = await axiosPrivate.post('/orders', item);
+            if (data.success) {
+                localStorage.removeItem('itemOrders');
+                localStorage.removeItem('totalPrice');
+                router.push('/user/orders');
+            }
+        }
+    };
+
+    const handleCancel = () => {
+        router.push('/cart');
+    };
+
     useEffect(() => {
         dispatch(getCartByUserId(id));
         dispatch(getAllAddressByUserId(id));
@@ -132,60 +196,6 @@ const Order = () => {
         };
         fetchProvince();
     }, []);
-    const idAddress = datas?._id as string;
-
-    const handleOrder = async () => {
-        if (!pay) {
-            toast.error('Please choose method payment');
-            return;
-        }
-        if (idAddress === '') {
-            toast.error('Please create address for order');
-            return;
-        }
-
-        if (pay === 'VNPAY') {
-            const updatedItems = items.map(({ _id, ...rest }) => rest);
-            const item: checkoutOrder = {
-                items: updatedItems,
-                user: id,
-                deliveryAddress: idAddress,
-                paymentMethod: pay,
-                total: totalPay,
-                discountAmount: discount?.value as number,
-                coupon: discount?._id as string,
-            };
-            console.log(item);
-
-            await dispatch(createOrder(item));
-            localStorage.removeItem('itemOrders');
-            localStorage.removeItem('totalPrice');
-            const { data } = await axios.post('/orders', item);
-            if (data.success) {
-                window.open(data.data);
-                router.push('/');
-            }
-        } else {
-            const updatedItems = items.map(({ _id, ...rest }) => rest);
-            const item: checkoutOrder = {
-                items: updatedItems,
-                user: id,
-                deliveryAddress: idAddress,
-                paymentMethod: 'COD',
-                total: totalPay,
-                discountAmount: discount?.value as number,
-                coupon: discount?._id as string,
-            };
-            dispatch(createOrder(item));
-            localStorage.removeItem('itemOrders');
-            localStorage.removeItem('totalPrice');
-            router.push('/user/orders');
-        }
-    };
-
-    const handleCancel = () => {
-        router.push('/cart');
-    };
 
     return (
         <div className="flex flex-col items-center mt-[26px] px-[100px] gap-[10px]">
@@ -316,11 +326,17 @@ const Order = () => {
                 <AddAddress
                     setLoad={setLoad}
                     setOpen={setOpen}
-                    {...unProps}
                     province={province}
                     setProvince={setProvince}
                     provinceID={provinceID}
                     setProvinceID={setProvinceID}
+                    district={district}
+                    districtID={districtID}
+                    setDistrict={setDistrict}
+                    setDistrictID={setDistrictID}
+                    ward={ward}
+                    setWard={setWard}
+                    {...unProps}
                 />
             )}
             {active && (

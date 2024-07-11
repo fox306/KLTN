@@ -3,14 +3,13 @@ import TextField from '@mui/material/TextField';
 
 type Props = {
     setEmail: Dispatch<SetStateAction<string>>;
-    setOpen: Dispatch<SetStateAction<boolean>>;
+    setUpdate: Dispatch<SetStateAction<boolean>>;
     setOpen2: Dispatch<SetStateAction<boolean>>;
     setChange: Dispatch<SetStateAction<boolean>>;
 };
 
-const Form3 = ({ setEmail, setOpen, setOpen2, setChange }: Props) => {
+const Form3 = ({ setEmail, setUpdate, setOpen2, setChange }: Props) => {
     const handleNext = () => {
-        setOpen(true);
         setOpen2(false);
         setChange(true);
     };

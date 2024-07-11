@@ -8,24 +8,17 @@ import axios from '@/utils/axios';
 import { usePathname } from 'next/navigation';
 
 type Props = {
-    setOpen: Dispatch<SetStateAction<boolean>>;
     email: string;
-    setOpen1: Dispatch<SetStateAction<boolean>>;
+    setOpen2: Dispatch<SetStateAction<boolean>>;
     code: string;
     setCode: Dispatch<SetStateAction<string>>;
-    setRegis: Dispatch<SetStateAction<boolean>>;
-    setOpen2: Dispatch<SetStateAction<boolean>>;
-    change: boolean;
-    setChange: Dispatch<SetStateAction<boolean>>;
+    setOpen3: Dispatch<SetStateAction<boolean>>;
 };
 
-const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis, setOpen2, change, setChange }: Props) => {
+const Form2 = ({ email, setOpen2, code, setCode, setOpen3 }: Props) => {
     const [otp, setOtp] = useState<string>('');
     const [check, setCheck] = useState(false);
-    const { codes } = useSelector((state: any) => state.auth);
     console.log(code);
-    const pathname = usePathname();
-    const dispatch = useDispatch<AppDispatch>();
 
     const handleChange = (otp: string) => {
         setCheck(false);
@@ -33,29 +26,11 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis, setOpen2, ch
     };
 
     const handleCheckCode = () => {
-        if (pathname === '/user') {
-            if (change) {
-                if (code.toString() === otp) {
-                    setOpen1(false);
-                    setChange(false);
-                } else {
-                    setCheck(true);
-                }
-            } else {
-                if (code.toString() === otp) {
-                    setOpen1(false);
-                    setOpen2(true);
-                } else {
-                    setCheck(true);
-                }
-            }
+        if (code.toString() === otp) {
+            setOpen2(false);
+            setOpen3(true);
         } else {
-            if (code.toString() === otp) {
-                setRegis(true);
-                setOpen1(false);
-            } else {
-                setCheck(true);
-            }
+            setCheck(true);
         }
     };
 
@@ -68,12 +43,7 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis, setOpen2, ch
         }
     };
     const handleCancel = () => {
-        if (pathname === 'user') {
-            setOpen1(false);
-            setChange(false);
-        } else {
-            setOpen1(false);
-        }
+        setOpen2(false);
     };
 
     return (
@@ -100,17 +70,9 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis, setOpen2, ch
                         className="w-[160px] h-[60px] rounded-full bg-blue bg-opacity-20 text-blue"
                         onClick={handleCheckCode}
                     >
-                        Complete
+                        Next
                     </button>
                 </div>
-                {pathname === '/user' ? (
-                    ''
-                ) : (
-                    <span className="font-bold text-blue mt-[20px]" onClick={handleResend}>
-                        After successful confirmation, please press the Sign Up button again to complete the
-                        registration process.
-                    </span>
-                )}
             </div>
         </div>
     );
