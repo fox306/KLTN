@@ -12,6 +12,7 @@ const cartsApi = {
         return axios.post(url, user);
     },
     addItemToCartByUserId: (item: ItemCartFake) => {
+        const axiosPrivate = useAxiosPrivate();
         const url = `/carts/addToCart`;
         const cart = {
             user: item.user,
@@ -22,15 +23,16 @@ const cartsApi = {
             size: item.size,
             quantity: item.quantity,
         };
-        return axios.post(url, cart);
+        return axiosPrivate.post(url, cart);
     },
     removeItemFromCartByUserId: (item: RemoveItemCart) => {
         const url = `/carts/removeFromCart?user=${item.user}&product=${item.product}`;
         return axios.delete(url);
     },
     addItemToCartRandomVariant: (item: itemCartRandomVari) => {
+        const axiosPrivate = useAxiosPrivate();
         const url = '/carts/addToCart/withoutVariant';
-        return axios.post(url, item);
+        return axiosPrivate.post(url, item);
     },
 };
 

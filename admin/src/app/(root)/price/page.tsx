@@ -471,13 +471,14 @@ const PricePage = () => {
                     checkedAll={checkedAll}
                 />
             )}
-            {!loading && page !== 0 && (
+            {!loading && (
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination
                             count={page}
                             shape="rounded"
                             onChange={(_, page: number) => handleChangePage(page)}
+                            page={pageNumber}
                             color="primary"
                         />
                     </ThemeProvider>

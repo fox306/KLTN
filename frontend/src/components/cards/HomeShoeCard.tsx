@@ -114,6 +114,8 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
             toast.success('Add item to cart success');
         }
     };
+    console.log(Math.max(1, 5));
+
     useEffect(() => {
         const item: getQtyOfSizeColor = {
             id: id,
@@ -201,41 +203,34 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
                     />
                 </div>
                 <div className="relative w-10 h-52 flex flex-col">
-                    <Image
-                        src="/rating.png"
-                        alt="Rating"
-                        width={32}
-                        height={32}
-                        className="absolute top-0 left-[-2px]"
-                    />
-                    <Image
-                        src="/rating.png"
-                        alt="Rating"
-                        width={32}
-                        height={32}
-                        className="absolute top-[40px] left-[18px]"
-                    />
-                    <Image
-                        src="/rating.png"
-                        alt="Rating"
-                        width={32}
-                        height={32}
-                        className="absolute top-[90px] left-[22px]"
-                    />
-                    <Image
-                        src="/rating.png"
-                        alt="Rating"
-                        width={32}
-                        height={32}
-                        className="absolute bottom-[40px] left-[18px]"
-                    />
-                    <Image
-                        src="/rating.png"
-                        alt="Rating"
-                        width={32}
-                        height={32}
-                        className="absolute bottom-0 left-[-2px]"
-                    />
+                    {Array.from({ length: Math.max(productDetail.rating as number, 5) }).map((_, index) => (
+                        <Image
+                            key={index}
+                            src="/rating.png"
+                            alt="Rating"
+                            width={32}
+                            height={32}
+                            className={`absolute ${index === 0 && 'top-0 left-[-2px]'} ${
+                                index === 1 && 'top-[40px] left-[18px]'
+                            } ${index === 2 && 'top-[90px] left-[22px]'} ${
+                                index === 3 && 'bottom-[40px] left-[18px]'
+                            } ${index === 4 && 'bottom-0 left-[-2px]'}`}
+                        />
+                    ))}
+                    {Array.from({ length: Math.max(5 - (productDetail.rating as number), 0) }).map((_, index) => (
+                        <Image
+                            key={index + Math.min(productDetail.rating as number, 5)}
+                            src="/noRating.png"
+                            alt="No Rating"
+                            width={32}
+                            height={32}
+                            className={`absolute ${index === 0 && 'bottom-0 left-[-2px]'} ${
+                                index === 1 && 'bottom-[40px] left-[18px]'
+                            } ${index === 2 && 'top-[90px] left-[22px]'} ${index === 3 && 'top-[40px] left-[18px]'} ${
+                                index === 4 && 'top-0 left-[-2px]'
+                            }`}
+                        />
+                    ))}
                 </div>
             </div>
         </div>

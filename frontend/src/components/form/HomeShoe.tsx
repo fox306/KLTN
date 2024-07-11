@@ -25,6 +25,7 @@ const HomeShoe = () => {
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
     const [productHots, setProductHots] = useState<Product[]>([]);
+    const axiosPrivate = useAxiosPrivate();
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
 
@@ -77,7 +78,7 @@ const HomeShoe = () => {
         );
         setProductHots(updatedProducts);
         if (i) {
-            await axios.delete(`/favorites/un-favorite/${id}`);
+            await axiosPrivate.delete(`/favorites/un-favorite/${id}`);
             return;
         }
         const userString = localStorage.getItem('user');
@@ -87,7 +88,7 @@ const HomeShoe = () => {
                 user: user._id,
                 product: id,
             };
-            const { data } = await axios.post('/favorites', item);
+            const { data } = await axiosPrivate.post('/favorites', item);
             if (data.success) {
                 i = true;
             }

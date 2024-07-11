@@ -15,13 +15,36 @@ import { toast } from 'react-toastify';
 const detailReceipt = () => {
     const router = useRouter();
     const { id } = useParams();
-    const [detail, setDetail] = useState<FullDetailReceipt>();
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const dateString = `${year}-${month}-${day}`;
-    console.log(dateString);
+    const [detail, setDetail] = useState<FullDetailReceipt>({
+        confirmation_date: '',
+        confirmer: '',
+        receiptId: '',
+        supplier: '',
+        total_receipt: 0,
+        details: [
+            {
+                _id: '',
+                color: '',
+                receipt_variant: [
+                    {
+                        _id: '',
+                        quantity: 0,
+                        size: '',
+                    },
+                ],
+                name_product: '',
+                total_price: 0,
+                total_quantity: 0,
+                unit_price: 0,
+                receipt: '',
+            },
+        ],
+    });
+    const convertDate = (date: string) => {
+        const [day, month, year] = date.split('/');
+
+        return `${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`;
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,6 +55,7 @@ const detailReceipt = () => {
         };
         fetchData();
     }, []);
+    console.log(detail);
     return (
         <div className="flex flex-col gap-[10px]">
             <div className="font-bold">
@@ -49,16 +73,16 @@ const detailReceipt = () => {
                     label="Supplier"
                     variant="outlined"
                     className="w-1/2"
-                    type="date"
                     value={detail?.supplier}
+                    aria-readonly
                 />
                 <TextField
                     id="confirmer"
                     label="Confirmer"
                     variant="outlined"
                     className="w-1/2"
-                    type="date"
                     value={detail?.confirmer}
+                    aria-readonly
                 />
                 <div className="flex gap-[60px] items-center">
                     <TextField
@@ -67,7 +91,8 @@ const detailReceipt = () => {
                         variant="outlined"
                         className="w-1/2"
                         type="date"
-                        value={detail?.confirmation_date}
+                        value={convertDate(detail?.confirmation_date)}
+                        aria-readonly
                     />
                     <TextField
                         id="total"
@@ -79,9 +104,10 @@ const detailReceipt = () => {
                             className: 'text-orange font-bak',
                         }}
                         value={detail?.total_receipt}
+                        aria-readonly
                     />
                 </div>
-                <TextField id="notes" label="Notes" variant="outlined" multiline rows={5} />
+                <TextField id="notes" label="Notes" variant="outlined" multiline rows={5} aria-readonly />
             </div>
             <div className="px-10 flex items-center justify-between">
                 <span className="font-bold text-lg">Variants Of Product</span>
@@ -98,8 +124,9 @@ const detailReceipt = () => {
                                     className: 'text-center',
                                 }}
                                 value={item.name_product}
+                                aria-readonly
                             />
-                            <div className="flex gap-5">
+                            <div className="flex justify-center gap-5">
                                 <TextField
                                     id="color"
                                     label="Color"
@@ -108,6 +135,7 @@ const detailReceipt = () => {
                                         className: 'text-center font-bold',
                                     }}
                                     value={item.color}
+                                    aria-readonly
                                 />
                                 <TextField
                                     id="total_quantity"
@@ -119,6 +147,7 @@ const detailReceipt = () => {
                                         className: 'text-center',
                                     }}
                                     value={item.total_quantity}
+                                    aria-readonly
                                 />
                             </div>
                             <div className="flex gap-5">
@@ -132,6 +161,7 @@ const detailReceipt = () => {
                                         className: 'text-center',
                                     }}
                                     value={item.unit_price}
+                                    aria-readonly
                                 />
                                 <TextField
                                     id="total_price"
@@ -143,33 +173,37 @@ const detailReceipt = () => {
                                         className: 'text-center',
                                     }}
                                     value={item.total_price}
+                                    aria-readonly
                                 />
                             </div>
                         </div>
                         <div className="border-l-2 pl-20">
                             <span className="font-bold text-lg">List Size Of Color</span>
-                        </div>
-                        <div>
-                            {item.receipt_variant.map((item, index) => (
-                                <div key={index} className="flex items-center gap-[25px] justify-center mt-[10px]">
-                                    <TextField
-                                        label="Size"
-                                        variant="outlined"
-                                        inputProps={{
-                                            className: 'w-[200px]',
-                                        }}
-                                        value={item.size}
-                                    />
-                                    <TextField
-                                        label="Quantity"
-                                        variant="outlined"
-                                        inputProps={{
-                                            className: 'w-[200px]',
-                                        }}
-                                        value={item.quantity}
-                                    />
-                                </div>
-                            ))}
+
+                            <div>
+                                {item.receipt_variant.map((item, index) => (
+                                    <div key={index} className="flex items-center gap-[25px] justify-center mt-[10px]">
+                                        <TextField
+                                            label="Size"
+                                            variant="outlined"
+                                            inputProps={{
+                                                className: 'w-[200px]',
+                                            }}
+                                            value={item.size}
+                                            aria-readonly
+                                        />
+                                        <TextField
+                                            label="Quantity"
+                                            variant="outlined"
+                                            inputProps={{
+                                                className: 'w-[200px]',
+                                            }}
+                                            value={item.quantity}
+                                            aria-readonly
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 ))}

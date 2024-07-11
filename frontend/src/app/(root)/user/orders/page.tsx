@@ -61,19 +61,13 @@ const Orders = () => {
     const [count, setCount] = useState(0);
     const [pageNum, setPageNum] = useState(1);
     const router = useRouter();
+    console.log(pageNum);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         const fetchAll = async () => {
             setLoading(true);
-            const { data } = await axiosPrivate.get(
-                `/orders/find/by-user?pageSize=4&pageNumber=${pageNum}&user=${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
-            );
+            const { data } = await axiosPrivate.get(`/orders/find/by-user?pageSize=4&pageNumber=${pageNum}&user=${id}`);
             if (data.success) {
                 setOrders(data.data);
                 setTotal(data.total);
@@ -86,11 +80,6 @@ const Orders = () => {
 
             const { data } = await axiosPrivate.get(
                 `/orders/find/by-user-status?pageSize=4&pageNumber=${pageNum}&user=${id}&status=${status}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
             );
             if (data.success) {
                 setOrders(data.data);
@@ -149,7 +138,10 @@ const Orders = () => {
                                     } text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                         isActive && 'text-blue border-b-2 border-b-blue'
                                     }`}
-                                    onClick={() => setStatus(item)}
+                                    onClick={() => {
+                                        setStatus(item);
+                                        setPageNum(1);
+                                    }}
                                     key={i}
                                 >
                                     {item} {isActive && `(${total})`}
@@ -247,6 +239,12 @@ const Orders = () => {
                                         </div>
                                     )}
                                     <div className="flex-grow"></div>
+                                    {order.discountAmount > 0 && (
+                                        <div className="flex items-center font-bold gap-2">
+                                            <span>Discount Amount:</span>
+                                            <span className="text-lg text-blue">${order.discountAmount}</span>
+                                        </div>
+                                    )}
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Total Price:</span>
                                         <span className="text-lg text-blue">${order.total}</span>
@@ -256,7 +254,7 @@ const Orders = () => {
                         ))
                     )}
                 </div>
-                {!loading && <Pagetination setPageNum={setPageNum} pages={count} />}
+                {!loading && <Pagetination pageNum={pageNum} setPageNum={setPageNum} pages={count} />}
             </div>
             {open && (
                 <Sure

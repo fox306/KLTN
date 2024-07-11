@@ -3,6 +3,8 @@ import LockOutlined from '@mui/icons-material/LockOutlined';
 import PlaceOutlined from '@mui/icons-material/PlaceOutlined';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
+import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
+import DiscountOutlinedIcon from '@mui/icons-material/DiscountOutlined';
 
 export const userNav = [
     {
@@ -26,12 +28,12 @@ export const userNav = [
         label: 'Orders',
     },
     {
-        icon: RequestQuoteOutlinedIcon,
+        icon: DiscountOutlinedIcon,
         route: '/user/discounts',
         label: 'Discounts',
     },
     {
-        icon: RequestQuoteOutlinedIcon,
+        icon: FavoriteBorderRoundedIcon,
         route: '/user/favorites',
         label: 'Favorites',
     },

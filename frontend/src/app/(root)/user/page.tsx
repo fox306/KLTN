@@ -117,11 +117,7 @@ const Profile = () => {
             gender: selectedGender,
             birthDay: selectedDate?.format('YYYY-MM-DD') ?? '',
         };
-        const { data } = await axiosPrivate.patch('/users', item, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const { data } = await axiosPrivate.patch('/users', item);
         if (data.success) {
             toast.success('Update profile success');
             setLoad((prev) => !prev);
@@ -162,18 +158,10 @@ const Profile = () => {
         if (update) {
             const updateEmail = async () => {
                 setLoading(true);
-                const { data } = await axiosPrivate.patch(
-                    '/users/email',
-                    {
-                        user: id,
-                        newEmail: email,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    },
-                );
+                const { data } = await axiosPrivate.patch('/users/email', {
+                    user: id,
+                    newEmail: email,
+                });
 
                 if (data.success) {
                     toast.success('Update email success');

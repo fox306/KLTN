@@ -181,6 +181,12 @@ const OrderDetail = () => {
                                     </div>
                                 </div>
                                 <div className="flex justify-end">
+                                    {order.discountAmount > 0 && (
+                                        <div className="flex items-center font-bold gap-2">
+                                            <span>Discount Amount:</span>
+                                            <span className="text-lg text-blue">${order.discountAmount}</span>
+                                        </div>
+                                    )}
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Total Price:</span>
                                         <span className="text-lg text-blue">${order.total}</span>

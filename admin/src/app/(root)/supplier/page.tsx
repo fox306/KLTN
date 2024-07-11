@@ -68,12 +68,10 @@ const SupplierPage = () => {
         };
         const fetchBanks = async () => {
             const { data } = await axios.get('/utils/banks');
-            if (data.success) {
-                setBanks(data.data);
-            }
+            setBanks(data.result);
         };
-        fetchData();
         fetchBanks();
+        fetchData();
     }, [load, pages]);
     return (
         <div>
@@ -149,11 +147,15 @@ const SupplierPage = () => {
                                             <TableCell align="center" className="text-sm">
                                                 {item.total_receipt}
                                             </TableCell>
-                                            <TableCell align="center" className="text-blue">
+                                            <TableCell align="center">
                                                 <SearchOutlinedIcon
                                                     onClick={() => {
-                                                        setSupplier(item);
+                                                        {
+                                                            setSupplier(item);
+                                                            setOpen1(true);
+                                                        }
                                                     }}
+                                                    className="text-blue cursor-pointer hover:opacity-50"
                                                 />
                                             </TableCell>
                                         </TableRow>

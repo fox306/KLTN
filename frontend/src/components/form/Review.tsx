@@ -27,7 +27,6 @@ const Review = ({ item, setActive, id }: Props) => {
         const { data } = await axiosPrivate.post('/comments', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
             },
         });
         if (data.success) {

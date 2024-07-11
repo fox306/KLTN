@@ -13,6 +13,7 @@ import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Sure from '@/components/shared/Sure';
 import Loading from '@/components/shared/Loading';
+import axios from '@/utils/axios';
 
 const statuses = [
     'All',
@@ -46,7 +47,10 @@ const theme = createTheme({
 const OrderManage = () => {
     const [status, setStatus] = useState('All');
     const dispatch = useDispatch<AppDispatch>();
-    const { orders, pages }: { orders: Order[]; pages: number } = useSelector((state: any) => state.orders);
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [total, setTotal] = useState(0);
+    const [count, setCount] = useState(0);
+
     const [load, setLoad] = useState<boolean>(false);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [open, setOpen] = useState<boolean>(false);
@@ -163,7 +167,6 @@ const OrderManage = () => {
             return newState;
         });
     };
-
     const handleButtonClick = (button: string) => {
         switch (button) {
             case 'Select All':
@@ -185,6 +188,7 @@ const OrderManage = () => {
                 break;
         }
     };
+
     const handleSelectAll = () => {
         setCheckedAll(true);
         const updatedCheckedItems: { [key: string]: boolean } = {};
@@ -212,20 +216,35 @@ const OrderManage = () => {
     }, [orders]);
 
     useEffect(() => {
-        const item = {
-            status: status,
-            pageNumber: pageNumber,
+        const fetchAll = async () => {
+            setLoading(true);
+            const { data } = await axios.get(`/orders?pageSize=4&pageNumber=${pageNumber}`);
+            if (data.success) {
+                setOrders(data.data);
+                setTotal(data.total);
+                setCount(data.pages);
+                setLoading(false);
+            }
+        };
+        const fetchStatus = async () => {
+            setLoading(true);
+
+            const { data } = await axios.get(
+                `/orders/find/by-status?pageSize=4&pageNumber=${pageNumber}&status=${status}`,
+            );
+            if (data.success) {
+                setOrders(data.data);
+                setTotal(data.total);
+                setCount(data.pages);
+                setLoading(false);
+            }
         };
         if (status === 'All') {
-            setLoading(true);
-            dispatch(getAllOrders(pageNumber));
-            setLoading(false);
+            fetchAll();
         } else {
-            setLoading(true);
-            dispatch(getAllOrderByOrderStatus(item));
-            setLoading(false);
+            fetchStatus();
         }
-    }, [dispatch, status, load, pageNumber]);
+    }, [status, load, pageNumber]);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -244,24 +263,29 @@ const OrderManage = () => {
                 </Select>
             </FormControl>
 
-            <div className="flex gap-[18px] shadow-order bg-white">
+            <div className="grid grid-flow-col overflow-x-scroll gap-[18px] shadow-lg scrollbar-hidden mb-5 bg-white">
                 {statuses &&
                     statuses.map((item, i) => {
                         const isActive = status === item;
+
                         return (
                             <span
-                                className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase font-semibold cursor-pointer hover:text-blue ${
+                                className={`${
+                                    item === 'DeliveredSuccessfully' || item === 'ReturnSuccessfully'
+                                        ? 'w-[230px]'
+                                        : 'w-[140px]'
+                                } text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                     isActive && 'text-blue border-b-2 border-b-blue'
                                 }`}
                                 onClick={() => handleStatus(item)}
                                 key={i}
                             >
-                                {item}
+                                {item} {isActive && `(${total})`}
                             </span>
                         );
                     })}
             </div>
-            <div className="ml-[15px] flex items-center gap-5">
+            {/* <div className="ml-[15px] flex items-center gap-5">
                 <input type="checkbox" checked={checkedAll} onChange={handleCheckedAll} className="w-[26px] h-[26px]" />
                 {buttons.map((item) => (
                     <button
@@ -272,14 +296,14 @@ const OrderManage = () => {
                         {item}
                     </button>
                 ))}
-            </div>
+            </div> */}
             <div className="flex flex-col gap-5">
-                {orders.length === 0 ? (
+                {loading ? (
+                    <Loading />
+                ) : orders.length === 0 ? (
                     <div className="flex justify-center items-center">
                         <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
                     </div>
-                ) : loading ? (
-                    <Loading />
                 ) : (
                     orders &&
                     orders.map((order) => (
@@ -389,6 +413,12 @@ const OrderManage = () => {
                                     ''
                                 )}
                                 <div className="flex-grow"></div>
+                                {order.discountAmount > 0 && (
+                                    <div className="flex items-center font-bold gap-2">
+                                        <span>Discount Amount:</span>
+                                        <span className="text-lg text-blue">${order.discountAmount}</span>
+                                    </div>
+                                )}
                                 <div className="flex items-center font-bold gap-2">
                                     <span>Total Price:</span>
                                     <span className="text-lg text-blue">${order.total}</span>
@@ -402,7 +432,7 @@ const OrderManage = () => {
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination
-                            count={pages}
+                            count={count}
                             shape="rounded"
                             onChange={(_, page: number) => handleChangePage(page)}
                             page={pageNumber}

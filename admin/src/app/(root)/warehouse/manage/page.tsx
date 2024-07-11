@@ -13,8 +13,7 @@ import axios from '@/utils/axios';
 import Loading from '@/components/shared/Loading';
 
 const nav = ['All', 'on sale', 'hidden'];
-const status = ['All', 'Available', 'Hidden'];
-
+const status = ['All', 'Active', 'Hide'];
 const theme = createTheme({
     palette: {
         primary: {
@@ -40,8 +39,8 @@ const WareHouseManage = () => {
 
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
-        router.push('/warehouse');
     };
+
     const handleChangePage = (i: number) => {
         setPageNumber(i);
     };
@@ -125,6 +124,14 @@ const WareHouseManage = () => {
             fetchStatus();
         }
     }, [active, pageNumber, load]);
+    useEffect(() => {
+        if (page === 'Inventory') {
+            router.push('/warehouse/inventory');
+        }
+        if (page === 'Statistical') {
+            router.push('/warehouse');
+        }
+    }, [page]);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -140,6 +147,7 @@ const WareHouseManage = () => {
                 >
                     <MenuItem value="Statistical">Statistical</MenuItem>
                     <MenuItem value="Management">Management</MenuItem>
+                    <MenuItem value="Inventory">Inventory</MenuItem>
                 </Select>
             </FormControl>
             <div className="flex justify-between shadow-order w-full">
@@ -184,6 +192,7 @@ const WareHouseManage = () => {
                             count={pages}
                             shape="rounded"
                             onChange={(_, page: number) => handleChangePage(page)}
+                            page={pageNumber}
                             color="primary"
                         />
                     </ThemeProvider>

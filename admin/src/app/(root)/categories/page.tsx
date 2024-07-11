@@ -214,8 +214,11 @@ const Categories = () => {
                                         <TableCell align="center" className="text-sm">
                                             1
                                         </TableCell>
-                                        <TableCell align="center" className="text-blue">
-                                            <SearchOutlinedIcon onClick={() => updateCate(item)} />
+                                        <TableCell align="center">
+                                            <SearchOutlinedIcon
+                                                className="text-blue cursor-pointer hover:opacity-50"
+                                                onClick={() => updateCate(item)}
+                                            />
                                         </TableCell>
                                     </TableRow>
                                 ))}
