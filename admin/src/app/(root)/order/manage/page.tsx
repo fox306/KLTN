@@ -247,7 +247,7 @@ const OrderManage = () => {
     }, [status, load, pageNumber]);
 
     return (
-        <div className="flex flex-col gap-[10px]">
+        <div className="flex flex-col gap-[10px] w-[calc(100vw-285px)]">
             <FormControl className="w-[150px]">
                 <Select
                     labelId="demo-simple-select-label"
@@ -263,7 +263,7 @@ const OrderManage = () => {
                 </Select>
             </FormControl>
 
-            <div className="grid grid-flow-col overflow-x-scroll gap-[18px] shadow-lg scrollbar-hidden mb-5 bg-white">
+            <div className="grid grid-flow-col overflow-x-auto shadow-lg mb-5 bg-white">
                 {statuses &&
                     statuses.map((item, i) => {
                         const isActive = status === item;
@@ -272,7 +272,7 @@ const OrderManage = () => {
                             <span
                                 className={`${
                                     item === 'DeliveredSuccessfully' || item === 'ReturnSuccessfully'
-                                        ? 'w-[230px]'
+                                        ? 'w-[240px]'
                                         : 'w-[140px]'
                                 } text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                     isActive && 'text-blue border-b-2 border-b-blue'
@@ -285,6 +285,7 @@ const OrderManage = () => {
                         );
                     })}
             </div>
+
             {/* <div className="ml-[15px] flex items-center gap-5">
                 <input type="checkbox" checked={checkedAll} onChange={handleCheckedAll} className="w-[26px] h-[26px]" />
                 {buttons.map((item) => (
