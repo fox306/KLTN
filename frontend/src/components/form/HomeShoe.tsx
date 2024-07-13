@@ -113,8 +113,10 @@ const HomeShoe = () => {
             product,
         };
 
-        await dispatch(addItemToCartRandomVariant(cart));
-        toast.success('Add to cart success');
+        const { data } = await axiosPrivate.post('/carts/addToCart/withoutVariant', cart);
+        if (data.success) {
+            toast.success('Add to cart success');
+        }
         // if((res.payload as { status: number }).status === 201){
         //     toast.success((res.payload as { status: string }).data.message)
         // }

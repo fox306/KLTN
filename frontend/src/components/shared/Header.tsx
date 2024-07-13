@@ -85,6 +85,10 @@ const Header = () => {
             router.push(`/search/${keyword}`);
         }
     };
+    const handleMove = () => {
+        setAnchorEl(null);
+        router.push('/user');
+    };
     useEffect(() => {
         dispatch(getCartByUserId(id));
     }, [dispatch]);
@@ -189,7 +193,7 @@ const Header = () => {
                             'aria-labelledby': 'basic-button',
                         }}
                     >
-                        <MenuItem onClick={() => router.push('/user')}>Profile</MenuItem>
+                        <MenuItem onClick={handleMove}>Profile</MenuItem>
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                     </Menu>
                 </div>

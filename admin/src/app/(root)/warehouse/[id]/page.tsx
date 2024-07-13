@@ -22,6 +22,7 @@ import { getDetailByProduct } from '@/slices/variantSlice';
 import SureForImg from '@/components/shared/SureForImg';
 import UpdateProdcut from '@/components/form/UpdateProduct';
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
+const prefixCloudinary = "http://res.cloudinary.com/dtfei3453/image/upload";
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -83,6 +84,7 @@ const AddNewProduct = () => {
 
     const handleSubmit = async () => {
         const item = {
+            product: id,
             name: product.name,
             desc: product.desc,
             category: category,
@@ -100,7 +102,10 @@ const AddNewProduct = () => {
             while (i < vars.length) {
                 const form = new FormData();
                 form.append('product', id);
-                form.append('image', vars[i].image ?? '');
+                console.log("vars[i].image: ", vars[i].image);
+
+                if (!vars[i].image?.name.startsWith(prefixCloudinary)) form.append('image', vars[i].image ?? '');
+                // form.append('image', vars[i].image ?? '');
                 form.append('color', vars[i].color);
                 form.append('details', JSON.stringify(vars[i].details));
                 const { data } = await axios.put('/variants', form, {
