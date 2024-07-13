@@ -1,4 +1,6 @@
 'use client';
+import Loading from '@/components/shared/Loading';
+import Sure from '@/components/shared/Sure';
 import { getOrderByOrderId } from '@/slices/orderSlice';
 import { Order } from '@/types/type';
 import axios from '@/utils/axios';
@@ -15,52 +17,40 @@ const OrderDetail = () => {
     const { loading, order }: { loading: boolean; order: Order } = useSelector((state: any) => state.orders);
     const [isDispatched, setIsDispatched] = useState(false);
     const [load, setLoad] = useState(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const [current, setCurrent] = useState<string>('');
+    const [orderId, setOrderId] = useState<string>('');
     const router = useRouter();
 
     const handleComfirm = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
-
-        const { data } = await axios.patch(`/orders/accepted/${order._id}`);
-        if (data.success) {
-            toast.success('Comfirm Success');
-            setLoad((prev) => !prev);
-        }
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Accepted');
     };
     const handleDelivery = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
-
-        const { data } = await axios.patch(`/orders/delivering/${order._id}`);
-        if (data.success) {
-            toast.success('Delivery Success');
-            setLoad((prev) => !prev);
-        }
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Delivering');
     };
     const handleCancel = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
-
-        const { data } = await axios.patch(`/orders/cancel/${order._id}`);
-        if (data.success) {
-            toast.success('Cancel Success');
-            setLoad((prev) => !prev);
-        }
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Cancel');
     };
     const handleSuccess = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
-
-        const { data } = await axios.patch(`/orders/delivered/${order._id}`);
-        if (data.success) {
-            toast.success('Success Success');
-            setLoad((prev) => !prev);
-        }
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Successful');
     };
     const handleReturn = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
-
-        const { data } = await axios.patch(`/orders/confirmReturn/${order._id}`);
-        if (data.success) {
-            toast.success('Return Success');
-            setLoad((prev) => !prev);
-        }
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Return');
     };
     useEffect(() => {
         dispatch(getOrderByOrderId(id))
@@ -73,7 +63,7 @@ const OrderDetail = () => {
     }, [load]);
 
     if (!isDispatched || loading) {
-        return <div>Loading...</div>;
+        return <Loading />;
     }
     return (
         <div>
@@ -260,6 +250,16 @@ const OrderDetail = () => {
                         </div>
                     )}
                 </div>
+            )}
+            {open && (
+                <Sure
+                    setOpen={setOpen}
+                    setLoad={setLoad}
+                    orderId={orderId}
+                    setOrderId={setOrderId}
+                    setCurrent={setCurrent}
+                    current={current}
+                />
             )}
         </div>
     );

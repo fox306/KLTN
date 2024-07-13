@@ -98,7 +98,7 @@ const WareHouseManage = () => {
     useEffect(() => {
         const fetchAll = async () => {
             setLoading(true);
-            const { data } = await axios.get(`/products?pageSize=5&pageNumber=${pageNumber}`);
+            const { data } = await axios.get(`/products/action/by-admin?pageSize=5&pageNumber=${pageNumber}`);
             if (data.success) {
                 setProductList(data.data);
                 setPages(data.pages);
