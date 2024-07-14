@@ -10,6 +10,7 @@ import { Supplier } from '@/types/type';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import Loading from '../shared/Loading';
 
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
@@ -31,6 +32,7 @@ const CreateNewSupplier = ({ setOpen, setLoad, banks }: Props) => {
         phone: '',
         supplier_name: '',
     });
+    const [loading, setLoading] = useState(false);
     const handleChange = (field: string, value: string) => {
         setSupplier((prev) => ({ ...prev, [field]: value }));
     };
@@ -44,8 +46,10 @@ const CreateNewSupplier = ({ setOpen, setLoad, banks }: Props) => {
         }));
     };
     const handleSubmit = async () => {
+        setLoading(true);
         const { data } = await axios.post('/good-receipts/suppliers', supplier);
         if (data.success) {
+            setLoading(false);
             setOpen(false);
             setLoad(true);
             toast.success('Create new Supplier success');
@@ -157,6 +161,11 @@ const CreateNewSupplier = ({ setOpen, setLoad, banks }: Props) => {
                     </button>
                 </div>
             </div>
+            {loading && (
+                <div className="modal">
+                    <Loading />
+                </div>
+            )}
         </div>
     );
 };
