@@ -128,8 +128,12 @@ const Categories = () => {
                 setLoading(false);
             }
         };
-        fetchCate();
-    }, [load, pages]);
+        if (!text) {
+            fetchCate();
+        } else {
+            return;
+        }
+    }, [load, pages, text]);
     useEffect(() => {
         const fetchSearch = async () => {
             setLoading(true);

@@ -44,8 +44,12 @@ const GoodReceiptPage = () => {
                 setLoading(false);
             }
         };
-        fetchData();
-    }, [pages]);
+        if (!text) {
+            fetchData();
+        } else {
+            return;
+        }
+    }, [text, pages]);
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
