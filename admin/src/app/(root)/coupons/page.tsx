@@ -110,8 +110,12 @@ const CouponsPage = () => {
                 setLoading(false);
             }
         };
-        fetchData();
-    }, [load, pageNumber]);
+        if (!text) {
+            fetchData();
+        } else {
+            return;
+        }
+    }, [text, load, pageNumber]);
 
     useEffect(() => {
         const fetchData = async () => {

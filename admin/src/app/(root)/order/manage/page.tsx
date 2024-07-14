@@ -251,7 +251,7 @@ const OrderManage = () => {
         } else {
             return;
         }
-    }, [status, load, pageNumber]);
+    }, [text, status, load, pageNumber]);
 
     useEffect(() => {
         const fetchSearch = async () => {

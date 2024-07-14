@@ -75,7 +75,7 @@ const SupplierPage = () => {
         if (!text) {
             fetchData();
         } else return;
-    }, [load, pages]);
+    }, [text, load, pages]);
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);

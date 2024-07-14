@@ -279,7 +279,7 @@ const PricePage = () => {
         } else {
             return;
         }
-    }, [active, pageNumber, load, load1]);
+    }, [text, active, pageNumber, load, load1]);
     useEffect(() => {
         const fetchSearch = async () => {
             setLoading(true);

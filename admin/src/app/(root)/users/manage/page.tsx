@@ -177,7 +177,7 @@ const UserManage = () => {
         } else {
             return;
         }
-    }, [dispatch, load, pageNumber]);
+    }, [text, dispatch, load, pageNumber]);
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
