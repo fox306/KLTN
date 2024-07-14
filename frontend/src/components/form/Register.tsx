@@ -79,19 +79,19 @@ const Register = () => {
             setOpen(true);
         }
     };
-    const convertDate = (date: string) => {
-        const [day, month, year] = date.split('/');
+    // const convertDate = (date: string) => {
+    //     const [day, month, year] = date.split('/');
 
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    };
+    //     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    // };
 
     useEffect(() => {
         const submitForm = async () => {
             try {
                 if (!regis) return;
                 const { rePassword, ...items } = form.getValues();
-                console.log(items);
-                items.birthDay = convertDate(items.birthDay);
+                // console.log(items);
+                // items.birthDay = convertDate(items.birthDay);
                 const res = await dispatch(signUp(items));
                 console.log(res);
 
@@ -230,7 +230,7 @@ const Register = () => {
                             {/* <FormLabel>Birthday</FormLabel> */}
                             <FormControl>
                                 <Input
-                                    type="text"
+                                    type="date"
                                     placeholder="Birthday"
                                     {...field}
                                     className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 border-input focus:border-black"

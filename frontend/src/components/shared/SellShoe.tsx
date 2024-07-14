@@ -10,7 +10,7 @@ import axios from '@/utils/axios';
 
 const SellShoe = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const [active, setActive] = useState(false);
+    const [active, setActive] = useState(true);
     const [isNext, setIsNext] = useState<boolean>(false);
     const [isBack, setIsBack] = useState<boolean>(false);
     const [back, setBack] = useState<number>(0);
@@ -63,19 +63,19 @@ const SellShoe = () => {
             <div className="flex justify-center mb-5 font-bold text-base gap-5 text-center">
                 <span
                     className={` w-40 h-10 ${
-                        !active ? 'border-b-2 text-blue' : 'text-gray hover:text-blue'
-                    }  cursor-pointer`}
-                    onClick={() => setActive(false)}
-                >
-                    Selling
-                </span>
-                <span
-                    className={` w-40 h-10 ${
                         active ? 'border-b-2 text-blue' : 'text-gray hover:text-blue'
                     } cursor-pointer`}
                     onClick={() => setActive(true)}
                 >
                     Newest
+                </span>
+                <span
+                    className={` w-40 h-10 ${
+                        !active ? 'border-b-2 text-blue' : 'text-gray hover:text-blue'
+                    }  cursor-pointer`}
+                    onClick={() => setActive(false)}
+                >
+                    Selling
                 </span>
             </div>
             <div>

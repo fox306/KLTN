@@ -1,14 +1,14 @@
 'use client';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { KeyboardEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { KeyboardEvent, MouseEvent, useContext, useEffect, useState } from 'react';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import { AppDispatch } from '@/utils/store';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Cart, User } from '@/types/type';
+import { Cart, ItemCart, User } from '@/types/type';
 import { toast } from 'react-toastify';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
@@ -16,8 +16,11 @@ import MenuItem from '@mui/material/MenuItem';
 import axios from '@/utils/axios';
 import { findProductByKeyword } from '@/slices/productSlice';
 import axiosPrivate from '@/utils/axiosPrivate';
+import { CartContext } from '@/contexts/cart';
 
 const Header = () => {
+    const { cartItems } = useContext(CartContext) || { cartItems: [] };
+
     const pathname = usePathname();
     const router = useRouter();
     const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
@@ -89,9 +92,6 @@ const Header = () => {
         setAnchorEl(null);
         router.push('/user');
     };
-    useEffect(() => {
-        dispatch(getCartByUserId(id));
-    }, [dispatch]);
     return (
         <div className={`${pathname === '/' ? 'bg-bg' : 'bg-white'} flex flex-col items-center`}>
             <div className=" flex items-center justify-between px-20 pt-[10px] pb-[10px] w-full">
@@ -165,13 +165,15 @@ const Header = () => {
                             }`}
                         />
 
-                        <div
-                            className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white flex items-center justify-center ${
-                                pathname === '/' ? 'bg-orange' : 'bg-blue'
-                            }`}
-                        >
-                            <span className="text-white text-xs">{cartItem.items && cartItem.items.length}</span>
-                        </div>
+                        {(user as User) && (
+                            <div
+                                className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white flex items-center justify-center ${
+                                    pathname === '/' ? 'bg-orange' : 'bg-blue'
+                                }`}
+                            >
+                                <span className="text-white text-xs">{cartItems.length}</span>
+                            </div>
+                        )}
                     </div>
 
                     <PersonOutlineOutlinedIcon

@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import { Preview } from '@mui/icons-material';
 import axios from '@/utils/axios';
 import useAxiosPrivate from '@/utils/intercepter';
+import { CartContext } from '@/contexts/cart';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -95,6 +96,8 @@ const CartShoe = ({
     setLoad,
 }: Props) => {
     const dispatch = useDispatch<AppDispatch>();
+    const { removeFromCart } = React.useContext(CartContext) || { removeFromCart: (product: string) => {} };
+
     const axiosPrivate = useAxiosPrivate();
     const { variants } = useSelector((state: any) => state.products) as {
         variants: Variant[];
@@ -134,6 +137,7 @@ const CartShoe = ({
                 storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
                 localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
                 if (data.success) {
+                    removeFromCart(item.product);
                     setLoad((prev) => !prev);
                     toast.success('Success');
                 } else {

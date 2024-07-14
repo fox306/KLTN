@@ -50,7 +50,7 @@ const ManShoes = () => {
     const [brand, setBrand] = useState<string>('');
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(2000);
+    const [maxPrice, setMaxPrice] = useState(500);
     const [fakeListProduct, setFakeListProduct] = useState<Product[]>([]);
     const [load, setLoad] = useState(true);
     const [count, setCount] = useState(0);
@@ -68,7 +68,7 @@ const ManShoes = () => {
             };
 
             console.log('product of cate: ', item);
-            let url = `/products/find/by-keyword?keyword=${item.keyword}&pageSize=6&pageNumber=1`;
+            let url = `/products/find/by-keyword?keyword=${item.keyword}&pageSize=6&pageNumber=${pageNum}`;
 
             if (item.color) {
                 url += `&color=${item.color}`;

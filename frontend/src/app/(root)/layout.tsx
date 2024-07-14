@@ -7,6 +7,7 @@ import Footer from '@/components/shared/Footer';
 import Providers from '@/utils/Providers';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { CartProvider } from '@/contexts/cart';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,11 +20,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             <body className={`${inter.className} text-sm font-poppin`}>
                 <Providers>
-                    <Header />
-                    <Navbar />
-                    {children}
-                    <Footer />
-                    <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
+                    <CartProvider>
+                        <Header />
+                        <Navbar />
+                        {children}
+                        <Footer />
+                        <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
+                    </CartProvider>
                 </Providers>
             </body>
         </html>
