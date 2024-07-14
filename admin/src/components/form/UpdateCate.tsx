@@ -6,6 +6,7 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import { Category } from '@/types/type';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import Loading from '../shared/Loading';
 
 type Props = {
     item: Category;
@@ -16,7 +17,7 @@ type Props = {
 const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
     const [image, setImage] = useState<File[]>();
     const [name, setName] = useState<string>('');
-
+    const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleToggleInput = () => {
@@ -48,12 +49,14 @@ const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
         formData.append('category', item._id);
         formData.append('name', name);
         console.log(formData.get('category'));
+        setLoading(true);
         const { data } = await axios.put('/categories', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
         if (data.success) {
+            setLoading(false);
             setOpen(false);
             setLoad(true);
 
@@ -157,6 +160,11 @@ const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
                     </button>
                 </div>
             </div>
+            {loading && (
+                <div className="modal">
+                    <Loading />
+                </div>
+            )}
         </div>
     );
 };

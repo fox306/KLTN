@@ -5,6 +5,7 @@ import Image from 'next/image';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import Loading from '../shared/Loading';
 
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
@@ -13,6 +14,7 @@ type Props = {
 const AddCate = ({ setOpen, setLoad }: Props) => {
     const [image, setImage] = useState<File>();
     const [name, setName] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,12 +37,14 @@ const AddCate = ({ setOpen, setLoad }: Props) => {
         const form = new FormData();
         image && form.append('file', image);
         form.append('name', name);
+        setLoading(true);
         const { data } = await axios.post('/categories', form, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
         if (data.success) {
+            setLoading(false);
             setOpen(false);
             setLoad(true);
             toast.success('Create Category Success');
@@ -123,6 +127,11 @@ const AddCate = ({ setOpen, setLoad }: Props) => {
                     </button>
                 </div>
             </div>
+            {loading && (
+                <div className="modal">
+                    <Loading />
+                </div>
+            )}
         </div>
     );
 };

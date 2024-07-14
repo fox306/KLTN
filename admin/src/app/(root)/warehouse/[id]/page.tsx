@@ -21,8 +21,9 @@ import { getProductById } from '@/slices/productSlice';
 import { getDetailByProduct } from '@/slices/variantSlice';
 import SureForImg from '@/components/shared/SureForImg';
 import UpdateProdcut from '@/components/form/UpdateProduct';
+import Loading from '@/components/shared/Loading';
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
-const prefixCloudinary = "http://res.cloudinary.com/dtfei3453/image/upload";
+const prefixCloudinary = 'http://res.cloudinary.com/dtfei3453/image/upload';
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -43,6 +44,7 @@ const AddNewProduct = () => {
     const { productDetail, variants }: { productDetail: Product; variants: UpdateVariant[] } = useSelector(
         (state: any) => state.products,
     );
+    const [loading, setLoading] = useState(false);
     const [brand, setBrand] = useState<string>('Adidas');
     const [category, setCategory] = useState<string>('');
     const { id }: { id: string } = useParams();
@@ -91,6 +93,7 @@ const AddNewProduct = () => {
             brand: brand,
             price: parseInt(product.price),
         };
+        setLoading(true);
         console.log(item);
         // let data
         const { data } = await axios.put('/products', item);
@@ -102,7 +105,7 @@ const AddNewProduct = () => {
             while (i < vars.length) {
                 const form = new FormData();
                 form.append('product', id);
-                console.log("vars[i].image: ", vars[i].image);
+                console.log('vars[i].image: ', vars[i].image);
 
                 if (!vars[i].image?.name.startsWith(prefixCloudinary)) form.append('image', vars[i].image ?? '');
                 // form.append('image', vars[i].image ?? '');
@@ -117,6 +120,7 @@ const AddNewProduct = () => {
                     i++;
                 }
                 if (i === vars.length) {
+                    setLoading(false);
                     toast.success('Update Product success');
                     setLoad((prev) => !prev);
                     setMount(false);
@@ -274,6 +278,11 @@ const AddNewProduct = () => {
                     Update Info Product
                 </button>
             </div>
+            {loading && (
+                <div className="modal">
+                    <Loading />
+                </div>
+            )}
         </div>
     );
 };

@@ -16,11 +16,13 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { toast } from 'react-toastify';
 import { getProductById } from '@/slices/productSlice';
 import AddProduct from '@/components/form/AddProduct';
+import Loading from '@/components/shared/Loading';
 
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
+
     const [addVariants, setAddVariants] = useState<{}[]>([]);
     const [vars, setVars] = useState<CreateVariant[]>([
         {
@@ -35,7 +37,7 @@ const AddNewProduct = () => {
         },
     ]);
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
-
+    const [loading, setLoading] = useState(false);
     const [brand, setBrand] = useState<string>('Adidas');
     const [category, setCategory] = useState<string>('');
     const [product, setProduct] = useState<{
@@ -95,6 +97,7 @@ const AddNewProduct = () => {
             brand: brand,
             price: parseInt(product.price),
         };
+        setLoading(true);
         const { data } = await axios.post('/products', item);
         // headers: {
         //     'Content-Type': 'multipart/form-data',
@@ -117,6 +120,8 @@ const AddNewProduct = () => {
                     i++;
                 }
                 if (i === vars.length) {
+                    setLoading(false);
+
                     toast.success('Create Product success', {
                         onClose: () => {
                             setTimeout(() => {
@@ -260,12 +265,17 @@ const AddNewProduct = () => {
                     className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
                     onClick={handleSubmit}
                 >
-                    SAVE & ON SALE
+                    SAVE
                 </button>
-                <button className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm">
+                {/* <button className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm">
                     SAVE & HIDDEN
-                </button>
+                </button> */}
             </div>
+            {loading && (
+                <div className="modal">
+                    <Loading />
+                </div>
+            )}
         </div>
     );
 };

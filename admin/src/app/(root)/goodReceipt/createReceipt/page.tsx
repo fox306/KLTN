@@ -11,6 +11,7 @@ import AddProducts from '@/components/form/AddProducts';
 import { CreateVariants, Supplier, User } from '@/types/type';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
+import Loading from '@/components/shared/Loading';
 
 const CreateGoodReceipt = () => {
     const router = useRouter();
@@ -18,6 +19,7 @@ const CreateGoodReceipt = () => {
     const [confirmers, setConfirmers] = useState<User[]>([]);
     const [confirmer, setConfirmer] = useState<string>('');
     const [supplier, setSupplier] = useState<string>('');
+    const [open, setOpen] = useState(false);
     const date = new Date();
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -84,8 +86,10 @@ const CreateGoodReceipt = () => {
             total: another.total,
             details: vars,
         };
+        setOpen(true);
         const { data } = await axios.post('/good-receipts/receipts', item);
         if (data.success) {
+            setOpen(false);
             toast.success('Create Receipts Success');
             router.push('/goodReceipt');
         } else {
@@ -208,6 +212,11 @@ const CreateGoodReceipt = () => {
                     CREATE RECEIPT
                 </button>
             </div>
+            {open && (
+                <div className="modal">
+                    <Loading />
+                </div>
+            )}
         </div>
     );
 };

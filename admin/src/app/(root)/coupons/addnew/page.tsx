@@ -7,10 +7,11 @@ import { CreateCoupon } from '@/types/type';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import Loading from '@/components/shared/Loading';
 
 const AddNewCouponPage = () => {
     const router = useRouter();
-
+    const [open, setOpen] = useState(false);
     const [value, setValue] = useState<string>('percent');
     const [coupon, setCoupon] = useState<CreateCoupon>({
         code: '',
@@ -39,7 +40,9 @@ const AddNewCouponPage = () => {
     const handleSubmit = async () => {
         const item = { ...coupon, type: value };
         const { data } = await axios.post('/coupons', item);
+        setOpen(true);
         if (data.success) {
+            setOpen(false);
             toast.success('Create Coupon success');
             setCoupon({ code: '', maxDiscount: 0, minAmount: 0, name: '', validityDuration: 0, value: 0 });
             router.push('/coupons');
@@ -126,6 +129,11 @@ const AddNewCouponPage = () => {
                     </button>
                 </div>
             </div>
+            {open && (
+                <div className="modal">
+                    <Loading />
+                </div>
+            )}
         </div>
     );
 };
