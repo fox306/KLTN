@@ -123,7 +123,7 @@ const AddCate = ({ setOpen, setLoad }: Props) => {
                         className="w-[150px] h-10 rounded-[5px] text-base font-medium text-blue bg-blue bg-opacity-[15%] hover:bg-opacity-100 hover:text-white"
                         onClick={handleSubmit}
                     >
-                        CREATE
+                        SAVE
                     </button>
                 </div>
             </div>

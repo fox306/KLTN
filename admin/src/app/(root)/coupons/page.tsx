@@ -42,6 +42,7 @@ const CouponsPage = () => {
     const [action, setAction] = useState<string>('');
     const [open1, setOpen1] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [text, setText] = useState('');
 
     const handleChangePage = (i: number) => {
         setPageNumber(i);
@@ -113,6 +114,24 @@ const CouponsPage = () => {
     }, [load, pageNumber]);
 
     useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            const { data } = await axios.get(
+                `/coupons/find/by-keyword?pageSize=5&pageNumber=${pageNumber}&keyword=${text}`,
+            );
+            if (data.success) {
+                setCheckedAll(false);
+                setCoupons(data.data);
+                setPages(data.pages);
+                setLoading(false);
+            }
+        };
+        if (text) {
+            fetchData();
+        }
+    }, [text, load, pageNumber]);
+
+    useEffect(() => {
         validateSelectedAll();
     }, [selected]);
     return (
@@ -123,6 +142,8 @@ const CouponsPage = () => {
                         type="text"
                         className="flex-1 font-bold text-sm outline-none"
                         placeholder="Search Something..."
+                        value={text}
+                        onChange={(e) => e.target.value}
                     />
                     <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
                 </div>

@@ -125,7 +125,7 @@ const AddNewCouponPage = () => {
                         onClick={handleSubmit}
                         className="w-[150px] h-[50px] bg-blue bg-opacity-60 text-white font-bold text-xs rounded-[5px] hover:bg-opacity-100 ml-5"
                     >
-                        Add
+                        SAVE
                     </button>
                 </div>
             </div>

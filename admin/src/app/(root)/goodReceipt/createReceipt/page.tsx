@@ -209,7 +209,7 @@ const CreateGoodReceipt = () => {
                     className="w-[200px] h-[50px] rounded-[5px] bg-blue bg-opacity-50 text-white font-bold text-sm hover:bg-opacity-100"
                     onClick={handleSubmit}
                 >
-                    CREATE RECEIPT
+                    SAVE
                 </button>
             </div>
             {open && (

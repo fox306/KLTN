@@ -88,6 +88,9 @@ const Header = () => {
             router.push(`/search/${keyword}`);
         }
     };
+    const handleSearch = () => {
+        router.push(`/search/${keyword}`);
+    };
     const handleMove = () => {
         setAnchorEl(null);
         router.push('/user');
@@ -106,10 +109,12 @@ const Header = () => {
                         <span className="font-fb">&</span>
                         <span className="font-birsmark">P</span>
                     </div>
-                    <div>
+                    <div className="relative">
                         <div
                             onKeyUp={(e) => handleSubmit(e)}
-                            className={`${pathname === '/' ? 'text-white' : 'text-black'} relative mx-auto w-max`}
+                            className={`${
+                                pathname === '/' ? 'text-white' : 'text-black'
+                            } relative cursor-pointer mx-auto w-max`}
                         >
                             <input
                                 type="search"
@@ -120,7 +125,7 @@ const Header = () => {
                             />
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={`absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent px-3.5 ${
+                                className={`absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent px-3.5 cursor-pointer ${
                                     pathname === '/'
                                         ? 'stroke-orange peer-focus:border-orange peer-focus:stroke-orange'
                                         : 'stroke-blue peer-focus:border-blue peer-focus:stroke-blue'
@@ -136,6 +141,7 @@ const Header = () => {
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                 />
                             </svg>
+                            {/* <button className="absolute text-white bg-orange h-5 px-2 rounded-[5px]">Search</button> */}
                         </div>
                     </div>
                 </div>

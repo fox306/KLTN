@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -26,6 +26,8 @@ import TypeSure from '@/components/shared/TypeSure';
 import Loading from '@/components/shared/Loading';
 import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import axios from '@/utils/axios';
 
 const theme = createTheme({
     palette: {
@@ -37,7 +39,9 @@ const theme = createTheme({
 
 const UserManage = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { users, pages }: { users: User[]; pages: number } = useSelector((state: any) => state.users);
+    // const { users, pages }: { users: User[]; pages: number } = useSelector((state: any) => state.users);
+    const [users, setUsers] = useState<User[]>([]);
+    const [count, setCount] = useState(1);
     const [page, setPage] = useState<string>('Management');
 
     const router = useRouter();
@@ -46,6 +50,9 @@ const UserManage = () => {
         setPage(event.target.value as string);
         router.push('/users');
     };
+
+    //search
+    const [text, setText] = useState('');
 
     //Lock and Delete
     const [open, setOpen] = useState<boolean>(false);
@@ -149,11 +156,51 @@ const UserManage = () => {
     }, [users]);
 
     useEffect(() => {
-        setLoading(true);
-        dispatch(getAllUser(pageNumber));
-        setLoading(false);
-        localStorage.setItem('tickUser', '');
-    }, [dispatch, load]);
+        const fetchData = async () => {
+            setLoading(true);
+
+            const { data } = await axios.get(`/users?pageSize=10&pageNumber=${pageNumber}`);
+            if (data.success) {
+                setUsers(data.data);
+                setCount(data.pages);
+                setLoading(false);
+
+                localStorage.setItem('tickUser', '');
+            }
+        };
+        if (!text) {
+            // setLoading(true);
+            // dispatch(getAllUser(pageNumber));
+            // setLoading(false);
+            // localStorage.setItem('tickUser', '');
+            fetchData();
+        } else {
+            return;
+        }
+    }, [dispatch, load, pageNumber]);
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+
+            const { data } = await axios.get(
+                `/users/find/by-keyword?keyword=${text}&pageSize=10&pageNumber=${pageNumber}`,
+            );
+            if (data.success) {
+                setUsers(data.data);
+                setCount(data.pages);
+                setLoading(false);
+
+                localStorage.setItem('tickUser', '');
+            }
+        };
+        if (text) {
+            // setLoading(true);
+            // dispatch(getAllUser(pageNumber));
+            // setLoading(false);
+            // localStorage.setItem('tickUser', '');
+            fetchData();
+        }
+    }, [text, load, pageNumber]);
     console.log(users);
     return (
         <div className="flex flex-col gap-[10px]">
@@ -171,6 +218,16 @@ const UserManage = () => {
                     <MenuItem value="Management">Management</MenuItem>
                 </Select>
             </FormControl>
+            <div className="h-[50px] flex px-[15px] items-center bg-white shadow-product2">
+                <input
+                    type="text"
+                    className="flex-1 font-bold text-sm outline-none"
+                    placeholder="Search Something..."
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                />
+                <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
+            </div>
             <div>
                 {loading ? (
                     <Loading />
@@ -245,7 +302,7 @@ const UserManage = () => {
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination
-                            count={pages}
+                            count={count}
                             shape="rounded"
                             onChange={(_, page: number) => handleChangePage(page)}
                             page={pageNumber}

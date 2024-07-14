@@ -52,6 +52,7 @@ const SupplierPage = () => {
     });
 
     const [loading, setLoading] = useState(true);
+    const [text, setText] = useState('');
     const handleChangePage = (i: number) => {
         setPages(i);
     };
@@ -71,8 +72,31 @@ const SupplierPage = () => {
             setBanks(data.result);
         };
         fetchBanks();
-        fetchData();
+        if (!text) {
+            fetchData();
+        } else return;
     }, [load, pages]);
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            const { data } = await axios.get(
+                `/good-receipts/suppliers/find/by-keyword?pageSize=6&pageNumber=${pages}&keyword=${text}`,
+            );
+            if (data.success) {
+                setSuppliers(data.data);
+                setCount(data.pages);
+                setLoading(false);
+            }
+        };
+        const fetchBanks = async () => {
+            const { data } = await axios.get('/utils/banks');
+            setBanks(data.result);
+        };
+        fetchBanks();
+        if (text) {
+            fetchData();
+        }
+    }, [text, load, pages]);
     return (
         <div>
             <div className="text-center">
@@ -84,6 +108,8 @@ const SupplierPage = () => {
                         type="text"
                         className="flex-1 font-bold text-sm outline-none"
                         placeholder="Search Something..."
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
                     />
                     <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
                 </div>

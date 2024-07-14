@@ -106,6 +106,7 @@ const Categories = () => {
         name: '',
         selected: false,
     });
+    const [text, setText] = useState('');
     const [loading, setLoading] = useState(true);
 
     const handleChangePage = (i: number) => {
@@ -120,15 +121,31 @@ const Categories = () => {
     useEffect(() => {
         const fetchCate = async () => {
             setLoading(true);
-            const { data } = await axios.get('/categories');
+            const { data } = await axios.get(`/categories?pageSize=5&pageNumber=${pages}`);
             if (data.success) {
                 setCategories(data.data);
-                setCount(Math.ceil(data.total / 6));
+                setCount(data.pages);
                 setLoading(false);
             }
         };
         fetchCate();
-    }, [load]);
+    }, [load, pages]);
+    useEffect(() => {
+        const fetchSearch = async () => {
+            setLoading(true);
+            const { data } = await axios.get(
+                `/categories/find/by-keyword?keyword=${text}&pageSize=5&pageNumber=${pages}`,
+            );
+            if (data.success) {
+                setCategories(data.data);
+                setCount(data.pages);
+                setLoading(false);
+            }
+        };
+        if (text) {
+            fetchSearch();
+        }
+    }, [text, load, pages]);
     console.log(categories);
 
     return (
@@ -161,6 +178,8 @@ const Categories = () => {
                             type="text"
                             className="flex-1 font-bold text-sm outline-none"
                             placeholder="Search Something..."
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
                         />
                         <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
                     </div>

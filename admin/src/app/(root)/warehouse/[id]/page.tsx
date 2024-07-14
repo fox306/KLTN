@@ -275,7 +275,7 @@ const AddNewProduct = () => {
                     className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm hover:opacity-100"
                     onClick={handleSubmit}
                 >
-                    Update Info Product
+                    SAVE
                 </button>
             </div>
             {loading && (
