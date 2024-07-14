@@ -131,7 +131,7 @@ const WareHouseManage = () => {
         } else {
             return;
         }
-    }, [text, active, pageNumber, load]);
+    }, [active, pageNumber, load]);
     useEffect(() => {
         if (page === 'Inventory') {
             router.push('/warehouse/inventory');
@@ -155,6 +155,8 @@ const WareHouseManage = () => {
         };
         if (text) {
             fetchSearch();
+        } else {
+            setActive(0);
         }
     }, [text, pageNumber]);
 

@@ -147,7 +147,7 @@ const CouponsPage = () => {
                         className="flex-1 font-bold text-sm outline-none"
                         placeholder="Search Something..."
                         value={text}
-                        onChange={(e) => e.target.value}
+                        onChange={(e) => setText(e.target.value)}
                     />
                     <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
                 </div>
