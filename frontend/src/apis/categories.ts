@@ -3,7 +3,7 @@ import axios from '../utils/axios';
 
 const categoriesApi = {
     getAllCategory: () => {
-        const url = '/categories';
+        const url = '/categories?pageSize=20&pageNumber=1';
         return axios.get(url);
     },
     getCategoryById: (category: string) => {
