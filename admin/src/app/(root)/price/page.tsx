@@ -279,7 +279,7 @@ const PricePage = () => {
         } else {
             return;
         }
-    }, [text, active, pageNumber, load, load1]);
+    }, [active, pageNumber, load, load1]);
     useEffect(() => {
         const fetchSearch = async () => {
             setLoading(true);
@@ -295,6 +295,8 @@ const PricePage = () => {
         };
         if (text) {
             fetchSearch();
+        } else {
+            setActive(0);
         }
     }, [text, load, load1, pageNumber]);
 
