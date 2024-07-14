@@ -1,14 +1,14 @@
 'use client';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { KeyboardEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { KeyboardEvent, MouseEvent, useContext, useEffect, useState } from 'react';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import { AppDispatch } from '@/utils/store';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Cart, User } from '@/types/type';
+import { Cart, ItemCart, User } from '@/types/type';
 import { toast } from 'react-toastify';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
@@ -16,8 +16,11 @@ import MenuItem from '@mui/material/MenuItem';
 import axios from '@/utils/axios';
 import { findProductByKeyword } from '@/slices/productSlice';
 import axiosPrivate from '@/utils/axiosPrivate';
+import { CartContext } from '@/contexts/cart';
 
 const Header = () => {
+    const { cartItems } = useContext(CartContext) || { cartItems: [] };
+
     const pathname = usePathname();
     const router = useRouter();
     const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
@@ -85,13 +88,13 @@ const Header = () => {
             router.push(`/search/${keyword}`);
         }
     };
+    const handleSearch = () => {
+        router.push(`/search/${keyword}`);
+    };
     const handleMove = () => {
         setAnchorEl(null);
         router.push('/user');
     };
-    useEffect(() => {
-        dispatch(getCartByUserId(id));
-    }, [dispatch]);
     return (
         <div className={`${pathname === '/' ? 'bg-bg' : 'bg-white'} flex flex-col items-center`}>
             <div className=" flex items-center justify-between px-20 pt-[10px] pb-[10px] w-full">
@@ -106,10 +109,12 @@ const Header = () => {
                         <span className="font-fb">&</span>
                         <span className="font-birsmark">P</span>
                     </div>
-                    <div>
+                    <div className="relative">
                         <div
                             onKeyUp={(e) => handleSubmit(e)}
-                            className={`${pathname === '/' ? 'text-white' : 'text-black'} relative mx-auto w-max`}
+                            className={`${
+                                pathname === '/' ? 'text-white' : 'text-black'
+                            } relative cursor-pointer mx-auto w-max`}
                         >
                             <input
                                 type="search"
@@ -120,7 +125,7 @@ const Header = () => {
                             />
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={`absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent px-3.5 ${
+                                className={`absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent px-3.5 cursor-pointer ${
                                     pathname === '/'
                                         ? 'stroke-orange peer-focus:border-orange peer-focus:stroke-orange'
                                         : 'stroke-blue peer-focus:border-blue peer-focus:stroke-blue'
@@ -136,6 +141,7 @@ const Header = () => {
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                 />
                             </svg>
+                            {/* <button className="absolute text-white bg-orange h-5 px-2 rounded-[5px]">Search</button> */}
                         </div>
                     </div>
                 </div>
@@ -165,13 +171,15 @@ const Header = () => {
                             }`}
                         />
 
-                        <div
-                            className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white flex items-center justify-center ${
-                                pathname === '/' ? 'bg-orange' : 'bg-blue'
-                            }`}
-                        >
-                            <span className="text-white text-xs">{cartItem.items && cartItem.items.length}</span>
-                        </div>
+                        {(user as User) && (
+                            <div
+                                className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white flex items-center justify-center ${
+                                    pathname === '/' ? 'bg-orange' : 'bg-blue'
+                                }`}
+                            >
+                                <span className="text-white text-xs">{cartItems.length}</span>
+                            </div>
+                        )}
                     </div>
 
                     <PersonOutlineOutlinedIcon

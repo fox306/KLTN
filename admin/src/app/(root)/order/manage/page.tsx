@@ -14,6 +14,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Sure from '@/components/shared/Sure';
 import Loading from '@/components/shared/Loading';
 import axios from '@/utils/axios';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const statuses = [
     'All',
@@ -57,6 +58,8 @@ const OrderManage = () => {
     const [current, setCurrent] = useState<string>('');
     const [orderId, setOrderId] = useState<string>('');
     const [loading, setLoading] = useState(true);
+
+    const [text, setText] = useState('');
 
     const [page, setPage] = useState<string>('Management');
 
@@ -216,35 +219,56 @@ const OrderManage = () => {
     }, [orders]);
 
     useEffect(() => {
-        const fetchAll = async () => {
-            setLoading(true);
-            const { data } = await axios.get(`/orders?pageSize=4&pageNumber=${pageNumber}`);
-            if (data.success) {
-                setOrders(data.data);
-                setTotal(data.total);
-                setCount(data.pages);
-                setLoading(false);
-            }
-        };
-        const fetchStatus = async () => {
-            setLoading(true);
+        if (!text) {
+            const fetchAll = async () => {
+                setLoading(true);
+                const { data } = await axios.get(`/orders?pageSize=4&pageNumber=${pageNumber}`);
+                if (data.success) {
+                    setOrders(data.data);
+                    setTotal(data.total);
+                    setCount(data.pages);
+                    setLoading(false);
+                }
+            };
+            const fetchStatus = async () => {
+                setLoading(true);
 
+                const { data } = await axios.get(
+                    `/orders/find/by-status?pageSize=4&pageNumber=${pageNumber}&status=${status}`,
+                );
+                if (data.success) {
+                    setOrders(data.data);
+                    setTotal(data.total);
+                    setCount(data.pages);
+                    setLoading(false);
+                }
+            };
+            if (status === 'All') {
+                fetchAll();
+            } else {
+                fetchStatus();
+            }
+        } else {
+            return;
+        }
+    }, [status, load, pageNumber]);
+
+    useEffect(() => {
+        const fetchSearch = async () => {
+            setLoading(true);
             const { data } = await axios.get(
-                `/orders/find/by-status?pageSize=4&pageNumber=${pageNumber}&status=${status}`,
+                `/orders/find/by-keyword?pageSize=4&pageNumber=${pageNumber}&keyword=${text}`,
             );
             if (data.success) {
                 setOrders(data.data);
-                setTotal(data.total);
                 setCount(data.pages);
                 setLoading(false);
             }
         };
-        if (status === 'All') {
-            fetchAll();
-        } else {
-            fetchStatus();
+        if (text) {
+            fetchSearch();
         }
-    }, [status, load, pageNumber]);
+    }, [text, load, pageNumber]);
 
     return (
         <div className="flex flex-col gap-[10px] w-[calc(100vw-285px)]">
@@ -277,7 +301,10 @@ const OrderManage = () => {
                                 } text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                     isActive && 'text-blue border-b-2 border-b-blue'
                                 }`}
-                                onClick={() => handleStatus(item)}
+                                onClick={() => {
+                                    handleStatus(item);
+                                    setText('');
+                                }}
                                 key={i}
                             >
                                 {item} {isActive && `(${total})`}
@@ -298,6 +325,20 @@ const OrderManage = () => {
                     </button>
                 ))}
             </div> */}
+            <div className="h-[50px] flex px-[15px] items-center bg-white shadow-product2">
+                <input
+                    type="text"
+                    className="flex-1 font-bold text-sm outline-none"
+                    placeholder="Search Something..."
+                    value={text}
+                    onChange={(e) => {
+                        setText(e.target.value);
+                        // setLoading(true);
+                        setStatus('None');
+                    }}
+                />
+                <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
+            </div>
             <div className="flex flex-col gap-5">
                 {loading ? (
                     <Loading />
@@ -326,7 +367,7 @@ const OrderManage = () => {
                                     />
                                     <h1>ID: {order.orderId}</h1>
                                 </div>
-                                <span>Buyer: {order.user}</span>
+                                <span>Buyer: {order.user.fullName}</span>
                                 <h1 className="uppercase">{order.status}</h1>
                             </div>
                             {/* <Border /> */}

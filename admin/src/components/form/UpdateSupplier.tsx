@@ -152,7 +152,7 @@ const UpdateSupplier = ({ setOpen, setLoad, supplier, setSupplier, banks }: Prop
                         onClick={handleSubmit}
                         className="w-1/2 h-10 font-medium text-base text-blue bg-blue bg-opacity-[15%] rounded-[5px] shadow-create hover:bg-opacity-100 hover:text-white"
                     >
-                        CREATE
+                        SAVE
                     </button>
                 </div>
             </div>

@@ -12,6 +12,7 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import Loading from '@/components/shared/Loading';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const nav = ['All', 'on sale', 'hidden'];
 const status = ['All', 'Active', 'Hide'];
@@ -43,6 +44,8 @@ const PricePage = () => {
     const [checkedAll, setCheckedAll] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Product[]>([]);
     const [page, setPage] = useState<number>();
+
+    const [text, setText] = useState('');
 
     const [open, setOpen] = useState<boolean>(false);
     const [load, setLoad] = useState<boolean>(false);
@@ -243,36 +246,58 @@ const PricePage = () => {
         validateSelectedAll();
     }, [selectedItem]);
     useEffect(() => {
-        const fetchAll = async () => {
-            setLoading(true);
-            const { data } = await axios.get(`/products/action/by-admin?pageSize=5&pageNumber=${pageNumber}`);
-            if (data.success) {
-                setProductList(data.data);
-                setPage(data.pages);
-                setLoading(false);
-                setCheckedAll(false);
-            }
-        };
-        const fetchStatus = async () => {
-            setLoading(true);
+        if (!text) {
+            const fetchAll = async () => {
+                setLoading(true);
+                const { data } = await axios.get(`/products/action/by-admin?pageSize=5&pageNumber=${pageNumber}`);
+                if (data.success) {
+                    setProductList(data.data);
+                    setPage(data.pages);
+                    setLoading(false);
+                    setCheckedAll(false);
+                }
+            };
+            const fetchStatus = async () => {
+                setLoading(true);
 
+                const { data } = await axios.get(
+                    `/products/find/by-status?pageSize=5&pageNumber=${pageNumber}&status=${status[active]}`,
+                );
+                if (data.success) {
+                    setProductList(data.data);
+                    setPage(data.pages);
+                    setLoading(false);
+
+                    setCheckedAll(false);
+                }
+            };
+            if (nav[active] === 'All') {
+                fetchAll();
+            } else {
+                fetchStatus();
+            }
+        } else {
+            return;
+        }
+    }, [active, pageNumber, load, load1]);
+    useEffect(() => {
+        const fetchSearch = async () => {
+            setLoading(true);
             const { data } = await axios.get(
-                `/products/find/by-status?pageSize=5&pageNumber=${pageNumber}&status=${status[active]}`,
+                `/products/admin/find/by-keyword?keyword=${text}&pageNumber=${pageNumber}&pageSize=5`,
             );
             if (data.success) {
                 setProductList(data.data);
                 setPage(data.pages);
                 setLoading(false);
-
                 setCheckedAll(false);
             }
         };
-        if (nav[active] === 'All') {
-            fetchAll();
-        } else {
-            fetchStatus();
+        if (text) {
+            fetchSearch();
         }
-    }, [active, pageNumber, load, load1]);
+    }, [text, load, load1, pageNumber]);
+
     useEffect(() => {
         const fetchCate = async () => {
             const { data } = await axios.get('/categories');
@@ -452,11 +477,28 @@ const PricePage = () => {
                         className={`w-[300px] h-[50px] flex items-center justify-center uppercase font-bold cursor-pointer hover:text-blue ${
                             active === i ? 'border-b-4 border-blue text-blue' : ''
                         }`}
-                        onClick={() => setActive(i)}
+                        onClick={() => {
+                            setActive(i);
+                            setText('');
+                        }}
                     >
                         {item}
                     </div>
                 ))}
+            </div>
+            <div className="h-[50px] flex px-[15px] items-center bg-white shadow-product2">
+                <input
+                    type="text"
+                    className="flex-1 font-bold text-sm outline-none"
+                    placeholder="Search Something..."
+                    value={text}
+                    onChange={(e) => {
+                        setText(e.target.value);
+                        // setLoading(true);
+                        setActive(3);
+                    }}
+                />
+                <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
             </div>
             {loading ? (
                 <Loading />

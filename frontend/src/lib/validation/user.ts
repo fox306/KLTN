@@ -50,7 +50,7 @@ export const RegisterValidation = z
                     //     return false; // Chuỗi không khớp với định dạng dd/mm/yyyy
                     // }
 
-                    const [day, month, year] = value.split('/').map(Number);
+                    const [year, month, day] = value.split('-').map(Number);
                     return isValidDate(day, month, year);
                 },
                 {

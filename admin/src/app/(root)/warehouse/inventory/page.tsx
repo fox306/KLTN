@@ -95,17 +95,9 @@ const Inventory = () => {
                 </Select>
             </FormControl>
             <div className="mt-5 mb-[10px] flex gap-5">
-                <div className="flex-1 h-[50px] flex px-[15px] items-center bg-white shadow-product2">
-                    <input
-                        type="text"
-                        className="flex-1 font-bold text-sm outline-none"
-                        placeholder="Search Something..."
-                    />
-                    <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
-                </div>
                 <button
                     className={`w-[200px] h-[50px] ${
-                        type ? 'bg-blue text-white' : 'bg-white text-blue'
+                        type ? 'bg-blue text-white border border-black' : 'bg-white text-blue border border-blue'
                     } bg-opacity-60 hover:bg-opacity-100 rounded-[5px]`}
                     onClick={() => setType((prev) => !prev)}
                 >

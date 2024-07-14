@@ -1,7 +1,7 @@
 'use client';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
-import React, { Dispatch, MouseEvent, SetStateAction } from 'react';
+import React, { Dispatch, MouseEvent, SetStateAction, useContext } from 'react';
 import Border from '../shared/Border';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -14,11 +14,14 @@ import { addItemToCartRandomVariant } from '@/slices/cartSlice';
 import FavoriteIcon from '../shared/FavoriteIcon';
 import axios from '@/utils/axios';
 import useAxiosPrivate from '@/utils/intercepter';
+import { CartContext } from '@/contexts/cart';
 type Props = {
     listProduct: Product[];
     setListProduct: Dispatch<SetStateAction<Product[]>>;
 };
 const ShoesWithTag = ({ listProduct, setListProduct }: Props) => {
+    const { addToCart } = useContext(CartContext) || { addToCart: (item: itemCartRandomVari) => {} };
+
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     const axiosPrivate = useAxiosPrivate();
 
@@ -60,6 +63,7 @@ const ShoesWithTag = ({ listProduct, setListProduct }: Props) => {
         const token = localStorage.getItem('token');
         const { data } = await axiosPrivate.post('/carts/addToCart/withoutVariant', cart);
         if (data.success) {
+            addToCart(cart);
             toast.success('Add to cart success');
         }
         // if((res.payload as { status: number }).status === 201){

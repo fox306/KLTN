@@ -107,7 +107,7 @@ export type Order = {
     _id: string;
     orderId: string;
     items: ItemCart[];
-    user: string;
+    user: UserFake;
     deliveryAddress: Address;
     paymentMethod: string;
     total: number;
@@ -115,6 +115,10 @@ export type Order = {
     isPaid?: boolean;
     isDelivered?: boolean;
     discountAmount: number;
+};
+export type UserFake = {
+    _id: string;
+    fullName: string;
 };
 
 export type RemoveItemCart = {

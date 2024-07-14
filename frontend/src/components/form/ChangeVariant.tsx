@@ -2,7 +2,7 @@
 
 import { getProductById } from '@/slices/productSlice';
 import { getColorOfSize } from '@/slices/variantSlice';
-import { RVariant, User, Variant, getQtyOfSizeColor } from '@/types/type';
+import { RVariant, User, Variant, VariantBySize, getQtyOfSizeColor } from '@/types/type';
 import axios from '@/utils/axios';
 import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
@@ -44,10 +44,11 @@ const ChangeVariant = ({
     setItems,
     setManageQuantity,
 }: Props) => {
-    const { quantity }: { quantity: number } = useSelector((state: any) => state.variants);
-    const { loading } = useSelector((state: any) => state.variants);
+    const { variantBySize }: { variantBySize: VariantBySize[] } = useSelector((state: any) => state.variants);
+
+    // const { loading } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
-    console.log(loading);
+    // console.log(loading);
     const axiosPrivate = useAxiosPrivate();
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
@@ -125,7 +126,7 @@ const ChangeVariant = ({
     }, []);
     useEffect(() => {
         const item: getQtyOfSizeColor = {
-            id: id,
+            id: productId,
             size: items.size,
         };
         if (item.size) {
@@ -145,6 +146,8 @@ const ChangeVariant = ({
             fetchData();
         } else setIsFirstRender(true);
     }, [flag1]);
+    console.log(variantBySize);
+    console.log(items);
 
     return (
         <div className="modal">
@@ -172,12 +175,13 @@ const ChangeVariant = ({
                     <div className="flex items-center mt-[25px] mb-5 w-full">
                         <span className="font-medium flex-1">Color:</span>
                         <div className="font-bold text-white flex gap-2">
-                            {variants &&
-                                variants.listColor &&
-                                variants.listColor.map((item, i) => (
+                            {variantBySize &&
+                                variantBySize.map((item, i) => (
                                     <div
                                         key={i}
-                                        onClick={() => handleSetColor(item.color, item.hex)}
+                                        onClick={() => {
+                                            handleSetColor(item.color, item.hex);
+                                        }}
                                         className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[item.color]}`}
                                     >
                                         <div
@@ -189,6 +193,7 @@ const ChangeVariant = ({
                                 ))}
                         </div>
                     </div>
+
                     <div className="font-medium mb-[25px] flex w-full ">
                         <span className="flex-1">Availability:</span>
                         <span>{items.quantity}</span>

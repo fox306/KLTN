@@ -31,6 +31,7 @@ const GoodReceiptPage = () => {
     const [pages, setPages] = useState(1);
     const [count, setCount] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [text, setText] = useState('');
 
     const [receipts, setReceipts] = useState<Receipt[]>([]);
     useEffect(() => {
@@ -45,6 +46,22 @@ const GoodReceiptPage = () => {
         };
         fetchData();
     }, [pages]);
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            const { data } = await axios.get(
+                `/good-receipts/receipts/find/by-keyword?pagesize=6&pageNumber=${pages}&keyword=${text}`,
+            );
+            if (data.success) {
+                setReceipts(data.data);
+                setCount(data.pages);
+                setLoading(false);
+            }
+        };
+        if (text) {
+            fetchData();
+        }
+    }, [text, pages]);
     const handleChangePage = (i: number) => {
         setPages(i);
     };
@@ -59,6 +76,8 @@ const GoodReceiptPage = () => {
                         type="text"
                         className="flex-1 font-bold text-sm outline-none"
                         placeholder="Search Something..."
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
                     />
                     <SearchOutlinedIcon className="text-2xl ml-[15px] text-blue hover:opacity-60 cursor-pointer" />
                 </div>

@@ -3,6 +3,8 @@ import Coupons from '@/components/cards/Coupons';
 import AddAddress from '@/components/form/AddAddress';
 import ListAddress from '@/components/form/ListAddress';
 import Border from '@/components/shared/Border';
+import Loading from '@/components/shared/Loading';
+import { CartContext } from '@/contexts/cart';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { createOrder } from '@/slices/orderSlice';
@@ -24,7 +26,7 @@ import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -59,9 +61,11 @@ const Order = () => {
     }
     const id = user?._id as string;
     const axiosPrivate = useAxiosPrivate();
+
     const dispatch = useDispatch<AppDispatch>();
-    const { address }: { address: Address[] } = useSelector((state: any) => state.address);
-    const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
+    // const { address }: { address: Address[] } = useSelector((state: any) => state.address);
+    // const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
+    const [address, setAddress] = useState<Address[]>([]);
     const [datas, setDatas] = useState<Address>();
     const router = useRouter();
 
@@ -83,6 +87,7 @@ const Order = () => {
     const [listCoupons, setListCoupons] = useState<ListCoupon>();
     const [discount, setDiscount] = useState<ValidCoupons>();
     const [discountAmount, setDiscountAmount] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const [flag, setFlag] = useState(false);
 
@@ -102,7 +107,7 @@ const Order = () => {
         }
         const token = localStorage.getItem('token');
         console.log(token);
-
+        setLoading(true);
         if (pay === 'VNPAY') {
             const updatedItems = items.map(({ _id, ...rest }) => rest);
 
@@ -119,6 +124,7 @@ const Order = () => {
 
             const { data } = await axiosPrivate.post('/orders', item);
             if (data.success) {
+                setLoading(false);
                 window.open(data.data);
                 localStorage.removeItem('itemOrders');
                 localStorage.removeItem('totalPrice');
@@ -138,6 +144,7 @@ const Order = () => {
             console.log(item);
             const { data } = await axiosPrivate.post('/orders', item);
             if (data.success) {
+                setLoading(false);
                 localStorage.removeItem('itemOrders');
                 localStorage.removeItem('totalPrice');
                 router.push('/user/orders');
@@ -150,8 +157,13 @@ const Order = () => {
     };
 
     useEffect(() => {
-        dispatch(getCartByUserId(id));
-        dispatch(getAllAddressByUserId(id));
+        const fetchAddress = async () => {
+            const { data } = await axiosPrivate.get(`/deliveryAddress/user/${id}`);
+            if (data.success) {
+                setAddress(data.data);
+            }
+        };
+        fetchAddress();
     }, [id, load]);
 
     useEffect(() => {
@@ -354,6 +366,11 @@ const Order = () => {
                     setDiscount={setDiscount}
                     setFlag={setFlag}
                 />
+            )}
+            {loading && (
+                <div className="modal">
+                    <Loading />
+                </div>
             )}
         </div>
     );

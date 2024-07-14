@@ -1,7 +1,7 @@
 'use client';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import StarIcon from '@mui/icons-material/Star';
 import BorderBlack from '@/components/shared/Border';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
@@ -32,6 +32,7 @@ import { useRouter } from 'next/navigation';
 import axios from '@/utils/axios';
 import FavoriteIcon from '@/components/shared/FavoriteIcon';
 import useAxiosPrivate from '@/utils/intercepter';
+import { CartContext } from '@/contexts/cart';
 
 const unProp = {
     productHots: [],
@@ -58,6 +59,13 @@ const ShoesSinglePage = () => {
     const { variantBySize }: { variantBySize: VariantBySize[] } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
+
+    const { addToCart } = useContext(CartContext) || { addToCart: (item: ItemCartFake) => {} };
+
+    // if (!cartContext) {
+    //     console.error('CartContext is null');
+    //     return;
+    // }
 
     const axiosPrivate = useAxiosPrivate();
 
@@ -159,6 +167,7 @@ const ShoesSinglePage = () => {
 
         const { data } = await axiosPrivate.post('/carts/addToCart', item);
         if (data.success) {
+            addToCart(item);
             toast.success('Add item to cart success');
         }
     };

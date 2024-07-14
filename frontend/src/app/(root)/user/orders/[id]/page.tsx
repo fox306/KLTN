@@ -12,6 +12,14 @@ const DetailOrder = () => {
     const { id } = useParams();
     const [detail, setDetail] = useState<Order>();
     console.log(id);
+
+    const handlePay = async () => {
+        const { data } = await axios.get(`/orders/create/payment-url?orderId=${id}&total=${detail?.total}`);
+        if (data.success) {
+            window.open(data.data);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             const { data } = await axios.get(`/orders/by-id/${id}`);
@@ -116,7 +124,11 @@ const DetailOrder = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex justify-end gap-3">
+                    <div
+                        className={`flex ${
+                            (detail?.discountAmount as number) > 0 ? 'justify-between ' : 'justify-end'
+                        } gap-3`}
+                    >
                         {(detail?.discountAmount as number) > 0 && (
                             <div className="flex items-center font-bold gap-2">
                                 <span>Discount Amount:</span>
@@ -129,6 +141,18 @@ const DetailOrder = () => {
                         </div>
                     </div>
                 </div>
+                {detail?.isPaid === false &&
+                    detail.paymentMethod === 'VNPAY' &&
+                    (detail?.status === 'Confirming' || detail?.status === 'Accepted') && (
+                        <div className="text-right">
+                            <button
+                                className="w-[100px] h-[50px] rounded-[15px] bg-blue bg-opacity-60 text-white hover:bg-opacity-100 mt-[10px]"
+                                onClick={handlePay}
+                            >
+                                Payment
+                            </button>
+                        </div>
+                    )}
             </div>
         </div>
     );

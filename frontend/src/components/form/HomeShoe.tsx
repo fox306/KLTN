@@ -1,5 +1,5 @@
 'use client';
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { MouseEvent, useContext, useEffect, useState } from 'react';
 import HomeShoeCard from '../cards/HomeShoeCard';
 import Image from 'next/image';
 import { Rating } from '@mui/material';
@@ -14,9 +14,18 @@ import { useRouter } from 'next/navigation';
 import useAxiosPrivate from '@/utils/intercepter';
 import axios from '@/utils/axios';
 import FavoriteIcon from '../shared/FavoriteIcon';
+import { CartContext } from '@/contexts/cart';
 
 const HomeShoe = () => {
     const dispatch = useDispatch<AppDispatch>();
+
+    const cartContext = useContext(CartContext) || { addToCart: (item: itemCartRandomVari) => {} };
+
+    if (!cartContext) {
+        console.error('CartContext is null');
+        return;
+    }
+    const { addToCart } = cartContext;
     const [id, setId] = useState<string>('');
     const [count, setCount] = useState(0);
     const router = useRouter();
@@ -46,15 +55,7 @@ const HomeShoe = () => {
         quantity: 0,
         size: '',
     });
-    useEffect(() => {
-        if (productHots.length > 0) {
-            setId(productHots[0]._id);
-        }
-    }, [productHots]);
-    useEffect(() => {
-        dispatch(getProductById(id));
-        setItems({ color: '', hex: '', image: '', quantity: 0, size: '' });
-    }, [id, productHots]);
+
     useEffect(() => {
         if (productHots.length > 4) {
             setIsNext(true);
@@ -71,6 +72,19 @@ const HomeShoe = () => {
         };
         fetchData();
     }, []);
+    useEffect(() => {
+        if (productHots.length > 0) {
+            setId(productHots[0]._id);
+        }
+    }, [productHots]);
+    console.log('hot', productHots);
+    console.log('ID', id);
+    useEffect(() => {
+        if (id) {
+            dispatch(getProductById(id));
+        }
+        setItems({ color: '', hex: '', image: '', quantity: 0, size: '' });
+    }, [id, productHots]);
     const favorite = async (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, id: string, i: boolean) => {
         e.stopPropagation();
         const updatedProducts = productHots.map((product) =>
@@ -115,6 +129,7 @@ const HomeShoe = () => {
 
         const { data } = await axiosPrivate.post('/carts/addToCart/withoutVariant', cart);
         if (data.success) {
+            addToCart(cart);
             toast.success('Add to cart success');
         }
         // if((res.payload as { status: number }).status === 201){

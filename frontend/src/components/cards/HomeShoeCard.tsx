@@ -1,3 +1,4 @@
+import { CartContext } from '@/contexts/cart';
 import { addItemToCartByUserId } from '@/slices/cartSlice';
 import { getColorOfSize } from '@/slices/variantSlice';
 import {
@@ -11,10 +12,11 @@ import {
     getQtyOfSizeColor,
 } from '@/types/type';
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -44,6 +46,13 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
     const [isFirstRender, setIsFirstRender] = useState(true);
     const [flag, setFlag] = useState(false);
     const [flag1, setFlag1] = useState(false);
+    const cartContext = useContext(CartContext) || { addToCart: (item: ItemCartFake) => {} };
+
+    if (!cartContext) {
+        console.error('CartContext is null');
+        return;
+    }
+    const { addToCart } = cartContext;
 
     const { productDetail, variants } = useSelector((state: any) => state.products) as {
         productDetail: Product;
@@ -52,6 +61,7 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
     const { variantBySize } = useSelector((state: any) => state.variants) as {
         variantBySize: VariantBySize[];
     };
+    const axiosPrivate = useAxiosPrivate();
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
     if (userString !== null) {
@@ -108,9 +118,10 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
             size: items.size,
             quantity: 1,
         };
+        const { data } = await axiosPrivate.post('/carts/addToCart', item);
+        if (data.success) {
+            addToCart(item);
 
-        const res = await dispatch(addItemToCartByUserId(item));
-        if ((res.payload as { status: number }).status === 201) {
             toast.success('Add item to cart success');
         }
     };

@@ -46,7 +46,7 @@ const ManShoes = () => {
     const [brand, setBrand] = useState<string>('');
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(2000);
+    const [maxPrice, setMaxPrice] = useState(500);
     const pathname = usePathname();
     const [load, setLoad] = useState(true);
     const [count, setCount] = useState(0);
