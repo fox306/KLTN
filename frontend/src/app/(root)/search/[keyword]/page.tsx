@@ -83,7 +83,7 @@ const ManShoes = () => {
                 url += `&sort=${item.sort}`;
             }
             if (item.gender) {
-                url += `&gender=${item.brand}`;
+                url += `&gender=${item.gender}`;
             }
             const { data } = await axios.get(url);
             if (data.success) {
