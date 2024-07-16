@@ -96,9 +96,8 @@ const Inventory = () => {
             </FormControl>
             <div className="mt-5 mb-[10px] flex gap-5">
                 <button
-                    className={`w-[200px] h-[50px] ${
-                        type ? 'bg-blue text-white border border-black' : 'bg-white text-blue border border-blue'
-                    } bg-opacity-60 hover:bg-opacity-100 rounded-[5px]`}
+                    className={`w-[200px] h-[50px] ${type ? 'bg-blue text-white border border-black' : 'bg-white text-blue border border-blue'
+                        } bg-opacity-60 hover:bg-opacity-100 rounded-[5px]`}
                     onClick={() => setType((prev) => !prev)}
                 >
                     Inventory (Out Of Stock)
@@ -124,9 +123,9 @@ const Inventory = () => {
                                     <TableCell align="center" className="font-bold text-sm">
                                         Sold Month Ago
                                     </TableCell>
-                                    <TableCell align="center" className="font-bold text-sm">
+                                    {/* <TableCell align="center" className="font-bold text-sm">
                                         Action
-                                    </TableCell>
+                                    </TableCell> */}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -145,9 +144,9 @@ const Inventory = () => {
                                             <TableCell align="center" className="text-sm">
                                                 {item.sold}
                                             </TableCell>
-                                            <TableCell align="center" className="text-blue">
+                                            {/* <TableCell align="center" className="text-blue">
                                                 <SearchOutlinedIcon />
-                                            </TableCell>
+                                            </TableCell> */}
                                         </TableRow>
                                     ))}
                             </TableBody>

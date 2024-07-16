@@ -49,7 +49,7 @@ const Login = () => {
             console.log(res);
             if ((res.payload as { status: number }).status === 201) {
                 toast.success('Login Success');
-                router.push('/');
+                router.back()
             } else {
                 toast.error('Wrong infomation');
             }

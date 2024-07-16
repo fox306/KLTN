@@ -86,7 +86,7 @@ const OrderDetail = () => {
 
                                 <div className="flex flex-col gap-[14px]">
                                     <span>{order._id}</span>
-                                    <span>{order.user}</span>
+                                    <span>{order.user.fullName}</span>
                                     <span>{order.paymentMethod}</span>
                                 </div>
                                 <div className="flex-grow"></div>
