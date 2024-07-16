@@ -1,4 +1,5 @@
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import React, { Dispatch, SetStateAction } from 'react';
 import { toast } from 'react-toastify';
 
@@ -12,6 +13,7 @@ type Props = {
 };
 
 const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => {
+    const axiosPrivate = useAxiosPrivate();
     const handleCancel = () => {
         setOpen(false);
         setAction('');
@@ -20,7 +22,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
     console.log(id);
     const handleSubmit = async () => {
         if (action === 'Lock') {
-            const { data } = await axios.patch(`/users/lock/${id}`);
+            const { data } = await axiosPrivate.patch(`/users/lock/${id}`);
             if (data.success) {
                 toast.success('Lock User Success');
                 setLoad((prev) => !prev);
@@ -29,7 +31,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
                 setId('');
             }
         } else if (action === 'UnLock') {
-            const { data } = await axios.patch(`/users/unlock/${id}`);
+            const { data } = await axiosPrivate.patch(`/users/unlock/${id}`);
             if (data.success) {
                 toast.success('UnLock User Success');
                 setLoad((prev) => !prev);
@@ -38,7 +40,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
                 setId('');
             }
         } else if (action === 'Hide') {
-            const { data } = await axios.patch(`/products/hide/${id}`);
+            const { data } = await axiosPrivate.patch(`/products/hide/${id}`);
             console.log(id);
             if (data.success) {
                 toast.success('Hidden Product Success');
@@ -48,7 +50,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
                 setId('');
             }
         } else {
-            const { data } = await axios.patch(`/products/unLockOrHide/${id}`);
+            const { data } = await axiosPrivate.patch(`/products/unLockOrHide/${id}`);
             if (data.success) {
                 toast.success('On Sale Product Success');
                 setLoad((prev) => !prev);

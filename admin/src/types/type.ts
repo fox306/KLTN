@@ -56,6 +56,7 @@ export type Product = {
     status?: string;
     variant: Variant;
     selected?: boolean;
+    gender: string;
 };
 
 export type ProductByStatus = {
@@ -295,6 +296,7 @@ export type Receipt = {
     confirmer: string;
     confirmation_date: string;
     total_receipt: number;
+    status: string;
 };
 
 export type Inventory = {

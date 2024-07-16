@@ -202,6 +202,7 @@ export type productByCate = {
     sort: string;
     brand: string;
     color: string;
+    gender: string;
     pageNumber: number;
 };
 
@@ -211,6 +212,7 @@ export type findProduct = {
     color: string;
     pageNumber: number;
     sort: string;
+    gender: string;
 };
 
 export type orderStatus = {

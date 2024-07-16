@@ -11,6 +11,7 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import Loading from '../shared/Loading';
+import useAxiosPrivate from '@/utils/intercepter';
 
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
@@ -22,6 +23,7 @@ type Props = {
 const methods = ['TRANSFER', 'CASH'];
 
 const UpdateSupplier = ({ setOpen, setLoad, supplier, setSupplier, banks }: Props) => {
+    const axiosPrivate = useAxiosPrivate();
     const [loading, setLoading] = useState(false);
     const handleChange = (field: string, value: string) => {
         setSupplier((prev) => ({ ...prev, [field]: value }));
@@ -37,7 +39,7 @@ const UpdateSupplier = ({ setOpen, setLoad, supplier, setSupplier, banks }: Prop
     };
     const handleSubmit = async () => {
         setLoading(true);
-        const { data } = await axios.post('/good-receipts/suppliers', supplier);
+        const { data } = await axiosPrivate.put('/good-receipts/suppliers', supplier);
         if (data.success) {
             setLoading(false);
             setOpen(false);

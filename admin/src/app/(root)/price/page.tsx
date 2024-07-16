@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import Image from 'next/image';
 import Loading from '@/components/shared/Loading';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const nav = ['All', 'on sale', 'hidden'];
 const status = ['All', 'Active', 'Hide'];
@@ -27,6 +28,7 @@ const theme = createTheme({
 });
 
 const PricePage = () => {
+    const axiosPrivate = useAxiosPrivate();
     const [active, setActive] = useState(0);
 
     const [value, setValue] = useState<string>('New');
@@ -132,7 +134,7 @@ const PricePage = () => {
                 part: type,
             };
         }
-        const { data } = await axios.put('/products/management/price', item);
+        const { data } = await axiosPrivate.put('/products/management/price', item);
         if (data.success) {
             {
                 toast.success('Update Price Success');
@@ -162,7 +164,7 @@ const PricePage = () => {
                 part: type,
             };
         }
-        const { data } = await axios.put('/products/management/price', item);
+        const { data } = await axiosPrivate.put('/products/management/price', item);
         if (data.success) {
             {
                 toast.success('Update Price Success');
@@ -191,7 +193,7 @@ const PricePage = () => {
                 part: type,
             };
         }
-        const { data } = await axios.put('/products/management/price', item);
+        const { data } = await axiosPrivate.put('/products/management/price', item);
         if (data.success) {
             {
                 toast.success('Update Price Success');
@@ -220,7 +222,7 @@ const PricePage = () => {
                 part: type,
             };
         }
-        const { data } = await axios.put('/products/management/price', item);
+        const { data } = await axiosPrivate.put('/products/management/price', item);
         if (data.success) {
             toast.success('Update Price Success');
             setLoad1((prev) => !prev);

@@ -6,12 +6,15 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import Loading from '../shared/Loading';
+import useAxiosPrivate from '@/utils/intercepter';
 
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
     setLoad: Dispatch<SetStateAction<boolean>>;
 };
 const AddCate = ({ setOpen, setLoad }: Props) => {
+    const axiosPrivate = useAxiosPrivate();
+
     const [image, setImage] = useState<File>();
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
@@ -38,7 +41,7 @@ const AddCate = ({ setOpen, setLoad }: Props) => {
         image && form.append('file', image);
         form.append('name', name);
         setLoading(true);
-        const { data } = await axios.post('/categories', form, {
+        const { data } = await axiosPrivate.post('/categories', form, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

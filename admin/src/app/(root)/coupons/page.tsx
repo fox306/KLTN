@@ -171,14 +171,6 @@ const CouponsPage = () => {
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead className="mb-[10px]">
                                     <TableRow>
-                                        <TableCell align="left">
-                                            <input
-                                                type="checkbox"
-                                                className="w-[26px] h-[26px]"
-                                                checked={checkedAll}
-                                                onChange={handleSelectedAll}
-                                            />
-                                        </TableCell>
                                         <TableCell align="center">Code</TableCell>
                                         <TableCell align="center">Name of Coupon</TableCell>
                                         <TableCell align="center">Value</TableCell>
@@ -192,21 +184,10 @@ const CouponsPage = () => {
                                     {coupons &&
                                         coupons.map((item, i) => (
                                             <TableRow>
-                                                <TableCell align="left">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="w-[26px] h-[26px]"
-                                                        checked={item.selected}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleSelectedItem(item);
-                                                        }}
-                                                    />
-                                                </TableCell>
                                                 <TableCell align="center">{item.code}</TableCell>
                                                 <TableCell align="center">{item.name}</TableCell>
                                                 <TableCell align="center">
-                                                    {item.value} {item.type === 'percent' ? '%' : '$'}
+                                                    {item.value} {item.type === 'percent' ? '%' : '₫'}
                                                 </TableCell>
                                                 <TableCell align="center">{item.validityDuration}</TableCell>
                                                 <TableCell align="center">{item.status}</TableCell>

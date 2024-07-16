@@ -236,14 +236,6 @@ const UserManage = () => {
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead className="mb-[10px]">
                                 <TableRow>
-                                    <TableCell align="left">
-                                        <input
-                                            type="checkbox"
-                                            className="w-[26px] h-[26px] cursor-pointer"
-                                            checked={checkedAll}
-                                            onChange={handleCheckedAll}
-                                        />
-                                    </TableCell>
                                     <TableCell align="center">STT</TableCell>
                                     <TableCell align="center">Full Name</TableCell>
                                     <TableCell align="center">Email</TableCell>
@@ -256,14 +248,6 @@ const UserManage = () => {
                             <TableBody>
                                 {users.map((item, i) => (
                                     <TableRow key={i}>
-                                        <TableCell align="left">
-                                            <input
-                                                type="checkbox"
-                                                className="w-[26px] h-[26px] cursor-pointer"
-                                                checked={checkedAll ? checkedAll : checkedItems[item._id]}
-                                                onChange={() => handleChecked(item._id)}
-                                            />
-                                        </TableCell>
                                         <TableCell align="center">{i + 1}</TableCell>
                                         <TableCell align="center">{item.fullName}</TableCell>
                                         <TableCell align="center">{item.email}</TableCell>

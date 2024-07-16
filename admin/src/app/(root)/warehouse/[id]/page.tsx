@@ -22,11 +22,15 @@ import { getDetailByProduct } from '@/slices/variantSlice';
 import SureForImg from '@/components/shared/SureForImg';
 import UpdateProdcut from '@/components/form/UpdateProduct';
 import Loading from '@/components/shared/Loading';
+import useAxiosPrivate from '@/utils/intercepter';
+
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
 const prefixCloudinary = 'http://res.cloudinary.com/dtfei3453/image/upload';
+const genders = ['Male', 'Female', 'Other'];
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const axiosPrivate = useAxiosPrivate();
     const [addVariants, setAddVariants] = useState<{}[]>([]);
     const [vars, setVars] = useState<CreateVariant[]>([
         {
@@ -46,6 +50,7 @@ const AddNewProduct = () => {
     );
     const [loading, setLoading] = useState(false);
     const [brand, setBrand] = useState<string>('Adidas');
+    const [gender, setGender] = useState<string>('Male');
     const [category, setCategory] = useState<string>('');
     const { id }: { id: string } = useParams();
     const [product, setProduct] = useState<{
@@ -79,6 +84,9 @@ const AddNewProduct = () => {
     const handleChangeBrand = (event: SelectChangeEvent) => {
         setBrand(event.target.value as string);
     };
+    const handleChangeGender = (event: SelectChangeEvent) => {
+        setGender(event.target.value as string);
+    };
 
     const dispatchGetAllCategory = useCallback(() => {
         dispatch(getAllCategory());
@@ -111,7 +119,7 @@ const AddNewProduct = () => {
                 // form.append('image', vars[i].image ?? '');
                 form.append('color', vars[i].color);
                 form.append('details', JSON.stringify(vars[i].details));
-                const { data } = await axios.put('/variants', form, {
+                const { data } = await axiosPrivate.put('/variants', form, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -149,6 +157,7 @@ const AddNewProduct = () => {
             });
             setBrand(productDetail.brand);
             setCategory(productDetail.category._id);
+            setGender(productDetail.gender);
 
             const newVars = variants.map((item, index) => {
                 const img = new File([item.image], item.image);
@@ -212,6 +221,23 @@ const AddNewProduct = () => {
                             value={brand}
                             label="Brand"
                             onChange={handleChangeBrand}
+                            className="font-bold"
+                        >
+                            {brands.map((item) => (
+                                <MenuItem key={item} value={item}>
+                                    {item}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl className="w-[320px]">
+                        <InputLabel id="genderName">Gender</InputLabel>
+                        <Select
+                            labelId="genderName"
+                            id="gender"
+                            value={gender}
+                            label="Gender"
+                            onChange={handleChangeGender}
                             className="font-bold"
                         >
                             {brands.map((item) => (

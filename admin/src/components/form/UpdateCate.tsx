@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { Category } from '@/types/type';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import Loading from '../shared/Loading';
+import useAxiosPrivate from '@/utils/intercepter';
 
 type Props = {
     item: Category;
@@ -15,6 +16,8 @@ type Props = {
 };
 
 const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
+    const axiosPrivate = useAxiosPrivate();
+
     const [image, setImage] = useState<File[]>();
     const [name, setName] = useState<string>('');
     const [loading, setLoading] = useState(false);
@@ -50,7 +53,7 @@ const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
         formData.append('name', name);
         console.log(formData.get('category'));
         setLoading(true);
-        const { data } = await axios.put('/categories', formData, {
+        const { data } = await axiosPrivate.put('/categories', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

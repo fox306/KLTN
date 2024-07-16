@@ -74,14 +74,6 @@ const TableProduct = ({
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead className="mb-[10px]">
                             <TableRow>
-                                <TableCell align="left">
-                                    <input
-                                        type="checkbox"
-                                        className="w-[26px] h-[26px]"
-                                        checked={checkedAll}
-                                        onChange={handleSelectAll}
-                                    />
-                                </TableCell>
                                 <TableCell align="center">Image</TableCell>
                                 <TableCell align="center">Name of Product</TableCell>
                                 <TableCell align="center">Category</TableCell>
@@ -102,17 +94,6 @@ const TableProduct = ({
                                         }}
                                         className="cursor-pointer hover:opacity-60"
                                     >
-                                        <TableCell align="left">
-                                            <input
-                                                type="checkbox"
-                                                className="w-[26px] h-[26px]"
-                                                checked={product.selected || false}
-                                                onChange={(e) => {
-                                                    e.stopPropagation();
-                                                    handleSelectedItem(product);
-                                                }}
-                                            />
-                                        </TableCell>
                                         <TableCell align="center" className="flex justify-center">
                                             <Image
                                                 src={product.image}

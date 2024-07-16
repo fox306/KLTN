@@ -109,7 +109,7 @@ const page = () => {
                                             {product.name}
                                         </h1>
                                         <Rating name="read-only" value={product.rating} readOnly />
-                                        <span className="font-bak text-money ">${product.price}</span>
+                                        <span className="font-bak text-money ">{product.price}₫</span>
                                         <div className="w-full flex items-center justify-between text-gray font-bold">
                                             <span>Sold</span>
                                             <span>{product.sold}</span>

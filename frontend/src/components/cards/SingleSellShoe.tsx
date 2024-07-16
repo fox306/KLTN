@@ -160,7 +160,7 @@ const SingleSellShoe = ({
                                           </p>
 
                                           <Rating name="read-only" value={product.rating} readOnly />
-                                          <span className="font-bak text-money">${product.price}</span>
+                                          <span className="font-bak text-money">{product.price}₫</span>
                                           <div className="w-full flex items-center justify-between text-gray font-bold">
                                               <span>Sold</span>
                                               <span>{product.sold}</span>
@@ -203,7 +203,7 @@ const SingleSellShoe = ({
                                               {product.name}
                                           </h1>
                                           <Rating name="read-only" value={product.rating} readOnly />
-                                          <span className="font-bold text-[16px] text-money">${product.price}</span>
+                                          <span className="font-bold text-[16px] text-money">{product.price}₫</span>
                                           <div className="w-full flex text-[14px] items-center justify-between text-gray font-bold">
                                               <span>Sold</span>
                                               <span>{product.sold}</span>
@@ -265,7 +265,7 @@ const SingleSellShoe = ({
                                 </div>
                                 <h1 className="font-bold text-base text-center truncate w-full">{product.name}</h1>
                                 <Rating name="read-only" value={product.rating} readOnly />
-                                <span className="font-bak text-money">${product.price}</span>
+                                <span className="font-bak text-money">{product.price}₫</span>
                                 <div className="w-full flex items-center justify-between text-gray font-bold">
                                     <span>Sold</span>
                                     <span>{product.sold}</span>
@@ -315,7 +315,7 @@ const SingleSellShoe = ({
                                 </div>
                                 <h1 className="font-bold text-base text-center truncate w-full">{product.name}</h1>
                                 <Rating name="read-only" value={product.rating} readOnly />
-                                <span className="font-bak text-money ">${product.price}</span>
+                                <span className="font-bak text-money ">{product.price}₫</span>
                                 <div className="w-full flex items-center justify-between text-gray font-bold">
                                     <span>Sold</span>
                                     <span>{product.sold}</span>
@@ -361,7 +361,7 @@ const SingleSellShoe = ({
                             </div>
                             <h1 className="font-bold text-base text-center truncate w-full">{product.name}</h1>
                             <Rating name="read-only" value={product.rating} readOnly />
-                            <span className="font-bak text-money ">${product.price}</span>
+                            <span className="font-bak text-money ">{product.price}₫</span>
                             <div className="w-full flex items-center justify-between text-gray font-bold">
                                 <span>Sold</span>
                                 <span>{product.sold}</span>

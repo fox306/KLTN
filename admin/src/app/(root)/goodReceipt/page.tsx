@@ -16,6 +16,8 @@ import { Receipt } from '@/types/type';
 import axios from '@/utils/axios';
 import Image from 'next/image';
 import Loading from '@/components/shared/Loading';
+import useAxiosPrivate from '@/utils/intercepter';
+import { toast } from 'react-toastify';
 
 const theme = createTheme({
     palette: {
@@ -27,6 +29,7 @@ const theme = createTheme({
 
 const GoodReceiptPage = () => {
     const router = useRouter();
+    const axiosPrivate = useAxiosPrivate();
 
     const [pages, setPages] = useState(1);
     const [count, setCount] = useState(1);
@@ -34,6 +37,15 @@ const GoodReceiptPage = () => {
     const [text, setText] = useState('');
 
     const [receipts, setReceipts] = useState<Receipt[]>([]);
+
+    const handleComfirm = async (id: string) => {
+        setLoading(true);
+        const { data } = await axiosPrivate.patch(`/good-receipts/receipts/${id}`);
+        if (data.success) {
+            toast.success('Comfirm Success');
+            setLoading(false);
+        }
+    };
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -119,6 +131,9 @@ const GoodReceiptPage = () => {
                                         Total Receipt
                                     </TableCell>
                                     <TableCell align="center" className="font-bold text-sm">
+                                        Status
+                                    </TableCell>
+                                    <TableCell align="center" className="font-bold text-sm">
                                         Action
                                     </TableCell>
                                 </TableRow>
@@ -126,7 +141,7 @@ const GoodReceiptPage = () => {
                             <TableBody>
                                 {receipts &&
                                     receipts.map((item, i) => (
-                                        <TableRow>
+                                        <TableRow onClick={() => router.push(`/goodReceipt/${item.receiptId}`)}>
                                             <TableCell align="center" className="text-sm font-bold">
                                                 {i + 1}
                                             </TableCell>
@@ -143,13 +158,20 @@ const GoodReceiptPage = () => {
                                                 {item.confirmation_date}
                                             </TableCell>
                                             <TableCell align="center" className="text-sm font-bak text-orange">
-                                                ${item.total_receipt}
+                                                ₫{item.total_receipt}₫
+                                            </TableCell>
+                                            <TableCell align="center" className="text-sm font-bak text-orange">
+                                                {item.status === 'UPDATED' ? 'Update Confirmed' : 'Order Confirmed'}
                                             </TableCell>
                                             <TableCell align="center">
-                                                <SearchOutlinedIcon
-                                                    className="text-blue cursor-pointer hover:opacity-50"
-                                                    onClick={() => router.push(`/goodReceipt/${item.receiptId}`)}
-                                                />
+                                                {item.status !== 'UPDATED' && (
+                                                    <button
+                                                        className="w-[200px] h-[50px] rounded-[5px] text-white bg-blue hover:bg-opacity-60"
+                                                        onClick={() => handleComfirm(item.receiptId)}
+                                                    >
+                                                        Update Confirmation
+                                                    </button>
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     ))}
