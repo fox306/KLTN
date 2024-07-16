@@ -304,7 +304,7 @@ const PricePage = () => {
 
     useEffect(() => {
         const fetchCate = async () => {
-            const { data } = await axios.get('/categories');
+            const { data } = await axios.get('/categories?pageSize=20&pageNumber=1');
             if (data.success) {
                 setCategories(data.data);
                 setCategory(data.data[0]._id);
@@ -381,7 +381,7 @@ const PricePage = () => {
                         className="font-medium text-sm py-[5px] px-5 outline-none"
                         onChange={(e) => setPrice(e.target.value)}
                     />
-                    <span className="px-[10px] py-[5px] font-bold text-base border-l-[1px] border-l-blue">$</span>
+                    <span className="px-[10px] py-[5px] font-bold text-base border-l-[1px] border-l-blue">₫</span>
                 </div>
                 <FormControl className="w-[240px] h-[50px] bg-white flex items-center justify-center shadow-product2">
                     <Select

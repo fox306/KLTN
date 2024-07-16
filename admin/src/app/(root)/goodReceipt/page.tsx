@@ -18,6 +18,7 @@ import Image from 'next/image';
 import Loading from '@/components/shared/Loading';
 import useAxiosPrivate from '@/utils/intercepter';
 import { toast } from 'react-toastify';
+import { formatCurrency } from '@/utils/convertMoney';
 
 const theme = createTheme({
     palette: {
@@ -141,7 +142,10 @@ const GoodReceiptPage = () => {
                             <TableBody>
                                 {receipts &&
                                     receipts.map((item, i) => (
-                                        <TableRow onClick={() => router.push(`/goodReceipt/${item.receiptId}`)}>
+                                        <TableRow
+                                            className="cursor-pointer hover:opacity-60"
+                                            onClick={() => router.push(`/goodReceipt/${item.receiptId}`)}
+                                        >
                                             <TableCell align="center" className="text-sm font-bold">
                                                 {i + 1}
                                             </TableCell>
@@ -158,10 +162,10 @@ const GoodReceiptPage = () => {
                                                 {item.confirmation_date}
                                             </TableCell>
                                             <TableCell align="center" className="text-sm font-bak text-orange">
-                                                ₫{item.total_receipt}₫
+                                                {formatCurrency(item.total_receipt)}
                                             </TableCell>
                                             <TableCell align="center" className="text-sm font-bak text-orange">
-                                                {item.status === 'UPDATED' ? 'Update Confirmed' : 'Order Confirmed'}
+                                                {item.status}
                                             </TableCell>
                                             <TableCell align="center">
                                                 {item.status !== 'UPDATED' && (

@@ -23,10 +23,11 @@ import SureForImg from '@/components/shared/SureForImg';
 import UpdateProdcut from '@/components/form/UpdateProduct';
 import Loading from '@/components/shared/Loading';
 import useAxiosPrivate from '@/utils/intercepter';
+import { formatCurrency } from '@/utils/convertMoney';
 
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
 const prefixCloudinary = 'http://res.cloudinary.com/dtfei3453/image/upload';
-const genders = ['Male', 'Female', 'Other'];
+const genders = ['MALE', 'FEMALE', 'UNISEX'];
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -50,7 +51,7 @@ const AddNewProduct = () => {
     );
     const [loading, setLoading] = useState(false);
     const [brand, setBrand] = useState<string>('Adidas');
-    const [gender, setGender] = useState<string>('Male');
+    const [gender, setGender] = useState<string>('MALE');
     const [category, setCategory] = useState<string>('');
     const { id }: { id: string } = useParams();
     const [product, setProduct] = useState<{
@@ -240,7 +241,7 @@ const AddNewProduct = () => {
                             onChange={handleChangeGender}
                             className="font-bold"
                         >
-                            {brands.map((item) => (
+                            {genders.map((item) => (
                                 <MenuItem key={item} value={item}>
                                     {item}
                                 </MenuItem>

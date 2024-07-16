@@ -7,6 +7,7 @@ import Pagetination from '@/components/shared/Pagetination';
 import UserNav from '@/components/shared/UserNav';
 import { Product, User } from '@/types/type';
 import axios from '@/utils/axios';
+import { formatCurrency } from '@/utils/convertMoney';
 import useAxiosPrivate from '@/utils/intercepter';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
@@ -109,7 +110,7 @@ const page = () => {
                                             {product.name}
                                         </h1>
                                         <Rating name="read-only" value={product.rating} readOnly />
-                                        <span className="font-bak text-money ">{product.price}₫</span>
+                                        <span className="font-bak text-money ">{formatCurrency(product.price)}</span>
                                         <div className="w-full flex items-center justify-between text-gray font-bold">
                                             <span>Sold</span>
                                             <span>{product.sold}</span>

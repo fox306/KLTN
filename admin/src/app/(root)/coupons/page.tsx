@@ -19,6 +19,7 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import SureForCoupon from '@/components/shared/SureForCoupon';
 import Image from 'next/image';
 import Loading from '@/components/shared/Loading';
+import { formatCurrency } from '@/utils/convertMoney';
 
 const theme = createTheme({
     palette: {
@@ -171,23 +172,40 @@ const CouponsPage = () => {
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead className="mb-[10px]">
                                     <TableRow>
-                                        <TableCell align="center">Code</TableCell>
-                                        <TableCell align="center">Name of Coupon</TableCell>
-                                        <TableCell align="center">Value</TableCell>
-                                        <TableCell align="center">Time Remaining (day)</TableCell>
-                                        <TableCell align="center">Status</TableCell>
-                                        <TableCell align="center">Action</TableCell>
+                                        <TableCell align="center" className="font-bold">
+                                            Code
+                                        </TableCell>
+                                        <TableCell align="center" className="font-bold">
+                                            Name of Coupon
+                                        </TableCell>
+                                        <TableCell align="center" className="font-bold">
+                                            Value
+                                        </TableCell>
+                                        <TableCell align="center" className="font-bold">
+                                            Time Remaining (day)
+                                        </TableCell>
+                                        <TableCell align="center" className="font-bold">
+                                            Status
+                                        </TableCell>
+                                        <TableCell align="center" className="font-bold">
+                                            Action
+                                        </TableCell>
                                     </TableRow>
                                 </TableHead>
 
                                 <TableBody>
                                     {coupons &&
                                         coupons.map((item, i) => (
-                                            <TableRow>
+                                            <TableRow
+                                                className="cursor-pointer hover:opacity-60"
+                                                onClick={() => router.push(`coupons/${item._id}`)}
+                                            >
                                                 <TableCell align="center">{item.code}</TableCell>
                                                 <TableCell align="center">{item.name}</TableCell>
-                                                <TableCell align="center">
-                                                    {item.value} {item.type === 'percent' ? '%' : '₫'}
+                                                <TableCell align="center" className="text-orange font-bak">
+                                                    {item.type === 'percent'
+                                                        ? item.value + '%'
+                                                        : formatCurrency(item.value)}
                                                 </TableCell>
                                                 <TableCell align="center">{item.validityDuration}</TableCell>
                                                 <TableCell align="center">{item.status}</TableCell>

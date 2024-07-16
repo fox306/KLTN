@@ -12,6 +12,7 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import Image from 'next/image';
 import { Product } from '@/types/type';
 import { useRouter } from 'next/navigation';
+import { formatCurrency } from '@/utils/convertMoney';
 
 function createData(
     img: string,
@@ -113,7 +114,7 @@ const TableProduct = ({
                                         <TableCell align="center">{product.category.name}</TableCell>
                                         <TableCell align="center">{product.brand}</TableCell>
                                         <TableCell align="center" className="text-orange">
-                                            ${product.price}
+                                            {formatCurrency(product.price)}
                                         </TableCell>
                                         <TableCell align="center">{product.sold}</TableCell>
                                         <TableCell

@@ -33,6 +33,7 @@ import axios from '@/utils/axios';
 import FavoriteIcon from '@/components/shared/FavoriteIcon';
 import useAxiosPrivate from '@/utils/intercepter';
 import { CartContext } from '@/contexts/cart';
+import { formatCurrency } from '@/utils/convertMoney';
 
 const unProp = {
     productHots: [],
@@ -300,7 +301,7 @@ const ShoesSinglePage = () => {
                     </div>
                     <BorderBlack />
                     <span className="text-base text-money font-bak mt-[25px] mb-[25px] block">
-                        {productDetail?.price}₫
+                        {formatCurrency(productDetail?.price as number)}
                     </span>
                     <span className="font-medium mb-[25px] block">free shipping</span>
                     <BorderBlack />

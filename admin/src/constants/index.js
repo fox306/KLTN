@@ -21,7 +21,7 @@ export const adminNav = [
     },
     {
         icon: ArticleRoundedIcon,
-        route: '/order',
+        route: '/orders',
         label: 'Orders',
     },
     {

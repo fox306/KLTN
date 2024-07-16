@@ -12,6 +12,7 @@ import {
     getQtyOfSizeColor,
 } from '@/types/type';
 import axios from '@/utils/axios';
+import { formatCurrency } from '@/utils/convertMoney';
 import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -154,8 +155,8 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
     return (
         <div className="flex items-center pt-[60px] px-[212px] gap-14">
             <div className="w-5/12 flex flex-col">
-                <h1 className="font-black text-base text-white mb-2 uppercase">{productDetail.name}</h1>
-                <p className="text-gray text-[14px] text-justify">{productDetail.desc}</p>
+                <h1 className="font-black text-base text-blue mb-2 uppercase">{productDetail.name}</h1>
+                <p className="text-bg text-[14px] text-justify">{productDetail.desc}</p>
 
                 <div className="flex items-center mt-8 mb-5">
                     <span className="text-white-60 font-bold w-[60px]">Size:</span>
@@ -188,15 +189,15 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
                                     >
                                         <div
                                             className={`absolute inset-[-4px] p-3 rounded-full border-2 ${
-                                                item.color === items.color ? 'border-blue' : ''
-                                            }`}
+                                                item.color === 'White' ? 'border' : ''
+                                            } ${item.color === items.color ? 'border-blue' : ''} `}
                                         ></div>
                                     </div>
                                 ))}
                         </div>
                     </div>
                 )}
-                <span className="font-bak text-[#FFD6AE] text-base mt-5 mb-2">{productDetail.price}₫</span>
+                <span className="font-bak text-orange text-base mt-5 mb-2">{formatCurrency(productDetail.price)}</span>
                 <button
                     onClick={handleAddToCart}
                     className="w-60 h-[50px] border-2 border-orange rounded-md text-base font-bold text-orange cursor-pointer hover:opacity-60"

@@ -15,6 +15,7 @@ import Sure from '@/components/shared/Sure';
 import Loading from '@/components/shared/Loading';
 import axios from '@/utils/axios';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { formatCurrency } from '@/utils/convertMoney';
 
 const statuses = [
     'All',
@@ -451,12 +452,14 @@ const OrderManage = () => {
                                 {order.discountAmount > 0 && (
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Discount Amount:</span>
-                                        <span className="text-lg text-blue">{order.discountAmount}₫</span>
+                                        <span className="text-lg text-blue">
+                                            {formatCurrency(order.discountAmount)}
+                                        </span>
                                     </div>
                                 )}
                                 <div className="flex items-center font-bold gap-2">
                                     <span>Total Price:</span>
-                                    <span className="text-lg text-blue">{order.total}₫</span>
+                                    <span className="text-lg text-blue">{formatCurrency(order.total)}</span>
                                 </div>
                             </div>
                         </div>

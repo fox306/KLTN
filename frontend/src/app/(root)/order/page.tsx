@@ -22,6 +22,7 @@ import type {
     checkoutOrder,
 } from '@/types/type';
 import axios from '@/utils/axios';
+import { formatCurrency } from '@/utils/convertMoney';
 import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -288,12 +289,12 @@ const Order = () => {
                                     <span className="mb-1 font-medium text-lg">{item.name}</span>
                                     <div className="flex items-center gap-[100px]">
                                         <span className="text-sm opacity-70"> Color: {item.color}</span>
-                                        <span className="text-sm opacity-70">Size: 42</span>
+                                        <span className="text-sm opacity-70">Size: {item.size}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm opacity-70"> Quantity: {item.quantity}</span>
 
-                                        <span className="text-blue font-bold">{item.price}₫</span>
+                                        <span className="text-blue font-bold">{formatCurrency(item.price)}</span>
                                     </div>
                                 </div>
                             </div>

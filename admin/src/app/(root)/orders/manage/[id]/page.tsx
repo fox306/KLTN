@@ -4,6 +4,7 @@ import Sure from '@/components/shared/Sure';
 import { getOrderByOrderId } from '@/slices/orderSlice';
 import { Order } from '@/types/type';
 import axios from '@/utils/axios';
+import { formatCurrency } from '@/utils/convertMoney';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
@@ -163,7 +164,9 @@ const OrderDetail = () => {
                                                         <span className="text-sm opacity-70">
                                                             Quantity: {item.quantity}
                                                         </span>
-                                                        <span className="font-bold text-blue">{item.price}₫</span>
+                                                        <span className="font-bold text-blue">
+                                                            {formatCurrency(item.price)}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -174,12 +177,14 @@ const OrderDetail = () => {
                                     {order.discountAmount > 0 && (
                                         <div className="flex items-center font-bold gap-2">
                                             <span>Discount Amount:</span>
-                                            <span className="text-lg text-blue">{order.discountAmount}₫</span>
+                                            <span className="text-lg text-blue">
+                                                {formatCurrency(order.discountAmount)}
+                                            </span>
                                         </div>
                                     )}
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Total Price:</span>
-                                        <span className="text-lg text-blue">{order.total}₫</span>
+                                        <span className="text-lg text-blue">{formatCurrency(order.total)}</span>
                                     </div>
                                 </div>
                             </div>

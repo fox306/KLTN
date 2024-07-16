@@ -27,7 +27,7 @@ const WareHouseManage = () => {
     const [active, setActive] = useState(0);
     const [pageNumber, setPageNumber] = useState<number>(1);
 
-    const [page, setPage] = useState<string>('Management');
+    const [page, setPage] = useState<string>('/warehouse/manage');
 
     //search
     const [text, setText] = useState<string>('');
@@ -42,6 +42,7 @@ const WareHouseManage = () => {
     const router = useRouter();
 
     const handleChange = (event: SelectChangeEvent) => {
+        router.push(event.target.value as string);
         setPage(event.target.value as string);
     };
 
@@ -133,14 +134,6 @@ const WareHouseManage = () => {
         }
     }, [active, pageNumber, load]);
     useEffect(() => {
-        if (page === 'Inventory') {
-            router.push('/warehouse/inventory');
-        }
-        if (page === 'Statistical') {
-            router.push('/warehouse');
-        }
-    }, [page]);
-    useEffect(() => {
         const fetchSearch = async () => {
             setLoading(true);
             const { data } = await axios.get(
@@ -172,9 +165,9 @@ const WareHouseManage = () => {
                     variant="standard"
                     className="font-bold text-lg"
                 >
-                    <MenuItem value="Statistical">Statistical</MenuItem>
-                    <MenuItem value="Management">Management</MenuItem>
-                    <MenuItem value="Inventory">Inventory</MenuItem>
+                    <MenuItem value="/warehouse">Statistical</MenuItem>
+                    <MenuItem value="/warehouse/manage">Management</MenuItem>
+                    <MenuItem value="/warehouse/inventory">Inventory</MenuItem>
                 </Select>
             </FormControl>
             <div className="flex justify-between shadow-order w-full">

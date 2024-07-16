@@ -96,13 +96,11 @@ const Header = () => {
         router.push('/user');
     };
     return (
-        <div className={`${pathname === '/' ? 'bg-bg' : 'bg-white'} flex flex-col items-center`}>
+        <div className="bg-white flex flex-col items-center">
             <div className=" flex items-center justify-between px-20 pt-[10px] pb-[10px] w-full">
                 <div className="flex items-center gap-5">
                     <div
-                        className={`text-4xl flex items-center gap-1 cursor-pointer ${
-                            pathname === '/' ? 'text-orange' : 'text-blue'
-                        }`}
+                        className="text-4xl flex items-center gap-1 cursor-pointer text-blue"
                         onClick={() => router.push('/')}
                     >
                         <span className="font-birsmark scale-x-[-1]">P</span>
@@ -112,24 +110,16 @@ const Header = () => {
                     <div className="relative">
                         <div
                             onKeyUp={(e) => handleSubmit(e)}
-                            className={`${
-                                pathname === '/' ? 'text-white' : 'text-black'
-                            } relative cursor-pointer mx-auto w-max`}
+                            className="text-blue relative cursor-pointer mx-auto w-max"
                         >
                             <input
                                 type="search"
-                                className={`peer relative z-10 h-10 w-10 cursor-pointer rounded-full focus:border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text ${
-                                    pathname === '/' ? 'focus:border-orange' : 'focus:border-blue'
-                                } focus:pl-16 focus:pr-4`}
+                                className={`peer relative z-10 h-10 w-10 cursor-pointer rounded-full focus:border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-blue focus:pl-16 focus:pr-4`}
                                 onChange={(e) => setKeyword(e.target.value)}
                             />
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={`absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent px-3.5 cursor-pointer ${
-                                    pathname === '/'
-                                        ? 'stroke-orange peer-focus:border-orange peer-focus:stroke-orange'
-                                        : 'stroke-blue peer-focus:border-blue peer-focus:stroke-blue'
-                                }`}
+                                className="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent px-3.5 cursor-pointer stroke-blue peer-focus:border-blue peer-focus:stroke-blue"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -165,27 +155,17 @@ const Header = () => {
                         )}
                     </div> */}
                     <div className="relative cursor-pointer" onClick={handelCart}>
-                        <ShoppingCartOutlinedIcon
-                            className={`w-6 h-6 ${
-                                pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
-                            }`}
-                        />
+                        <ShoppingCartOutlinedIcon className="w-6 h-6 text-blue hover:text-orange" />
 
                         {(user as User) && (
-                            <div
-                                className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white flex items-center justify-center ${
-                                    pathname === '/' ? 'bg-orange' : 'bg-blue'
-                                }`}
-                            >
+                            <div className="absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white flex items-center justify-center bg-blue">
                                 <span className="text-white text-xs">{cartItems.length}</span>
                             </div>
                         )}
                     </div>
 
                     <PersonOutlineOutlinedIcon
-                        className={`w-7 h-7 ${
-                            pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
-                        } cursor-pointer`}
+                        className="w-7 h-7 text-blue cursor-pointer hover:text-orange"
                         fontSize="large"
                         aria-controls={open ? 'basic-menu' : undefined}
                         aria-haspopup="true"
@@ -206,11 +186,7 @@ const Header = () => {
                     </Menu>
                 </div>
             </div>
-            <div
-                className={`border-b w-[calc(100vw-128px)] ${
-                    pathname === '/' ? 'border-orange' : 'border-blue'
-                } opacity-40 mb-5`}
-            ></div>
+            <div className="border-b w-[calc(100vw-128px)] border-blue opacity-40 mb-5"></div>
         </div>
     );
 };

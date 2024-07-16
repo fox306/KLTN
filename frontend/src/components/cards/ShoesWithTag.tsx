@@ -15,6 +15,7 @@ import FavoriteIcon from '../shared/FavoriteIcon';
 import axios from '@/utils/axios';
 import useAxiosPrivate from '@/utils/intercepter';
 import { CartContext } from '@/contexts/cart';
+import { formatCurrency } from '@/utils/convertMoney';
 type Props = {
     listProduct: Product[];
     setListProduct: Dispatch<SetStateAction<Product[]>>;
@@ -134,7 +135,9 @@ const ShoesWithTag = ({ listProduct, setListProduct }: Props) => {
                                 </div>
                             </div>
                             <Border />
-                            <span className="text-base text-money font-bak my-[15px] block">{product.price}₫</span>
+                            <span className="text-base text-money font-bak my-[15px] block">
+                                {formatCurrency(product.price)}
+                            </span>
                             <p className="text-justify mb-[11px] truncate w-full">{product.desc}</p>
                             <Border />
                             <div className="flex mt-[10px]">

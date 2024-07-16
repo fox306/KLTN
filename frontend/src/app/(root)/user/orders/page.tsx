@@ -14,6 +14,7 @@ import {
 } from '@/slices/orderSlice';
 import { ItemCart, Order, User, orderStatus } from '@/types/type';
 import axios from '@/utils/axios';
+import { formatCurrency } from '@/utils/convertMoney';
 import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -198,7 +199,9 @@ const Orders = () => {
                                                         <span className="text-sm opacity-70">
                                                             Quantity: {product.quantity}
                                                         </span>
-                                                        <span className="font-bold text-blue">{product.price}₫</span>
+                                                        <span className="font-bold text-blue">
+                                                            {formatCurrency(product.price)}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -242,12 +245,14 @@ const Orders = () => {
                                     {order.discountAmount > 0 && (
                                         <div className="flex items-center font-bold gap-2">
                                             <span>Discount Amount:</span>
-                                            <span className="text-lg text-blue">{order.discountAmount}₫</span>
+                                            <span className="text-lg text-blue">
+                                                {formatCurrency(order.discountAmount)}
+                                            </span>
                                         </div>
                                     )}
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Total Price:</span>
-                                        <span className="text-lg text-blue">{order.total}₫</span>
+                                        <span className="text-lg text-blue">{formatCurrency(order.total)}</span>
                                     </div>
                                 </div>
                             </div>
