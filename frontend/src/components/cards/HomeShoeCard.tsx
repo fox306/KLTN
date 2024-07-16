@@ -126,7 +126,6 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
             toast.success('Add item to cart success');
         }
     };
-    console.log(Math.max(1, 5));
 
     useEffect(() => {
         const item: getQtyOfSizeColor = {
@@ -206,7 +205,7 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
                 </button>
             </div>
             <div className="w-7/12 flex items-center justify-center gap-10 ">
-                <div className="w-[380px] h-[380px] relative">
+                <div className="w-[380px] h-[380px] relative border-2 border-gray2 rounded-full">
                     <Image
                         src={productDetail.images && productDetail.images[0]}
                         alt="Nike"

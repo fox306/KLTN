@@ -137,7 +137,7 @@ const RevenueChartTime = ({ path }: Props) => {
     console.log(detailMonthCB);
     useEffect(() => {
         const fetchCate = async () => {
-            const { data } = await axios.get('/categories');
+            const { data } = await axios.get('/categories?pageSize=20&pageNumber=1');
             if (data.success) {
                 setCategory(data.data);
                 setCate(data.data[0].name);

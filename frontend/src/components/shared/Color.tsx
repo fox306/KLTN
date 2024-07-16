@@ -5,7 +5,6 @@ const colors: { [key: string]: string } = {
     Red: 'bg-[#FC3E39]',
     Blue: 'bg-[#0000FF]',
     Gray: 'bg-[#808080]',
-    Cyan: 'bg-[#00FFFF]',
     Pink: 'bg-[#FFC0CB]',
     Green: 'bg-[#00FF00]',
     Black: 'bg-[#171717]',

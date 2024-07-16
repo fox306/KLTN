@@ -19,6 +19,7 @@ import Loading from '@/components/shared/Loading';
 import useAxiosPrivate from '@/utils/intercepter';
 import { toast } from 'react-toastify';
 import { formatCurrency } from '@/utils/convertMoney';
+import SureReceipt from '@/components/shared/SureReceipt';
 
 const theme = createTheme({
     palette: {
@@ -36,16 +37,14 @@ const GoodReceiptPage = () => {
     const [count, setCount] = useState(1);
     const [loading, setLoading] = useState(true);
     const [text, setText] = useState('');
+    const [open, setOpen] = useState(false);
+    const [id, setId] = useState('');
 
     const [receipts, setReceipts] = useState<Receipt[]>([]);
 
-    const handleComfirm = async (id: string) => {
-        setLoading(true);
-        const { data } = await axiosPrivate.patch(`/good-receipts/receipts/${id}`);
-        if (data.success) {
-            toast.success('Comfirm Success');
-            setLoading(false);
-        }
+    const handleComfirm = (id: string) => {
+        setId(id);
+        setOpen(true);
     };
     useEffect(() => {
         const fetchData = async () => {
@@ -197,6 +196,7 @@ const GoodReceiptPage = () => {
                     </ThemeProvider>
                 </div>
             )}
+            {open && <SureReceipt setLoading={setLoading} setOpen={setOpen} id={id} />}
         </div>
     );
 };
