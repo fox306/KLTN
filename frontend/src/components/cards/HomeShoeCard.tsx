@@ -196,7 +196,7 @@ const HomeShoeCard = ({ id, setItems, items }: Props) => {
                         </div>
                     </div>
                 )}
-                <span className="font-bak text-[#FFD6AE] text-base mt-5 mb-2">$ {productDetail.price}</span>
+                <span className="font-bak text-[#FFD6AE] text-base mt-5 mb-2">{productDetail.price}₫</span>
                 <button
                     onClick={handleAddToCart}
                     className="w-60 h-[50px] border-2 border-orange rounded-md text-base font-bold text-orange cursor-pointer hover:opacity-60"

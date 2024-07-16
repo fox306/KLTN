@@ -7,7 +7,7 @@ type Props = {
     setGender: Dispatch<SetStateAction<string>>;
 };
 
-const genders = ['Male', 'Female', 'Other'];
+const genders = ['MALE', 'FEMALE', 'UNISEX'];
 
 const Gender = ({ gender, setGender }: Props) => {
     const handleClick = (g: string) => {
@@ -25,7 +25,9 @@ const Gender = ({ gender, setGender }: Props) => {
                 {genders.map((g) => (
                     <div
                         key={g}
-                        className={`flex justify-between mt-5 ${g === gender ? 'text-blue' : ''} cursor-pointer`}
+                        className={`flex justify-between mt-5 ${
+                            g === gender ? 'text-blue' : ''
+                        } capitalize cursor-pointer`}
                         onClick={() => handleClick(g)}
                     >
                         <span>{g}</span>

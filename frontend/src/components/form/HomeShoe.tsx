@@ -191,7 +191,7 @@ const HomeShoe = () => {
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
                                             <Rating size="small" name="read-only" value={productHot.rating} readOnly />
-                                            <span className="text-money font-bak">$ {productHot.price}</span>
+                                            <span className="text-money font-bak">{productHot.price}₫</span>
                                         </div>
                                         <div onClick={(e) => favorite(e, productHot._id, productHot.isFavorite)}>
                                             <FavoriteIcon isFavorite={productHot.isFavorite} />
