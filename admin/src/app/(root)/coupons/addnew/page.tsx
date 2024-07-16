@@ -8,8 +8,11 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import Loading from '@/components/shared/Loading';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const AddNewCouponPage = () => {
+    const axiosPrivate = useAxiosPrivate();
+
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState<string>('percent');
@@ -39,7 +42,7 @@ const AddNewCouponPage = () => {
     };
     const handleSubmit = async () => {
         const item = { ...coupon, type: value };
-        const { data } = await axios.post('/coupons', item);
+        const { data } = await axiosPrivate.post('/coupons', item);
         setOpen(true);
         if (data.success) {
             setOpen(false);

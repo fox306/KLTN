@@ -358,15 +358,6 @@ const OrderManage = () => {
                         >
                             <div className="flex justify-between mb-[15px] font-bold">
                                 <div className="flex items-center gap-[14px]">
-                                    <input
-                                        type="checkbox"
-                                        checked={checkedAll ? checkedAll : checkedItems[order._id]}
-                                        onChange={(e) => {
-                                            e.stopPropagation();
-                                            handleChecked(order._id);
-                                        }}
-                                        className="w-[26px] h-[26px]"
-                                    />
                                     <h1>ID: {order.orderId}</h1>
                                 </div>
                                 <span>Buyer: {order.user.fullName}</span>
@@ -397,7 +388,7 @@ const OrderManage = () => {
                                                     <span className="text-sm opacity-70">
                                                         Quantity: {item.quantity}
                                                     </span>
-                                                    <span className="font-bold text-blue">${item.price}</span>
+                                                    <span className="font-bold text-blue">{item.price}₫</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -460,12 +451,12 @@ const OrderManage = () => {
                                 {order.discountAmount > 0 && (
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Discount Amount:</span>
-                                        <span className="text-lg text-blue">${order.discountAmount}</span>
+                                        <span className="text-lg text-blue">{order.discountAmount}₫</span>
                                     </div>
                                 )}
                                 <div className="flex items-center font-bold gap-2">
                                     <span>Total Price:</span>
-                                    <span className="text-lg text-blue">${order.total}</span>
+                                    <span className="text-lg text-blue">{order.total}₫</span>
                                 </div>
                             </div>
                         </div>

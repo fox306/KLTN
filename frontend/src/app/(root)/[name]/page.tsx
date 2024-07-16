@@ -18,6 +18,7 @@ import { usePathname } from 'next/navigation';
 import { CircularProgress } from '@mui/material';
 import axios from '@/utils/axios';
 import NoData from '@/components/shared/NoData';
+import Gender from '@/components/shared/Gender';
 
 const unProp = {
     productHots: [],
@@ -44,9 +45,10 @@ const ManShoes = () => {
     const [fakeListProduct, setFakeListProduct] = useState<Product[]>([]);
     const [color, setColor] = useState<string>('');
     const [brand, setBrand] = useState<string>('');
+    const [gender, setGender] = useState<string>('');
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(500);
+    const [maxPrice, setMaxPrice] = useState(50000000);
     const pathname = usePathname();
     const [load, setLoad] = useState(true);
     const [count, setCount] = useState(0);
@@ -68,6 +70,7 @@ const ManShoes = () => {
                 brand: brand,
                 color: color,
                 sort: view,
+                gender: gender,
                 pageNumber: pageNum,
             };
 
@@ -83,6 +86,9 @@ const ManShoes = () => {
             if (item.sort) {
                 url += `&sort=${item.sort}`;
             }
+            if (item.gender) {
+                url += `&gender=${item.brand}`;
+            }
             setLoad(true);
             const { data } = await axios.get(url);
             if (data.success) {
@@ -95,7 +101,7 @@ const ManShoes = () => {
         if (idCate) {
             fetchData();
         }
-    }, [idCate, pageNum, view, brand, color]);
+    }, [idCate, pageNum, view, brand, color, gender]);
     useEffect(() => {
         if (sort === 'Low to High') {
             const filtered = listProduct.filter((product) => product.price >= minPrice && product.price <= maxPrice);
@@ -124,6 +130,7 @@ const ManShoes = () => {
     return (
         <div className="flex justify-center px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5 w-[260px]">
+                <Gender gender={gender} setGender={setGender} />
                 <Price minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} />
                 <Color color={color} setColor={setColor} />
                 <Brand brands={brands} brand={brand} setBrand={setBrand} />

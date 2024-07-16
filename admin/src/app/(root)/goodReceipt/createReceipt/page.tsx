@@ -12,8 +12,11 @@ import { CreateVariants, Supplier, User } from '@/types/type';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import Loading from '@/components/shared/Loading';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const CreateGoodReceipt = () => {
+    const axiosPrivate = useAxiosPrivate();
+
     const router = useRouter();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [confirmers, setConfirmers] = useState<User[]>([]);
@@ -87,7 +90,7 @@ const CreateGoodReceipt = () => {
             details: vars,
         };
         setOpen(true);
-        const { data } = await axios.post('/good-receipts/receipts', item);
+        const { data } = await axiosPrivate.post('/good-receipts/receipts', item);
         if (data.success) {
             setOpen(false);
             toast.success('Create Receipts Success');

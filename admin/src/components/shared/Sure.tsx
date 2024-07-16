@@ -1,4 +1,5 @@
 import axios from '@/utils/axios';
+import useAxiosPrivate from '@/utils/intercepter';
 import React, { Dispatch, SetStateAction } from 'react';
 import { toast } from 'react-toastify';
 
@@ -12,6 +13,8 @@ type Props = {
 };
 
 const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Props) => {
+    const axiosPrivate = useAxiosPrivate();
+
     const handleClose = () => {
         setOrderId('');
         setCurrent('');
@@ -19,7 +22,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
     };
     const handleStatus = async () => {
         if (current === 'Accepted') {
-            const { data } = await axios.patch(`/orders/accepted/${orderId}`);
+            const { data } = await axiosPrivate.patch(`/orders/accepted/${orderId}`);
             if (data.success) {
                 toast.success('Comfirm Success');
                 setLoad((prev) => !prev);
@@ -28,7 +31,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 setOpen(false);
             }
         } else if (current === 'Delivering') {
-            const { data } = await axios.patch(`/orders/delivering/${orderId}`);
+            const { data } = await axiosPrivate.patch(`/orders/delivering/${orderId}`);
             if (data.success) {
                 toast.success('Delivery Success');
                 setLoad((prev) => !prev);
@@ -37,7 +40,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 setOpen(false);
             }
         } else if (current === 'Cancel') {
-            const { data } = await axios.patch(`/orders/cancel/${orderId}`);
+            const { data } = await axiosPrivate.patch(`/orders/cancel/${orderId}`);
             if (data.success) {
                 toast.success('Cancel Success');
                 setLoad((prev) => !prev);
@@ -46,7 +49,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 setOpen(false);
             }
         } else if (current === 'Successful') {
-            const { data } = await axios.patch(`/orders/delivered/${orderId}`);
+            const { data } = await axiosPrivate.patch(`/orders/delivered/${orderId}`);
             if (data.success) {
                 toast.success('Success');
                 setLoad((prev) => !prev);
@@ -55,7 +58,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 setOpen(false);
             }
         } else {
-            const { data } = await axios.patch(`/orders/confirmReturn/${orderId}`);
+            const { data } = await axiosPrivate.patch(`/orders/confirmReturn/${orderId}`);
             if (data.success) {
                 toast.success('Return Success');
                 setLoad((prev) => !prev);

@@ -116,7 +116,7 @@ const DetailOrder = () => {
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-sm opacity-70">Quantity: {item.quantity}</span>
-                                            <span className="font-bold text-blue">${item.price}</span>
+                                            <span className="font-bold text-blue">{item.price}₫</span>
                                         </div>
                                     </div>
                                 </div>
@@ -132,12 +132,12 @@ const DetailOrder = () => {
                         {(detail?.discountAmount as number) > 0 && (
                             <div className="flex items-center font-bold gap-2">
                                 <span>Discount Amount:</span>
-                                <span className="text-lg text-blue">${detail?.discountAmount}</span>
+                                <span className="text-lg text-blue">{detail?.discountAmount}₫</span>
                             </div>
                         )}
                         <div className="flex items-center font-bold gap-2">
                             <span>Total Price:</span>
-                            <span className="text-lg text-blue">${detail?.total}</span>
+                            <span className="text-lg text-blue">{detail?.total}₫</span>
                         </div>
                     </div>
                 </div>

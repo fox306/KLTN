@@ -25,7 +25,7 @@ const Price = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }: Props) => {
             <div className="mt-5 mb-[10px] flex items-center justify-between ">
                 <span>Ranger: </span>
                 <span>
-                    ${minPrice} - ${maxPrice}
+                    {minPrice}₫ - {maxPrice}₫
                 </span>
             </div>
             <Slider
@@ -35,7 +35,7 @@ const Price = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }: Props) => {
                 getAriaValueText={valuetext}
                 valueLabelDisplay="auto"
                 min={0}
-                max={500}
+                max={50000000}
             />
         </div>
     );

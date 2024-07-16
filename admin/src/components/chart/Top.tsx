@@ -15,6 +15,7 @@ type Props = {
     top: top[];
 };
 const Top = ({ path, top }: Props) => {
+    console.log('HII', top);
     return (
         <div className="w-full shadow-revenue bg-white py-20 pt-10 pb-[35px] flex gap-20 justify-center">
             <div className="flex flex-col items-center">
@@ -23,15 +24,33 @@ const Top = ({ path, top }: Props) => {
                 </span>
                 <div className="flex gap-10">
                     <div className="mt-[90px] flex flex-col items-center gap-[10px]">
-                        <Image src={top && top[1].image} alt="avt" width={100} height={100} />
+                        <Image
+                            src={top && top[1].image ? top[1].image : '/user.png'}
+                            alt="avt"
+                            width={100}
+                            height={100}
+                            className="w-[100px] h-[100px] rounded-full"
+                        />
                         <Image src="/top2.png" alt="top2" width={24} height={40} />
                     </div>
                     <div className="mt-[40px] flex flex-col items-center gap-[10px]">
-                        <Image src={top && top[0].image} alt="avt" width={100} height={100} />
+                        <Image
+                            src={top && top[0].image ? top[0].image : '/user.png'}
+                            alt="avt"
+                            width={100}
+                            height={100}
+                            className="w-[100px] h-[100px] rounded-full"
+                        />
                         <Image src="/top1.png" alt="top2" width={40} height={40} />
                     </div>
                     <div className="mt-[120px] flex flex-col items-center gap-[10px]">
-                        <Image src={top && top[2].image} alt="avt" width={100} height={100} />
+                        <Image
+                            src={top && top[2].image ? top[2].image : '/user.png'}
+                            alt="avt"
+                            width={100}
+                            height={100}
+                            className="w-[100px] h-[100px] rounded-full"
+                        />
                         <Image src="/top3.png" alt="top2" width={32} height={40} />
                     </div>
                 </div>
@@ -67,7 +86,7 @@ const Top = ({ path, top }: Props) => {
                                                 {path === 'user'
                                                     ? item.spent === 0
                                                         ? 'Not Found'
-                                                        : '$' + item.spent
+                                                        : item.spent + '₫'
                                                     : item.sold === 0
                                                     ? 'Not Found'
                                                     : '' + item.sold}

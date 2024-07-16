@@ -17,11 +17,14 @@ import { toast } from 'react-toastify';
 import { getProductById } from '@/slices/productSlice';
 import AddProduct from '@/components/form/AddProduct';
 import Loading from '@/components/shared/Loading';
+import useAxiosPrivate from '@/utils/intercepter';
 
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
+const genders = ['Male', 'Female', 'Other'];
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const axiosPrivate = useAxiosPrivate();
 
     const [addVariants, setAddVariants] = useState<{}[]>([]);
     const [vars, setVars] = useState<CreateVariant[]>([
@@ -39,6 +42,7 @@ const AddNewProduct = () => {
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
     const [loading, setLoading] = useState(false);
     const [brand, setBrand] = useState<string>('Adidas');
+    const [gender, setGender] = useState('Male');
     const [category, setCategory] = useState<string>('');
     const [product, setProduct] = useState<{
         name: string;
@@ -95,10 +99,11 @@ const AddNewProduct = () => {
             desc: product.desc,
             category: category,
             brand: brand,
+            gender: gender,
             price: parseInt(product.price),
         };
         setLoading(true);
-        const { data } = await axios.post('/products', item);
+        const { data } = await axiosPrivate.post('/products', item);
         // headers: {
         //     'Content-Type': 'multipart/form-data',
         // },
@@ -147,6 +152,9 @@ const AddNewProduct = () => {
     };
     const handleChangeBrand = (event: SelectChangeEvent) => {
         setBrand(event.target.value as string);
+    };
+    const handleChangeGender = (event: SelectChangeEvent) => {
+        setGender(event.target.value as string);
     };
 
     const dispatchGetAllCategory = useCallback(() => {
@@ -212,6 +220,23 @@ const AddNewProduct = () => {
                             className="font-bold"
                         >
                             {brands.map((item) => (
+                                <MenuItem key={item} value={item}>
+                                    {item}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl className="w-[320px]">
+                        <InputLabel id="genderName">Gender</InputLabel>
+                        <Select
+                            labelId="genderName"
+                            id="gender"
+                            value={gender}
+                            label="Gender"
+                            onChange={handleChangeGender}
+                            className="font-bold"
+                        >
+                            {genders.map((item) => (
                                 <MenuItem key={item} value={item}>
                                     {item}
                                 </MenuItem>

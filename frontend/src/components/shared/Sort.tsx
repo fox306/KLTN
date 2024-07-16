@@ -76,12 +76,12 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
                 <AppsOutlined
                     onClick={() => setActive(false)}
                     fontSize="large"
-                    className={`${!active ? 'text-[#40bfff]' : 'text-rv'}`}
+                    className={`${!active ? 'text-[#40bfff]' : 'text-rv'} cursor-pointer`}
                 />
                 <MenuOutlined
                     onClick={() => setActive(true)}
                     fontSize="large"
-                    className={`${active ? 'text-[#40bfff]' : 'text-rv'}`}
+                    className={`${active ? 'text-[#40bfff]' : 'text-rv'} cursor-pointer`}
                 />
             </div>
         </div>

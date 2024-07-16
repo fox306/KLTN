@@ -307,10 +307,10 @@ const CartShoe = ({
                                 <TableCell align="center">{item.size}</TableCell>
                                 <TableCell align="center">{item.quantity}</TableCell>
                                 <TableCell align="center" className="font-bak text-money">
-                                    ${item.price}
+                                    {item.price}₫
                                 </TableCell>
                                 <TableCell align="center" className="font-bak text-money">
-                                    ${item.quantity * item.price}
+                                    {item.quantity * item.price}₫
                                 </TableCell>
                                 <TableCell
                                     align="center"

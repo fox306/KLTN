@@ -86,7 +86,7 @@ const OrderDetail = () => {
 
                                 <div className="flex flex-col gap-[14px]">
                                     <span>{order._id}</span>
-                                    <span>{order.user}</span>
+                                    <span>{order.user.fullName}</span>
                                     <span>{order.paymentMethod}</span>
                                 </div>
                                 <div className="flex-grow"></div>
@@ -163,7 +163,7 @@ const OrderDetail = () => {
                                                         <span className="text-sm opacity-70">
                                                             Quantity: {item.quantity}
                                                         </span>
-                                                        <span className="font-bold text-blue">${item.price}</span>
+                                                        <span className="font-bold text-blue">{item.price}₫</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -174,12 +174,12 @@ const OrderDetail = () => {
                                     {order.discountAmount > 0 && (
                                         <div className="flex items-center font-bold gap-2">
                                             <span>Discount Amount:</span>
-                                            <span className="text-lg text-blue">${order.discountAmount}</span>
+                                            <span className="text-lg text-blue">{order.discountAmount}₫</span>
                                         </div>
                                     )}
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Total Price:</span>
-                                        <span className="text-lg text-blue">${order.total}</span>
+                                        <span className="text-lg text-blue">{order.total}₫</span>
                                     </div>
                                 </div>
                             </div>

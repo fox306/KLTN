@@ -21,7 +21,13 @@ type Props = {
     setColor: Dispatch<SetStateAction<string>>;
 };
 const Color = ({ color, setColor }: Props) => {
-    console.log(color);
+    const handleClick = (c: string) => {
+        if (c === color) {
+            setColor('');
+        } else {
+            setColor(c);
+        }
+    };
     return (
         <div className="p-5 bg-deal rounded-lg">
             <span className="font-bold text-base">Color</span>
@@ -29,7 +35,7 @@ const Color = ({ color, setColor }: Props) => {
                 {Object.keys(colors).map((c, index) => (
                     <div
                         key={index}
-                        onClick={() => setColor(c)}
+                        onClick={() => handleClick(c)}
                         className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[c]}`}
                     >
                         <div

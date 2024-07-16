@@ -296,11 +296,11 @@ const ShoesSinglePage = () => {
                     <div className="flex items-center gap-10 mt-[23px] mb-[25px]">
                         <Rating value={productDetail?.rating} readOnly emptyIcon={<StarIcon className="text-star" />} />
 
-                        <span className="text-rv">0 review</span>
+                        <span className="text-rv">{comments?.length} review</span>
                     </div>
                     <BorderBlack />
                     <span className="text-base text-money font-bak mt-[25px] mb-[25px] block">
-                        ${productDetail?.price}
+                        {productDetail?.price}₫
                     </span>
                     <span className="font-medium mb-[25px] block">free shipping</span>
                     <BorderBlack />
