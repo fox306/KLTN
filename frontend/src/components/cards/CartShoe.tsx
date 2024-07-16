@@ -21,6 +21,7 @@ import { Preview } from '@mui/icons-material';
 import axios from '@/utils/axios';
 import useAxiosPrivate from '@/utils/intercepter';
 import { CartContext } from '@/contexts/cart';
+import { formatCurrency } from '@/utils/convertMoney';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -307,10 +308,10 @@ const CartShoe = ({
                                 <TableCell align="center">{item.size}</TableCell>
                                 <TableCell align="center">{item.quantity}</TableCell>
                                 <TableCell align="center" className="font-bak text-money">
-                                    {item.price}₫
+                                    {formatCurrency(item.price)}
                                 </TableCell>
                                 <TableCell align="center" className="font-bak text-money">
-                                    {item.quantity * item.price}₫
+                                    {formatCurrency(item.quantity * item.price)}
                                 </TableCell>
                                 <TableCell
                                     align="center"

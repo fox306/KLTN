@@ -15,6 +15,7 @@ import useAxiosPrivate from '@/utils/intercepter';
 import axios from '@/utils/axios';
 import FavoriteIcon from '../shared/FavoriteIcon';
 import { CartContext } from '@/contexts/cart';
+import { formatCurrency } from '@/utils/convertMoney';
 
 const HomeShoe = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -157,7 +158,7 @@ const HomeShoe = () => {
         }
     };
     return (
-        <div className="bg-bg">
+        <div className="bg-white">
             <HomeShoeCard id={id} setItems={setItems} items={items} />
 
             <div className="flex items-center justify-between py-10 px-14 gap-16">
@@ -173,25 +174,27 @@ const HomeShoe = () => {
                             <div
                                 key={productHot._id}
                                 onClick={() => setId(productHot._id)}
-                                className="flex items-center rounded-xl h-40 cursor-pointer"
+                                className="flex items-center rounded-xl h-40 cursor-pointer "
                             >
-                                <div className="w-[100px] bg-pink h-full flex items-center relative rounded-tl-lg rounded-bl-lg">
+                                <div className="w-[100px] bg-pink h-full flex items-center relative rounded-tl-lg rounded-bl-lg border-2 border-gray2 border-r-0">
                                     <Image
                                         src={productHot.image}
                                         alt="Nike"
                                         height={120}
                                         width={120}
-                                        className="w-[120px] h-[120px] absolute left-[-42px] rotate-[-16deg] rounded-xl"
+                                        className="w-[120px] h-[120px] absolute left-[-42px] rotate-[-16deg] rounded-xl border-2 border-gray2"
                                     />
                                 </div>
-                                <div className="x-4 p-4 pb-2 bg-white rounded-tr-lg rounded-br-lg h-40 w-[200px]">
+                                <div className="x-4 p-4 pb-2 bg-white rounded-tr-lg rounded-br-lg h-40 w-[200px] border-2 border-gray2 border-l-0">
                                     <h1 className="text-[14px] font-bold mb-[10px] truncate w-full">
                                         {productHot.name}
                                     </h1>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
                                             <Rating size="small" name="read-only" value={productHot.rating} readOnly />
-                                            <span className="text-money font-bak">{productHot.price}₫</span>
+                                            <span className="text-money font-bak">
+                                                {formatCurrency(productHot.price)}
+                                            </span>
                                         </div>
                                         <div onClick={(e) => favorite(e, productHot._id, productHot.isFavorite)}>
                                             <FavoriteIcon isFavorite={productHot.isFavorite} />

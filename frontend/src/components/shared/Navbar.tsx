@@ -24,16 +24,12 @@ const Navbar = () => {
             {pathname === '/cart' || pathname.startsWith('/user') ? (
                 ''
             ) : (
-                <div
-                    className={` flex justify-center ${
-                        pathname === '/' ? 'text-white bg-bg' : 'text-bg bg-white'
-                    } text-base font-bold`}
-                >
+                <div className="flex justify-center text-bg bg-white text-base font-bold">
                     <Link
                         href="/"
                         className={`w-[120px] h-10 text-center ${
-                            pathname === '/' ? 'text-orange border-orange border-b-2' : 'hover:text-blue '
-                        }  `}
+                            pathname === '/' ? 'text-blue border-blue border-b-2' : 'hover:text-blue'
+                        }`}
                     >
                         <span>Home</span>
                     </Link>

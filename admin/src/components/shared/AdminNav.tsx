@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import React from 'react';
 import { adminNav } from '../../constants/index';
-import { usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import axios from '@/utils/axios';
 import { User } from '@/types/type';
@@ -29,7 +29,7 @@ const AdminNav = () => {
             toast.error('Logout fail');
         }
     };
-
+    const { id } = useParams();
     return (
         <div className="flex flex-col items-center justify-between shadow-nav w-[260px] h-screen">
             <div className="p-5">
@@ -47,7 +47,9 @@ const AdminNav = () => {
                         const isActive =
                             path === item.route ||
                             (path.startsWith(item.route) && path.startsWith(`${item.route}/manage`)) ||
-                            (path.startsWith(item.route) && path.startsWith(`${item.route}/addnew`));
+                            (path.startsWith(item.route) && path.startsWith(`${item.route}/addnew`)) ||
+                            (path.startsWith(item.route) && path.startsWith(`${item.route}/inventory`)) ||
+                            (path.startsWith(item.route) && path.startsWith(`${item.route}/${id}`));
                         return (
                             <div
                                 key={item.label}

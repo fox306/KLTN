@@ -5,6 +5,7 @@ import Border from '@/components/shared/Border';
 import { getCartByUserId } from '@/slices/cartSlice';
 import type { Cart, ItemCart, RVariant, User, variantColor } from '@/types/type';
 import axios from '@/utils/axios';
+import { formatCurrency } from '@/utils/convertMoney';
 import useAxiosPrivate from '@/utils/intercepter';
 import { AppDispatch } from '@/utils/store';
 import { useRouter } from 'next/navigation';
@@ -147,7 +148,7 @@ const Cart = () => {
                             <span>Shipping fee</span>
                         </div>
                         <div className="flex flex-col items-end gap-5">
-                            <span>{total}₫</span>
+                            <span>{formatCurrency(total)}</span>
                             <span>{qty}</span>
                             <span>free</span>
                         </div>
@@ -155,7 +156,7 @@ const Cart = () => {
                     <Border />
                     <div className="text-base font-semibold flex justify-between my-5">
                         <span>Total</span>
-                        <span>{total}₫</span>
+                        <span>{formatCurrency(total)}</span>
                     </div>
                     <button
                         className="bg-bluev4 w-full h-[60px] rounded-lg font-bold text-white hover:bg-blue"

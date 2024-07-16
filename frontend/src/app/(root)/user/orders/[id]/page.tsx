@@ -1,23 +1,44 @@
 'use client';
 import UserNav from '@/components/shared/UserNav';
-import React, { useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import ArrowLeftRoundedIcon from '@mui/icons-material/ArrowLeftRounded';
 import Image from 'next/image';
 import Border from '@/components/shared/Border';
 import axios from '@/utils/axios';
 import { useParams } from 'next/navigation';
-import { Order } from '@/types/type';
+import { ItemCart, Order, User } from '@/types/type';
+import { formatCurrency } from '@/utils/convertMoney';
+import Review from '@/components/form/Review';
 
 const DetailOrder = () => {
     const { id } = useParams();
     const [detail, setDetail] = useState<Order>();
-    console.log(id);
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+
+    let user: User | null = null;
+    if (userString !== null) {
+        try {
+            user = JSON.parse(userString) as User;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+        }
+    }
+    const userId = user?._id as string;
+    const [active, setActive] = useState<boolean>(false);
+    const [item, setItem] = useState<ItemCart>();
 
     const handlePay = async () => {
         const { data } = await axios.get(`/orders/create/payment-url?orderId=${id}&total=${detail?.total}`);
         if (data.success) {
             window.open(data.data);
         }
+    };
+
+    const handleReview = (e: MouseEvent<HTMLSpanElement>, product: ItemCart) => {
+        e.stopPropagation();
+
+        setActive(true);
+        setItem(product);
     };
 
     useEffect(() => {
@@ -108,7 +129,14 @@ const DetailOrder = () => {
                                     <div className="w-full font-medium text-base">
                                         <div className="flex justify-between">
                                             <span>{item.name}</span>
-                                            <span className="text-blue opacity-60">Submit a review</span>
+                                            {detail.status === 'Successful' && (
+                                                <span
+                                                    className="text-blue text-[14px] opacity-60 hover:opacity-100"
+                                                    onClick={(e) => handleReview(e, item)}
+                                                >
+                                                    Submit a review
+                                                </span>
+                                            )}
                                         </div>
                                         <div className="flex gap-[100px] mt-[18px] mb-[14px] text-sm opacity-70">
                                             <span>Color: {item.color}</span>
@@ -116,7 +144,7 @@ const DetailOrder = () => {
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-sm opacity-70">Quantity: {item.quantity}</span>
-                                            <span className="font-bold text-blue">{item.price}₫</span>
+                                            <span className="font-bold text-blue">{formatCurrency(item.price)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -132,12 +160,14 @@ const DetailOrder = () => {
                         {(detail?.discountAmount as number) > 0 && (
                             <div className="flex items-center font-bold gap-2">
                                 <span>Discount Amount:</span>
-                                <span className="text-lg text-blue">{detail?.discountAmount}₫</span>
+                                <span className="text-lg text-blue">
+                                    {formatCurrency(detail?.discountAmount as number)}
+                                </span>
                             </div>
                         )}
                         <div className="flex items-center font-bold gap-2">
                             <span>Total Price:</span>
-                            <span className="text-lg text-blue">{detail?.total}₫</span>
+                            <span className="text-lg text-blue">{formatCurrency(detail?.total as number)}</span>
                         </div>
                     </div>
                 </div>
@@ -154,6 +184,7 @@ const DetailOrder = () => {
                         </div>
                     )}
             </div>
+            {active && <Review item={item as ItemCart} setActive={setActive} id={userId} />}
         </div>
     );
 };

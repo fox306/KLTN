@@ -19,21 +19,23 @@ const Review = ({ item, setActive, id }: Props) => {
     const [value, setValue] = useState<number | null>(0);
     const handleSubmit = async () => {
         const token = localStorage.getItem('token');
-        const formData = new FormData();
-        formData.append('commentator', id);
-        formData.append('product', item.product);
-        formData.append('rating', value?.toString() || '');
-        formData.append('content', text);
-        const { data } = await axiosPrivate.post('/comments', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        if (data.success) {
-            toast.success('Review Product Success');
-            setActive(false);
-            setText('');
-        } else {
+        try {
+            const formData = new FormData();
+            formData.append('commentator', id);
+            formData.append('product', item.product);
+            formData.append('rating', value?.toString() || '');
+            formData.append('content', text);
+            const { data } = await axiosPrivate.post('/comments', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            if (data.success) {
+                toast.success('Review Product Success');
+                setActive(false);
+                setText('');
+            }
+        } catch (error) {
             toast.error('Product has reviewed');
             setActive(false);
             setText('');

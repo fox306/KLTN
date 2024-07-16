@@ -1,17 +1,19 @@
 'use client';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import { CreateCoupon } from '@/types/type';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Loading from '@/components/shared/Loading';
 import useAxiosPrivate from '@/utils/intercepter';
 
-const AddNewCouponPage = () => {
+const UpdateCouponPage = () => {
     const axiosPrivate = useAxiosPrivate();
+
+    const { id } = useParams();
 
     const router = useRouter();
     const [open, setOpen] = useState(false);
@@ -46,18 +48,28 @@ const AddNewCouponPage = () => {
         setOpen(true);
         if (data.success) {
             setOpen(false);
-            toast.success('Create Coupon success');
-            setCoupon({ code: '', maxDiscount: 0, minAmount: 0, name: '', validityDuration: 0, value: 0 });
+            toast.success('Update Coupon success');
             router.push('/coupons');
         }
     };
+    useEffect(() => {
+        const fetchData = async () => {
+            setOpen(true);
+            const { data } = await axios.get(`/coupons/${id}`);
+            if (data.success) {
+                setCoupon(data.data);
+                setValue(data.data.type);
+                setOpen(false);
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <div>
             <div className="bg-white rounded-[10px] py-[10px] px-5 shadow-product2">
                 <div className="flex gap-[10px] justify-center items-center">
-                    <span className="font-bold text-2xl">Add New Coupon</span>
-
+                    <span className="font-bold text-2xl">Update Coupon</span>
                     <div className="flex flex-col">
                         <span className="w-[240px] h-[50px] flex items-center">Code</span>
                         <span className="w-[240px] h-[50px] flex items-center">Name</span>
@@ -72,6 +84,7 @@ const AddNewCouponPage = () => {
                             type="text"
                             placeholder="Code..."
                             id="code"
+                            value={coupon.code}
                             onChange={(e) => handleChange(e)}
                             className="w-[240px] h-[50px] outline-none border-b-[1px] border-blue"
                         />
@@ -79,6 +92,7 @@ const AddNewCouponPage = () => {
                             type="text"
                             placeholder="Name..."
                             id="name"
+                            value={coupon.name}
                             onChange={(e) => handleChange(e)}
                             className="w-[240px] h-[50px] outline-none border-b-[1px] border-blue"
                         />
@@ -86,6 +100,7 @@ const AddNewCouponPage = () => {
                             type="text"
                             placeholder="Value..."
                             id="value"
+                            value={coupon.value}
                             onChange={(e) => handleChange(e)}
                             className="w-[240px] h-[50px] outline-none border-b-[1px] border-blue"
                         />
@@ -107,6 +122,7 @@ const AddNewCouponPage = () => {
                             type="text"
                             placeholder="Min Order..."
                             id="minAmount"
+                            value={coupon.minAmount}
                             onChange={(e) => handleChange(e)}
                             className="w-[240px] h-[50px] outline-none border-b-[1px] border-blue"
                         />
@@ -114,6 +130,7 @@ const AddNewCouponPage = () => {
                             type="text"
                             placeholder="Max Discount..."
                             id="maxDiscount"
+                            value={coupon.maxDiscount}
                             onChange={(e) => handleChange(e)}
                             className="w-[240px] h-[50px] outline-none border-b-[1px] border-blue"
                         />
@@ -121,6 +138,7 @@ const AddNewCouponPage = () => {
                             type="text"
                             placeholder="Valuable Time..."
                             id="validityDuration"
+                            value={coupon.validityDuration}
                             onChange={(e) => handleChange(e)}
                             className="w-[240px] h-[50px] outline-none border-b-[1px] border-blue"
                         />
@@ -143,4 +161,4 @@ const AddNewCouponPage = () => {
     );
 };
 
-export default AddNewCouponPage;
+export default UpdateCouponPage;

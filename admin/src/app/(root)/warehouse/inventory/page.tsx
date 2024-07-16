@@ -28,7 +28,7 @@ const theme = createTheme({
 
 const Inventory = () => {
     const router = useRouter();
-    const [page, setPage] = useState<string>('Inventory');
+    const [page, setPage] = useState<string>('/warehouse/inventory');
     const [type, setType] = useState<boolean>(false);
     const [inventories, setInventories] = useState<I[]>([]);
     const [loading, setLoading] = useState(true);
@@ -37,20 +37,13 @@ const Inventory = () => {
     const [count, setCount] = useState(1);
 
     const handleChange = (event: SelectChangeEvent) => {
+        router.push(event.target.value as string);
         setPage(event.target.value as string);
     };
 
     const handleChangePage = (i: number) => {
         setPages(i);
     };
-    useEffect(() => {
-        if (page === 'Management') {
-            router.push('/warehouse/manage');
-        }
-        if (page === 'Statistical') {
-            router.push('/warehouse');
-        }
-    }, [page]);
     useEffect(() => {
         const fetchNoSort = async () => {
             setLoading(true);
@@ -89,9 +82,9 @@ const Inventory = () => {
                     variant="standard"
                     className="font-bold text-lg"
                 >
-                    <MenuItem value="Statistical">Statistical</MenuItem>
-                    <MenuItem value="Management">Management</MenuItem>
-                    <MenuItem value="Inventory">Inventory</MenuItem>
+                    <MenuItem value="/warehouse">Statistical</MenuItem>
+                    <MenuItem value="/warehouse/manage">Management</MenuItem>
+                    <MenuItem value="/warehouse/inventory">Inventory</MenuItem>
                 </Select>
             </FormControl>
             <div className="mt-5 mb-[10px] flex gap-5">

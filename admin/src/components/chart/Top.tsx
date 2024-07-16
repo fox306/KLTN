@@ -9,6 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { top } from '@/types/type';
+import { formatCurrency } from '@/utils/convertMoney';
 
 type Props = {
     path: string;
@@ -86,7 +87,7 @@ const Top = ({ path, top }: Props) => {
                                                 {path === 'user'
                                                     ? item.spent === 0
                                                         ? 'Not Found'
-                                                        : item.spent + '₫'
+                                                        : formatCurrency(item.spent)
                                                     : item.sold === 0
                                                     ? 'Not Found'
                                                     : '' + item.sold}

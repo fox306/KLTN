@@ -235,7 +235,7 @@ const Categories = () => {
                                             {item.name}
                                         </TableCell>
                                         <TableCell align="center" className="text-sm">
-                                            1
+                                            {item.total}
                                         </TableCell>
                                         <TableCell align="center">
                                             <SearchOutlinedIcon
