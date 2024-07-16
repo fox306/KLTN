@@ -14,15 +14,8 @@ export default function Home() {
 
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
+        router.push(event.target.value as string);
     };
-    useEffect(() => {
-        if (page === 'Sold Of Brand') {
-            router.push('/soldOfBrand');
-        }
-        if (page === 'Sold Of Category') {
-            router.push('/soldOfCategory');
-        }
-    }, [page]);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -36,9 +29,9 @@ export default function Home() {
                     variant="standard"
                     className="font-bold text-lg"
                 >
-                    <MenuItem value="Revenue">Revenue</MenuItem>
-                    <MenuItem value="Sold Of Brand">Sold Of Brand</MenuItem>
-                    <MenuItem value="Sold Of Category">Sold Of Category</MenuItem>
+                    <MenuItem value="/">Revenue</MenuItem>
+                    <MenuItem value="/soldOfBrand">Sold Of Brand</MenuItem>
+                    <MenuItem value="/soldOfCategory">Sold Of Category</MenuItem>
                 </Select>
             </FormControl>
             <div>

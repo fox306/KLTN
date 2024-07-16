@@ -7,20 +7,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const soldOfBrand = () => {
-    const [page, setPage] = useState<string>('Sold Of Brand');
+    const [page, setPage] = useState<string>('/soldOfBrand');
     const router = useRouter();
 
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
+        router.push(event.target.value as string);
     };
-    useEffect(() => {
-        if (page === 'Revenue') {
-            router.push('/');
-        }
-        if (page === 'Sold Of Category') {
-            router.push('/soldOfCategory');
-        }
-    }, [page]);
+
     return (
         <div className="flex flex-col gap-[10px]">
             <FormControl className="w-[150px] mb-[10px]">
@@ -33,9 +27,9 @@ const soldOfBrand = () => {
                     variant="standard"
                     className="font-bold text-lg"
                 >
-                    <MenuItem value="Revenue">Revenue</MenuItem>
-                    <MenuItem value="Sold Of Brand">Sold Of Brand</MenuItem>
-                    <MenuItem value="Sold Of Category">Sold Of Category</MenuItem>
+                    <MenuItem value="/">Revenue</MenuItem>
+                    <MenuItem value="/soldOfBrand">Sold Of Brand</MenuItem>
+                    <MenuItem value="/soldOfCategory">Sold Of Category</MenuItem>
                 </Select>
             </FormControl>
             <div>
