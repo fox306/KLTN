@@ -71,7 +71,7 @@ const OrderDetail = () => {
             {!loading && (
                 <div>
                     <div className="w-full font-bold">
-                        <div className="cursor-pointer" onClick={() => router.push('/order/manage')}>
+                        <div className="cursor-pointer" onClick={() => router.push('/orders/manage')}>
                             Back
                         </div>
                         <div className="text-center text-lg">Order Details</div>

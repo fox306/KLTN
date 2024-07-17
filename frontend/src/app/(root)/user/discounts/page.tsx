@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NoData from '@/components/shared/NoData';
+import { formatCurrency } from '@/utils/convertMoney';
 
 const statuses = ['ALL', 'VALID', 'EXPIRED'];
 
@@ -112,7 +113,12 @@ const DiscountPage = () => {
                                             <span>Code: {item.code} </span>
                                             <span>Name: {item.name} </span>
                                         </div>
-                                        <span className="font-semibold">Minimum Orders: {item.minAmount}</span>
+                                        <span className="font-semibold">
+                                            Minimum Orders: {formatCurrency(item.minAmount)}
+                                        </span>
+                                        <span className="font-semibold">
+                                            Maximum Orders: {formatCurrency(item.maxDiscount)}
+                                        </span>
 
                                         <span>Effective from: {format(new Date(item.startDate), 'dd-MM-yyyy')}</span>
                                         <span>Expried Day: {format(new Date(item.endDate), 'dd-MM-yyyy')}</span>

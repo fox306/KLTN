@@ -342,7 +342,15 @@ const Order = () => {
                     Confirm
                 </button>
             </div>
-            {change && <ListAddress setLoad={setLoad} address={address} setChange={setChange} setDatas={setDatas} />}
+            {change && (
+                <ListAddress
+                    setLoad={setLoad}
+                    address={address}
+                    datas={datas}
+                    setChange={setChange}
+                    setDatas={setDatas}
+                />
+            )}
             {open && (
                 <AddAddress
                     setLoad={setLoad}
