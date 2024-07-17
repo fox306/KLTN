@@ -163,11 +163,7 @@ const UpdateCate = ({ item, setOpen, setLoad }: Props) => {
                     </button>
                 </div>
             </div>
-            {loading && (
-                <div className="modal">
-                    <Loading />
-                </div>
-            )}
+            {loading && <Loading />}
         </div>
     );
 };

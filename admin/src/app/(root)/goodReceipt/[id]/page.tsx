@@ -11,10 +11,12 @@ import AddProducts from '@/components/form/AddProducts';
 import { CreateVariants, FullDetailReceipt, Supplier, User } from '@/types/type';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
+import Loading from '@/components/shared/Loading';
 
 const detailReceipt = () => {
     const router = useRouter();
     const { id } = useParams();
+    const [loading, setLoading] = useState(true);
     const [detail, setDetail] = useState<FullDetailReceipt>({
         confirmation_date: '',
         confirmer: '',
@@ -48,9 +50,11 @@ const detailReceipt = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const { data } = await axios.get(`/good-receipts/receipts/${id}`);
             if (data.success) {
                 setDetail(data.data);
+                setLoading(false);
             }
         };
         fetchData();
@@ -208,6 +212,7 @@ const detailReceipt = () => {
                     </div>
                 ))}
             </div>
+            {loading && <Loading />}
         </div>
     );
 };

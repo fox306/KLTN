@@ -9,7 +9,7 @@ import Revenue from '@/components/chart/Revenue';
 import RevenueChart from '@/components/chart/RevenueChart';
 
 export default function Home() {
-    const [page, setPage] = useState<string>('Revenue');
+    const [page, setPage] = useState<string>('/');
     const router = useRouter();
 
     const handleChange = (event: SelectChangeEvent) => {

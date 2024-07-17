@@ -35,6 +35,7 @@ const Price = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }: Props) => {
                 getAriaValueText={valuetext}
                 valueLabelDisplay="auto"
                 min={0}
+                step={5000000}
                 max={50000000}
             />
         </div>

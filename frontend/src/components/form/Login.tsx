@@ -18,6 +18,7 @@ import Email from './Email';
 import Form1 from './forgot/Form1';
 import Form2 from './forgot/Form2';
 import Form3 from './forgot/Form3';
+import Loading from '../shared/Loading';
 
 const Login = () => {
     const [open, setOpen] = useState(false);
@@ -29,6 +30,7 @@ const Login = () => {
 
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
+    const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof LoginValidation>>({
         mode: 'onBlur',
         resolver: zodResolver(LoginValidation),
@@ -45,15 +47,21 @@ const Login = () => {
                 email: values.email,
                 password: values.password,
             };
+            setLoading(true);
             const res = await dispatch(signIn(user));
             console.log(res);
             if ((res.payload as { status: number }).status === 201) {
+                setLoading(false);
                 toast.success('Login Success');
                 router.back();
             } else {
+                setLoading(false);
+
                 toast.error('Wrong infomation');
             }
         } catch (error: any) {
+            setLoading(false);
+
             // toast.error(error);
         }
     };
@@ -110,6 +118,7 @@ const Login = () => {
             {open1 && <Form1 email={email} setOpen1={setOpen1} setOpen2={setOpen2} setCode={setCode} />}
             {open2 && <Form2 code={code} email={email} setCode={setCode} setOpen2={setOpen2} setOpen3={setOpen3} />}
             {open3 && <Form3 setOpen3={setOpen3} email={email} />}
+            {loading && <Loading />}
         </Form>
     );
 };

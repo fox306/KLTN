@@ -19,6 +19,7 @@ import { CircularProgress } from '@mui/material';
 import axios from '@/utils/axios';
 import NoData from '@/components/shared/NoData';
 import Gender from '@/components/shared/Gender';
+import Loading from '@/components/shared/Loading';
 
 const unProp = {
     productHots: [],
@@ -148,9 +149,7 @@ const ManShoes = () => {
                     setView={setView}
                 />
                 {load ? (
-                    <div className="w-full h-full flex items-center justify-center">
-                        <CircularProgress color="secondary" size={60} />
-                    </div>
+                    <Loading />
                 ) : load === false && listProduct.length === 0 ? (
                     <NoData />
                 ) : active ? (

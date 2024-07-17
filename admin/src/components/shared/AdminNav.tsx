@@ -47,6 +47,7 @@ const AdminNav = () => {
                         const isActive =
                             path === item.route ||
                             (path.startsWith(item.route) && path.startsWith(`${item.route}/manage`)) ||
+                            (path.startsWith(item.route) && path.startsWith(`/sold`)) ||
                             (path.startsWith(item.route) && path.startsWith(`${item.route}/addnew`)) ||
                             (path.startsWith(item.route) && path.startsWith(`${item.route}/inventory`)) ||
                             (path.startsWith(item.route) && path.startsWith(`${item.route}/${id}`));

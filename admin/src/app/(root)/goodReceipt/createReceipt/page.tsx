@@ -215,11 +215,7 @@ const CreateGoodReceipt = () => {
                     SAVE
                 </button>
             </div>
-            {open && (
-                <div className="modal">
-                    <Loading />
-                </div>
-            )}
+            {open && <Loading />}
         </div>
     );
 };

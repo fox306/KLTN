@@ -9,10 +9,12 @@ import { useParams } from 'next/navigation';
 import { ItemCart, Order, User } from '@/types/type';
 import { formatCurrency } from '@/utils/convertMoney';
 import Review from '@/components/form/Review';
+import Loading from '@/components/shared/Loading';
 
 const DetailOrder = () => {
     const { id } = useParams();
     const [detail, setDetail] = useState<Order>();
+    const [loading, setLoading] = useState(true);
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
 
     let user: User | null = null;
@@ -43,8 +45,10 @@ const DetailOrder = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const { data } = await axios.get(`/orders/by-id/${id}`);
             setDetail(data.data);
+            setLoading(false);
         };
         fetchData();
     }, []);
@@ -185,6 +189,7 @@ const DetailOrder = () => {
                     )}
             </div>
             {active && <Review item={item as ItemCart} setActive={setActive} id={userId} />}
+            {loading && <Loading />}
         </div>
     );
 };

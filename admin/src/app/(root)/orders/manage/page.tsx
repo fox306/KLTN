@@ -355,7 +355,7 @@ const OrderManage = () => {
                         <div
                             key={order._id}
                             className="px-[15px] pt-[15px] pb-[10px] shadow-order bg-white cursor-pointer hover:border-2 hover:border-blue"
-                            onClick={() => router.push(`/order/manage/${order.orderId}`)}
+                            onClick={() => router.push(`/orders/manage/${order.orderId}`)}
                         >
                             <div className="flex justify-between mb-[15px] font-bold">
                                 <div className="flex items-center gap-[14px]">

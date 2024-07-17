@@ -137,7 +137,6 @@ const Profile = () => {
     };
     useEffect(() => {
         dispatch(getUser(id));
-        setLoading(false);
     }, [dispatch, load]);
     useEffect(() => {
         if (change) {
@@ -176,6 +175,8 @@ const Profile = () => {
     }, [update]);
 
     useEffect(() => {
+        setLoading(true);
+
         setEmail(user.email);
         setItems({
             fullName: user.fullName,
@@ -194,6 +195,7 @@ const Profile = () => {
         } else {
             setSelectedDate(undefined);
         }
+        setLoading(false);
     }, [loading, dispatch, user]);
     return (
         <div>

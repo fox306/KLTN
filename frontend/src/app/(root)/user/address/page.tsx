@@ -14,6 +14,7 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import SureForAddress from '@/components/shared/SureForAddress';
 import useAxiosPrivate from '@/utils/intercepter';
+import Loading from '@/components/shared/Loading';
 
 const Address = () => {
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
@@ -41,14 +42,16 @@ const Address = () => {
     const [provinceID, setProvinceID] = useState<string>('');
     const [districtID, setDistrictID] = useState<string>('');
     const dispatch = useDispatch<AppDispatch>();
+    const [loading, setLoading] = useState(true);
     const { addressDetail }: { addressDetail: Address } = useSelector((state: any) => state.address);
     useEffect(() => {
         const fetchData = async () => {
             const token = localStorage.getItem('token');
-
+            setLoading(true);
             const { data } = await axiosPrivate.get(`/deliveryAddress/user/${id}`);
             if (data.success) {
                 setAddress(data.data);
+                setLoading(false);
             }
         };
         fetchData();
@@ -77,6 +80,7 @@ const Address = () => {
     useEffect(() => {
         if (addressId !== '') {
             const fetchData = async () => {
+                setLoading(true);
                 const res: any = await dispatch(getAddressByAddressId(addressId));
                 if (res.payload.status === 200) {
                     const selectedProvince = province?.find(
@@ -99,6 +103,7 @@ const Address = () => {
                                 );
                                 if (data.status === 200) {
                                     setWard(data.data.result);
+                                    setLoading(false);
                                     setOpen(true);
                                 }
                             }
@@ -221,6 +226,7 @@ const Address = () => {
                 />
             )}
             {open1 && <SureForAddress id={idAds} setId={setIdAds} setOpen1={setOpen1} setLoad={setLoad} />}
+            {loading && <Loading />}
         </div>
     );
 };

@@ -247,7 +247,7 @@ const OrderDetail = () => {
                             <button
                                 className="w-[200px] h-[50px] bg-blue bg-opacity-60 text-white font-bold text-sm"
                                 onClick={() => {
-                                    router.push('/order/manage');
+                                    router.push('/orders/manage');
                                 }}
                             >
                                 BACK

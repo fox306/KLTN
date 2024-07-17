@@ -13,9 +13,12 @@ import { useDispatch } from 'react-redux';
 import { signIn } from '@/slices/authSlice';
 import { AppDispatch } from '@/utils/store';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
+import Loading from '../shared/Loading';
 
 const Login = () => {
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const form = useForm<z.infer<typeof LoginValidation>>({
         mode: 'onBlur',
@@ -33,14 +36,20 @@ const Login = () => {
                 email: values.email,
                 password: values.password,
             };
+            setLoading(true);
             const res = await dispatch(signIn(user));
             if ((res.payload as { status: number }).status === 201) {
+                setLoading(false);
                 toast.success('Login Success');
                 router.push('/');
             } else {
+                setLoading(false);
+
                 toast.error('Wrong infomation');
             }
         } catch (error: any) {
+            setLoading(false);
+
             // toast.error(error);
         }
     };
@@ -88,6 +97,7 @@ const Login = () => {
                     Sign In
                 </Button>
             </form>
+            {loading && <Loading />}
         </Form>
     );
 };

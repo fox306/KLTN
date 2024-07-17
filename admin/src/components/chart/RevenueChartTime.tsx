@@ -22,6 +22,7 @@ import { usePathname } from 'next/navigation';
 import CustomBarChart from '../shared/CustomBarChart';
 import CustomAreaChart from '../shared/CustomAreaChart';
 import axios from '@/utils/axios';
+import Loading from '../shared/Loading';
 
 const months = [
     'January',
@@ -57,6 +58,7 @@ const RevenueChartTime = ({ path }: Props) => {
     const years = Array.from({ length: 23 }, (_, index) => currentYear - index);
     // const [width, setWidth] = useState<number>();
     const [data, setData] = useState<any>();
+    const [loading, setLoading] = useState(true);
     const handleChangeChart = (event: SelectChangeEvent) => {
         setChart(event.target.value as string);
     };
@@ -87,7 +89,7 @@ const RevenueChartTime = ({ path }: Props) => {
         useSelector((state: any) => state.revenue);
 
     const divRef = useRef<HTMLDivElement>(null);
-    console.log(divRef);
+
     useEffect(() => {
         const item1: day = {
             month: month,
@@ -101,7 +103,7 @@ const RevenueChartTime = ({ path }: Props) => {
             category: cate,
             year: year,
         };
-        console.log(item3);
+        setLoading(true);
         if (path === 'Revenue') {
             dispath(getDetailRevenueOfMonth(item1));
         } else if (path === 'Brand & No Month' || path === 'Brand') {
@@ -120,9 +122,10 @@ const RevenueChartTime = ({ path }: Props) => {
         } else {
             dispath(getDetailTotalProductSoldOfMonth(item1));
         }
+        setLoading(false);
     }, [dispath, month, year, cate]);
+    console.log('loading', loading);
     const width = divRef.current?.offsetWidth;
-    console.log(data);
     useEffect(() => {
         if (path === 'Brand & No Month' || path === 'Cate & No Month') {
             setData(detailMonthCB);
@@ -247,6 +250,7 @@ const RevenueChartTime = ({ path }: Props) => {
                           <CustomAreaChart width={width} data={data} dataX="brand" dataY="sold" />
                       )) || <CustomAreaChart width={width} data={data} dataX="date" dataY="total" />}
             </div>
+            {loading && <Loading />}
         </div>
     );
 };

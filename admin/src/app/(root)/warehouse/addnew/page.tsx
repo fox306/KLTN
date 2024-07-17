@@ -40,7 +40,7 @@ const AddNewProduct = () => {
         },
     ]);
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [brand, setBrand] = useState<string>('Adidas');
     const [gender, setGender] = useState('Male');
     const [category, setCategory] = useState<string>('');
@@ -172,7 +172,9 @@ const AddNewProduct = () => {
     }, []);
 
     useEffect(() => {
+        setLoading(true);
         setInitialCategory();
+        setLoading(false);
     }, [categories]);
 
     console.log(vars);
@@ -296,11 +298,7 @@ const AddNewProduct = () => {
                     SAVE & HIDDEN
                 </button> */}
             </div>
-            {loading && (
-                <div className="modal">
-                    <Loading />
-                </div>
-            )}
+            {loading && <Loading />}
         </div>
     );
 };

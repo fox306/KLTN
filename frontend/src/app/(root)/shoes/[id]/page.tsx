@@ -34,6 +34,7 @@ import FavoriteIcon from '@/components/shared/FavoriteIcon';
 import useAxiosPrivate from '@/utils/intercepter';
 import { CartContext } from '@/contexts/cart';
 import { formatCurrency } from '@/utils/convertMoney';
+import Loading from '@/components/shared/Loading';
 
 const unProp = {
     productHots: [],
@@ -104,6 +105,7 @@ const ShoesSinglePage = () => {
     const [isFirstRender, setIsFirstRender] = useState(true);
     const [flag, setFlag] = useState(false);
     const [flag1, setFlag1] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const handleImage = (i: number) => {
         setNumber(i);
@@ -129,8 +131,10 @@ const ShoesSinglePage = () => {
         setItems({ size: newSize, color: '', quantity: 0, hex: '', image: '' });
         setFlag((prev) => !prev);
     };
-    const handleSetColor = (newColor: string, hex: string) => {
+    const handleSetColor = (newColor: string, hex: string, image: string) => {
         setItems({ ...items, color: newColor, hex: hex });
+        const index = variants?.listColor.findIndex((item) => item.image === image);
+        setNumber(index as number);
         setFlag1((prev) => !prev);
         setIsFirstRender(false);
     };
@@ -204,6 +208,7 @@ const ShoesSinglePage = () => {
     const [count, setCount] = useState(0);
     useEffect(() => {
         const fetchProductDetail = async () => {
+            setLoading(true);
             const { data } = await axios.get(`/products/${id}`);
             if (data.success) {
                 console.log(data);
@@ -214,6 +219,7 @@ const ShoesSinglePage = () => {
                     (item: any) => item.image === data.data.randomVariant.image,
                 );
                 setNumber(index);
+                setLoading(false);
                 setFlag((prev) => !prev);
             }
         };
@@ -330,10 +336,7 @@ const ShoesSinglePage = () => {
                                 variantBySize.map((item, i) => (
                                     <div
                                         key={i}
-                                        onClick={() => {
-                                            handleSetColor(item.color, item.hex);
-                                            handleImage(i);
-                                        }}
+                                        onClick={() => handleSetColor(item.color, item.hex, item.image)}
                                         className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[item.color]}`}
                                     >
                                         <div
@@ -435,6 +438,7 @@ const ShoesSinglePage = () => {
                     />
                 </div>
             </div>
+            {loading && <Loading />}
         </div>
     );
 };
