@@ -20,7 +20,7 @@ const Footer = () => {
                 <div className="flex flex-col items-end gap-5">
                     <span className="font-bold text-2xl text-[#223263]">Payment</span>
                     <div>
-                        <Image src="/paypal.png" alt="Paypal" width={180} height={60} />
+                        <Image src="/vnpay.jpg" alt="Paypal" width={180} height={60} />
                     </div>
                 </div>
             </div>
