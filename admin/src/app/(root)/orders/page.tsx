@@ -15,7 +15,7 @@ const OrderStatis = () => {
 
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
-        router.push('/order/manage');
+        router.push('/orders/manage');
     };
     return (
         <div className="flex flex-col gap-[10px]">

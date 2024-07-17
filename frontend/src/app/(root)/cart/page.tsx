@@ -47,7 +47,7 @@ const Cart = () => {
             console.error('Error parsing user data:', error);
         }
     }
-    const length = cartItem?.items && cartItem.items.length;
+    // const length = cartItem?.items && cartItem.items.length;
     const id = user?._id as string;
 
     useEffect(() => {
@@ -63,7 +63,7 @@ const Cart = () => {
             }
         };
         fetchData();
-    }, [length, load]);
+    }, [load]);
 
     const handleCheckout = () => {
         if (qty !== 0) {

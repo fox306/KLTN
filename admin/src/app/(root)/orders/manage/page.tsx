@@ -68,7 +68,7 @@ const OrderManage = () => {
 
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
-        router.push('/order');
+        router.push('/orders');
     };
 
     const handleChangePage = (i: number) => {

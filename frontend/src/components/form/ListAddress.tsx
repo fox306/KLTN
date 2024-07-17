@@ -16,6 +16,7 @@ type Props = {
     address: Address[];
     setChange: Dispatch<SetStateAction<boolean>>;
     setDatas: Dispatch<SetStateAction<Address | undefined>>;
+    datas: Address | undefined;
 };
 
 const unProps = {
@@ -36,7 +37,7 @@ const unProps = {
     setAddressId: () => {},
 };
 
-const ListAddress = ({ setLoad, address, setChange, setDatas }: Props) => {
+const ListAddress = ({ setLoad, address, setChange, datas, setDatas }: Props) => {
     const [open, setOpen] = useState(false);
     const [province, setProvince] = useState<Province[]>();
     const [district, setDistrict] = useState<District[]>();
@@ -47,19 +48,22 @@ const ListAddress = ({ setLoad, address, setChange, setDatas }: Props) => {
     const [ads, setAds] = useState<Address>();
 
     const handleSet = () => {
-        setDatas(ads);
-        setOpen(false);
+        if (ads === undefined) {
+            setChange(false);
+        } else {
+            setDatas(ads);
+            setChange(false);
+        }
     };
     const handleClick = (item: Address) => {
-        const notDo = address.find((item) => item.isDefault === true) as Address;
-        if (notDo._id !== item._id) {
+        if (datas?._id !== item._id) {
             setAds(item);
             setActive(item._id as string);
-            setChange(false);
+            // setChange(false);
         } else {
             setAds(undefined);
             setActive(item._id as string);
-            setChange(false);
+            // setChange(false);
         }
     };
     useEffect(() => {
@@ -71,10 +75,8 @@ const ListAddress = ({ setLoad, address, setChange, setDatas }: Props) => {
         fetchProvince();
     }, []);
     useEffect(() => {
-        const id = address.find((item) => item.isDefault === true) as Address;
-        console.log(id._id);
-        setActive(id._id as string);
-    }, [address]);
+        setActive(datas?._id as string);
+    }, [datas]);
 
     return (
         <div className="modal">
