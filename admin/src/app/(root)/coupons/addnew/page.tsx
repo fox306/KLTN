@@ -134,11 +134,7 @@ const AddNewCouponPage = () => {
                     </button>
                 </div>
             </div>
-            {open && (
-                <div className="modal">
-                    <Loading />
-                </div>
-            )}
+            {open && <Loading />}
         </div>
     );
 };

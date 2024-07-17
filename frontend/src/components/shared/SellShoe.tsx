@@ -7,6 +7,7 @@ import { getAllProduct, getProductHotDeal } from '@/slices/productSlice';
 import { Product } from '@/types/type';
 import { CircularProgress } from '@mui/material';
 import axios from '@/utils/axios';
+import Loading from './Loading';
 
 const SellShoe = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -80,9 +81,7 @@ const SellShoe = () => {
             </div>
             <div>
                 {loading ? (
-                    <div className="w-full h-full flex items-center justify-center">
-                        <CircularProgress color="secondary" size={60} />
-                    </div>
+                    <Loading />
                 ) : (
                     <SingleSellShoe
                         products={listProduct}

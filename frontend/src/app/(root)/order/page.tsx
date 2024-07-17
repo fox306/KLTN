@@ -88,7 +88,7 @@ const Order = () => {
     const [listCoupons, setListCoupons] = useState<ListCoupon>();
     const [discount, setDiscount] = useState<ValidCoupons>();
     const [discountAmount, setDiscountAmount] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [flag, setFlag] = useState(false);
 
@@ -170,8 +170,11 @@ const Order = () => {
     useEffect(() => {
         if (address.length !== 0) {
             const fetchData = async () => {
+                setLoading(true);
                 const { data } = await axios.get(`/deliveryAddress/user/${id}/default`);
                 if (data.success) {
+                    setLoading(false);
+
                     setDatas(data.data);
                 }
             };
@@ -376,11 +379,7 @@ const Order = () => {
                     setFlag={setFlag}
                 />
             )}
-            {loading && (
-                <div className="modal">
-                    <Loading />
-                </div>
-            )}
+            {loading && <Loading />}
         </div>
     );
 };

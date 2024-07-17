@@ -25,7 +25,6 @@ const page = () => {
     useEffect(() => {
         const fetchData = async () => {
             const userString = localStorage.getItem('user');
-            const token = localStorage.getItem('token');
             if (userString !== null) {
                 const user: User = JSON.parse(userString);
                 setLoad(true);

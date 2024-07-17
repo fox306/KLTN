@@ -159,14 +159,14 @@ const CouponsPage = () => {
                     Add new
                 </button>
             </div>
-            {coupons && coupons.length === 0 ? (
-                <div className="flex justify-center items-center">
-                    <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
-                </div>
+            {loading ? (
+                <Loading />
             ) : (
                 <div>
-                    {loading ? (
-                        <Loading />
+                    {coupons && coupons.length === 0 ? (
+                        <div className="flex justify-center items-center">
+                            <Image src="/noData.jpg" alt="No Data" width={300} height={300} className="rounded-[5px]" />
+                        </div>
                     ) : (
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -235,7 +235,7 @@ const CouponsPage = () => {
                     )}
                 </div>
             )}
-            {pages !== 0 && (
+            {!loading && pages !== 0 && (
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>
                         <Pagination

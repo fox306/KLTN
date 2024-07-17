@@ -19,6 +19,7 @@ import { useState, useEffect } from 'react';
 import Form1 from './email/Form1';
 import Form2 from './email/Form2';
 import * as React from 'react';
+import Loading from '../shared/Loading';
 
 type data = {
     data: {
@@ -55,6 +56,7 @@ const Register = () => {
     const [regis, setRegis] = useState(false);
     const [code, setCode] = useState<string>('');
     const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {};
 
@@ -92,17 +94,21 @@ const Register = () => {
                 const { rePassword, ...items } = form.getValues();
                 // console.log(items);
                 // items.birthDay = convertDate(items.birthDay);
+                setLoading(true);
                 const res = await dispatch(signUp(items));
                 console.log(res);
 
                 if ((res.payload as { status: number }).status === 201) {
+                    setLoading(false);
                     toast.success('Register Success');
                     router.push('/sign-in');
                 } else {
+                    setLoading(false);
                     toast.error((res.payload as { response: any }).response.data.message);
                 }
             } catch (error: any) {
                 toast.error(error);
+                setLoading(false);
             }
         };
 
@@ -257,6 +263,7 @@ const Register = () => {
                     {...unProp}
                 />
             )}
+            {loading && <Loading />}
         </Form>
     );
 };

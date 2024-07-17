@@ -2,6 +2,7 @@
 import CartShoe from '@/components/cards/CartShoe';
 import ChangeVariant from '@/components/form/ChangeVariant';
 import Border from '@/components/shared/Border';
+import Loading from '@/components/shared/Loading';
 import { getCartByUserId } from '@/slices/cartSlice';
 import type { Cart, ItemCart, RVariant, User, variantColor } from '@/types/type';
 import axios from '@/utils/axios';
@@ -49,9 +50,11 @@ const Cart = () => {
     }
     // const length = cartItem?.items && cartItem.items.length;
     const id = user?._id as string;
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        setLoading(true);
         const fetchData = async () => {
             if (token) {
                 const { data } = await axiosPrivate.get(`/carts/user/${id}`);
@@ -59,6 +62,7 @@ const Cart = () => {
                     setCartItem(data.data);
                     localStorage.setItem('itemOrders', '');
                     localStorage.setItem('totalPrice', '');
+                    setLoading(false);
                 }
             }
         };
@@ -177,6 +181,7 @@ const Cart = () => {
                     setLoad={setLoad}
                 />
             )}
+            {loading && <Loading />}
         </div>
     );
 };

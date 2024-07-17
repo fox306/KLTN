@@ -10,6 +10,7 @@ import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NoData from '@/components/shared/NoData';
 import { formatCurrency } from '@/utils/convertMoney';
+import Loading from '@/components/shared/Loading';
 
 const statuses = ['ALL', 'VALID', 'EXPIRED'];
 
@@ -44,7 +45,7 @@ const DiscountPage = () => {
     const id = user?._id as string;
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        setLoading(true);
         const fetchAll = async () => {
             const { data } = await axiosPrivate.get(`/coupons/find/by-user?pageSize=5&pageNumber=1&user=${id}`);
             if (data.success) {
@@ -68,9 +69,6 @@ const DiscountPage = () => {
         } else {
             fetchStatus();
         }
-    }, [status]);
-    useEffect(() => {
-        setLoading(true);
     }, [status]);
     return (
         <div className="flex justify-center px-20 mt-10 gap-5">
@@ -96,9 +94,7 @@ const DiscountPage = () => {
 
                 <div className="flex flex-col w-[1100px] mb-[10px]">
                     {loading ? (
-                        <div className="w-full h-full flex items-center justify-center">
-                            <CircularProgress color="secondary" size={60} />
-                        </div>
+                        <Loading />
                     ) : coupon && coupon.length === 0 ? (
                         <NoData />
                     ) : (
@@ -117,7 +113,7 @@ const DiscountPage = () => {
                                             Minimum Orders: {formatCurrency(item.minAmount)}
                                         </span>
                                         <span className="font-semibold">
-                                            Maximum Orders: {formatCurrency(item.maxDiscount)}
+                                            Maximum Discount: {formatCurrency(item.maxDiscount)}
                                         </span>
 
                                         <span>Effective from: {format(new Date(item.startDate), 'dd-MM-yyyy')}</span>

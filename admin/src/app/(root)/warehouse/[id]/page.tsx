@@ -49,7 +49,7 @@ const AddNewProduct = () => {
     const { productDetail, variants }: { productDetail: Product; variants: UpdateVariant[] } = useSelector(
         (state: any) => state.products,
     );
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [brand, setBrand] = useState<string>('Adidas');
     const [gender, setGender] = useState<string>('MALE');
     const [category, setCategory] = useState<string>('');
@@ -151,6 +151,7 @@ const AddNewProduct = () => {
 
     useEffect(() => {
         if (mount) {
+            setLoading(true);
             setProduct({
                 name: productDetail.name,
                 price: productDetail.price.toString(),
@@ -170,6 +171,7 @@ const AddNewProduct = () => {
             });
             setVars(newVars);
             setAddVariants(Array.from({ length: newVars.length }, () => ({})));
+            setLoading(false);
         }
     }, [mount]);
     console.log(vars);
@@ -305,11 +307,7 @@ const AddNewProduct = () => {
                     SAVE
                 </button>
             </div>
-            {loading && (
-                <div className="modal">
-                    <Loading />
-                </div>
-            )}
+            {loading && <Loading />}
         </div>
     );
 };

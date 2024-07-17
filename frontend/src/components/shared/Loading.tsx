@@ -1,10 +1,18 @@
-import { CircularProgress } from '@mui/material';
+import Image from 'next/image';
 import React from 'react';
 
 const Loading = () => {
     return (
-        <div className="w-full h-full flex items-center justify-center">
-            <CircularProgress color="secondary" size={60} />
+        <div className="modal">
+            <div className="flex items-center justify-center">
+                <Image
+                    src="/loading.gif"
+                    alt="Loading"
+                    width={200}
+                    height={200}
+                    className="w-[200px] h-[200px] rounded-full"
+                />
+            </div>
         </div>
     );
 };

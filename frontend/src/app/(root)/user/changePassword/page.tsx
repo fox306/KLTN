@@ -11,6 +11,7 @@ import axios from '@/utils/axios';
 import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 import useAxiosPrivate from '@/utils/intercepter';
+import Loading from '@/components/shared/Loading';
 
 type Pass = {
     oldPass: string;
@@ -21,6 +22,7 @@ type Pass = {
 const ChangePassword = () => {
     const dispatch = useDispatch<AppDispatch>;
     const axiosPrivate = useAxiosPrivate();
+    const [loading, setLoading] = useState(false);
 
     const [passwords, setPasswords] = useState<Pass>({
         oldPass: '',
@@ -59,7 +61,7 @@ const ChangePassword = () => {
 
     const handleSubmit = async () => {
         try {
-            const token = localStorage.getItem('token');
+            setLoading(true);
             const item = {
                 user: id,
                 oldPass: passwords.oldPass,
@@ -74,10 +76,12 @@ const ChangePassword = () => {
             const { data } = await axiosPrivate.patch('/users/update-password', item);
             console.log(data);
             if (data.success) {
+                setLoading(false);
                 toast.success('Update Password Success');
             }
             // console.log(res);
         } catch (error) {
+            setLoading(false);
             toast.error('Wrong Old Password');
         }
     };
@@ -167,6 +171,7 @@ const ChangePassword = () => {
                     <span>Save</span>
                 </div>
             </div>
+            {loading && <Loading />}
         </div>
     );
 };

@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import React from 'react';
 
@@ -8,7 +9,10 @@ const Footer = () => {
             <div className="py-20 px-48 flex justify-between">
                 <div>
                     <span className="font-bold text-2xl text-[#223263]">Founder contact information</span>
-                    <div className="flex items-center gap-5 mt-5">
+                    <div
+                        className="flex items-center gap-5 mt-5 cursor-pointer"
+                        onClick={() => window.open('https://www.facebook.com/000000000000000000dz/')}
+                    >
                         <Image src="/facebook.png" alt="Facebook" width={40} height={40} />
                         <span className="text-2xl text-gray font-bold">Facebook</span>
                     </div>
@@ -16,7 +20,7 @@ const Footer = () => {
                 <div className="flex flex-col items-end gap-5">
                     <span className="font-bold text-2xl text-[#223263]">Payment</span>
                     <div>
-                        <Image src="/paypal.png" alt="Paypal" width={180} height={60} />
+                        <Image src="/vnpay.jpg" alt="Paypal" width={180} height={60} />
                     </div>
                 </div>
             </div>
