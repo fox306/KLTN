@@ -39,7 +39,7 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
         );
         setSort(value as string);
     };
-    console.log(view);
+    console.log(sort);
     return (
         <div className="flex items-center justify-between mt-3 mb-5 bg-deal rounded-lg p-5">
             <div className="flex gap-5 items-center">
@@ -48,7 +48,11 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
                         view === 'NEW' || view === '' ? 'bg-blue' : 'bg-[#ADD6FA]'
                     } w-[120px] h-9 font-bold rounded-md`}
                     onClick={() => {
-                        setView('NEW');
+                        {
+                            setView('NEW');
+                            setSort('');
+                            setSorts(['']);
+                        }
                     }}
                 >
                     New
@@ -57,6 +61,8 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
                     className={`${view === 'HOT' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
                     onClick={() => {
                         setView('HOT');
+                        setSort('');
+                        setSorts(['']);
                     }}
                 >
                     Hot
