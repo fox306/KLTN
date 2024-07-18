@@ -88,10 +88,10 @@ const PricePage = () => {
         const selected = prodcutList.map((item) => {
             if (item._id === data._id) {
                 return {
-                    ...data,
-                    selected: !data.selected,
+                    ...item,
+                    selected: !item.selected,
                 };
-            } else return data;
+            } else return item;
         });
         setProductList(selected);
         handleFilterData(selected);
@@ -145,6 +145,7 @@ const PricePage = () => {
             setLoad1((prev) => !prev);
         }
     };
+    console.log(selectedItem);
     const changeSelected = async () => {
         let item = {};
         const listId = selectedItem.map((item) => item._id);
