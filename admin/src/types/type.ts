@@ -314,6 +314,9 @@ export type FullDetailReceipt = {
     confirmation_date: string;
     total_receipt: number;
     details: DetailReceipt[];
+    status: string;
+    update_date: string;
+    updater: string;
 };
 export type DetailReceipt = {
     _id: string;

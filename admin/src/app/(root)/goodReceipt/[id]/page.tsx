@@ -23,6 +23,9 @@ const detailReceipt = () => {
         receiptId: '',
         supplier: '',
         total_receipt: 0,
+        status: '',
+        update_date: '',
+        updater: '',
         details: [
             {
                 _id: '',
@@ -76,33 +79,57 @@ const detailReceipt = () => {
                     id="supplier"
                     label="Supplier"
                     variant="outlined"
-                    className="w-1/2"
+                    className="w-full"
                     value={detail?.supplier}
                     aria-readonly
                 />
-                <TextField
-                    id="confirmer"
-                    label="Confirmer"
-                    variant="outlined"
-                    className="w-1/2"
-                    value={detail?.confirmer}
-                    aria-readonly
-                />
+                <div className={`${detail?.status === 'UPDATED' ? 'flex gap-[60px]' : ''}`}>
+                    <TextField
+                        id="confirmer"
+                        label="Confirmer"
+                        variant="outlined"
+                        className={`${detail?.status === 'UPDATED' ? 'w-1/2' : 'w-full'}`}
+                        value={detail?.confirmer}
+                        aria-readonly
+                    />
+                    {detail?.status === 'UPDATED' && (
+                        <TextField
+                            id="updater"
+                            label="Updater"
+                            variant="outlined"
+                            className="w-1/2"
+                            value={detail?.updater}
+                            aria-readonly
+                        />
+                    )}
+                </div>
+
                 <div className="flex gap-[60px] items-center">
                     <TextField
                         id="confirmation_date"
                         label="Confirmation Date"
                         variant="outlined"
-                        className="w-1/2"
+                        className={`${detail?.status === 'UPDATED' ? 'w-1/3' : 'w-1/2'}`}
                         type="date"
                         value={convertDate(detail?.confirmation_date)}
                         aria-readonly
                     />
+                    {detail?.status === 'UPDATED' && (
+                        <TextField
+                            id="update_date"
+                            label="Update Date"
+                            variant="outlined"
+                            className="w-1/3"
+                            type="date"
+                            value={convertDate(detail?.update_date)}
+                            aria-readonly
+                        />
+                    )}
                     <TextField
                         id="total"
                         label="Total Receipt"
                         variant="outlined"
-                        className="w-1/2"
+                        className={`${detail?.status === 'UPDATED' ? 'w-1/3' : 'w-1/2'}`}
                         type="tel"
                         inputProps={{
                             className: 'text-orange font-bak',

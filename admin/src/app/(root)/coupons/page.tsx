@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,6 +20,7 @@ import SureForCoupon from '@/components/shared/SureForCoupon';
 import Image from 'next/image';
 import Loading from '@/components/shared/Loading';
 import { formatCurrency } from '@/utils/convertMoney';
+import UpdateCoupon from '@/components/form/UpdateCoupon';
 
 const theme = createTheme({
     palette: {
@@ -42,6 +43,7 @@ const CouponsPage = () => {
     const [id, setId] = useState<string>('');
     const [action, setAction] = useState<string>('');
     const [open1, setOpen1] = useState(false);
+    const [open2, setOpen2] = useState(false);
     const [loading, setLoading] = useState(true);
     const [text, setText] = useState('');
 
@@ -89,12 +91,14 @@ const CouponsPage = () => {
         const data = coupons?.every((item) => item.selected === true);
         setCheckedAll(data);
     };
-    const handleUnLock = (id: string) => {
+    const handleUnLock = (e: MouseEvent<SVGSVGElement, globalThis.MouseEvent>, id: string) => {
+        e.stopPropagation();
         setOpen1(true);
         setAction('UnLock');
         setId(id);
     };
-    const handleLock = (id: string) => {
+    const handleLock = (e: MouseEvent<SVGSVGElement, globalThis.MouseEvent>, id: string) => {
+        e.stopPropagation();
         setOpen1(true);
         setAction('Lock');
         setId(id);
@@ -217,12 +221,12 @@ const CouponsPage = () => {
                                                 >
                                                     {item.status !== 'Active' ? (
                                                         <LockRoundedIcon
-                                                            onClick={() => handleUnLock(item._id)}
+                                                            onClick={(e) => handleUnLock(e, item._id)}
                                                             className="cursor-pointer hover:text-green"
                                                         />
                                                     ) : (
                                                         <LockOpenRoundedIcon
-                                                            onClick={() => handleLock(item._id)}
+                                                            onClick={(e) => handleLock(e, item._id)}
                                                             className="cursor-pointer hover:text-red"
                                                         />
                                                     )}
@@ -249,6 +253,7 @@ const CouponsPage = () => {
                 </div>
             )}
             {open && <AddCoupon setLoad={setLoad} setOpen={setOpen} />}
+            {open2 && <UpdateCoupon setLoad={setLoad} setOpen={setOpen2} id={id} />}
             {open1 && (
                 <SureForCoupon
                     action={action}
