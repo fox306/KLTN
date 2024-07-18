@@ -306,7 +306,7 @@ const Order = () => {
                 <Border />
                 <div className="flex items-center justify-end mt-5 gap-5 font-bold">
                     <span>Total Price:</span>
-                    <span className="text-lg text-blue">{totalPay}₫</span>
+                    <span className="text-lg text-blue">{formatCurrency(totalPay)}</span>
                 </div>
             </div>
             <div className="w-full p-5 shadow-xl rounded-lg flex gap-[50px] items-center font-bold">

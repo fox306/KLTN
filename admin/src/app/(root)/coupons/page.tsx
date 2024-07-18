@@ -202,7 +202,10 @@ const CouponsPage = () => {
                                         coupons.map((item, i) => (
                                             <TableRow
                                                 className="cursor-pointer hover:opacity-60"
-                                                onClick={() => router.push(`coupons/${item._id}`)}
+                                                onClick={() => {
+                                                    setId(item._id);
+                                                    setOpen2(true);
+                                                }}
                                             >
                                                 <TableCell align="center">{item.code}</TableCell>
                                                 <TableCell align="center">{item.name}</TableCell>
