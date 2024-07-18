@@ -49,8 +49,8 @@ const Revenue = ({ path }: Props) => {
         }
     }, [dispath]);
     return (
-        <div className="flex justify-between ">
-            <div className="p-5 w-[400px] flex flex-col items-center shadow-revenue bg-white ">
+        <div className="flex gap-5">
+            <div className="p-5 w-1/3 flex flex-col items-center shadow-revenue bg-white ">
                 <div className="flex items-center justify-between w-full">
                     <span className="font-bold">{path}</span>
                     <span className="font-medium text-sm opacity-60">Today</span>
@@ -77,7 +77,7 @@ const Revenue = ({ path }: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="p-5 w-[400px] flex flex-col items-center shadow-revenue bg-white">
+            <div className="p-5 w-1/3 flex flex-col items-center shadow-revenue bg-white">
                 <div className="flex items-center justify-between w-full">
                     <span className="font-bold">{path}</span>
                     <span className="font-medium text-sm opacity-60">This Week</span>
@@ -104,7 +104,7 @@ const Revenue = ({ path }: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="p-5 w-[400px] flex flex-col items-center shadow-revenue bg-white">
+            <div className="p-5 w-1/3 flex flex-col items-center shadow-revenue bg-white">
                 <div className="flex items-center justify-between w-full">
                     <span className="font-bold">{path}</span>
                     <span className="font-medium text-sm opacity-60">This Month</span>

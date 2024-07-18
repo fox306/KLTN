@@ -26,8 +26,8 @@ const RevenueChart = ({ path }: Props) => {
     console.log(detailWeek);
 
     return (
-        <div className="flex gap-4 justify-between">
-            <div className="px-10 py-5 shadow-revenue bg-white min-w-[600px]">
+        <div className="flex gap-5">
+            <div className="px-10 py-5 shadow-revenue bg-white w-1/2">
                 <div className="flex justify-between items-center mb-[50px]">
                     <span className="font-bold">Revenue - Bar Chart</span>
                     <span className="font-medium text-sm opacity-60">This week</span>
@@ -53,7 +53,7 @@ const RevenueChart = ({ path }: Props) => {
                     </BarChart>
                 </div>
             </div>
-            <div className="px-10 py-5 shadow-revenue bg-white min-w-[600px]">
+            <div className="px-10 py-5 shadow-revenue bg-white w-1/2">
                 <div className="flex justify-between items-center mb-[50px]">
                     <span className="font-bold">Revenue - Area Chart</span>
                     <span className="font-medium text-sm opacity-60">This week</span>
