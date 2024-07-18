@@ -27,20 +27,20 @@ const RevenueChart = ({ path }: Props) => {
 
     return (
         <div className="flex justify-between">
-            <div className="px-10 py-5 shadow-revenue bg-white w-[600px]">
+            <div className="px-10 py-5 shadow-revenue bg-white min-w-[600px]">
                 <div className="flex justify-between items-center mb-[50px]">
                     <span className="font-bold">Revenue - Bar Chart</span>
                     <span className="font-medium text-sm opacity-60">This week</span>
                 </div>
                 <div className="">
                     <BarChart
-                        width={500}
+                        width={650}
                         height={200}
                         data={detailWeek}
                         margin={{
                             top: 5,
                             right: 30,
-                            left: 20,
+                            left: 50,
                             bottom: 5,
                         }}
                         barSize={20}
@@ -53,20 +53,20 @@ const RevenueChart = ({ path }: Props) => {
                     </BarChart>
                 </div>
             </div>
-            <div className="px-10 py-5 shadow-revenue bg-white w-[600px]">
+            <div className="px-10 py-5 shadow-revenue bg-white min-w-[600px]">
                 <div className="flex justify-between items-center mb-[50px]">
                     <span className="font-bold">Revenue - Area Chart</span>
                     <span className="font-medium text-sm opacity-60">This week</span>
                 </div>
                 <div className="">
                     <AreaChart
-                        width={500}
+                        width={650}
                         height={200}
                         data={detailWeek}
                         margin={{
                             top: 10,
                             right: 30,
-                            left: 0,
+                            left: 50,
                             bottom: 0,
                         }}
                     >
