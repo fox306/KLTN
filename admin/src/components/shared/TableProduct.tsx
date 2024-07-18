@@ -62,6 +62,11 @@ const TableProduct = ({
         setId(id);
     };
 
+    const handleCheckboxClick = (e: MouseEvent<HTMLInputElement, globalThis.MouseEvent>, product: Product) => {
+        e.stopPropagation();
+        handleSelectedItem(product);
+    };
+
     //Checked
 
     return (
@@ -100,11 +105,8 @@ const TableProduct = ({
                                             <input
                                                 type="checkbox"
                                                 className="w-[26px] h-[26px]"
-                                                checked={product.selected || false}
-                                                onChange={(e) => {
-                                                    e.stopPropagation();
-                                                    handleSelectedItem(product);
-                                                }}
+                                                defaultChecked={product.selected || false}
+                                                onClick={(e) => handleCheckboxClick(e, product)}
                                             />
                                         </TableCell>
                                         <TableCell align="center" className="flex justify-center">
