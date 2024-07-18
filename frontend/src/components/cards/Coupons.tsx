@@ -1,6 +1,8 @@
 import { ListCoupon, ValidCoupons } from '@/types/type';
 import React, { Dispatch, SetStateAction } from 'react';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import { format } from 'date-fns';
+import { formatCurrency } from '@/utils/convertMoney';
 
 type Props = {
     setActive: Dispatch<SetStateAction<boolean>>;
@@ -32,16 +34,17 @@ const Coupons = ({ setActive, listCoupons, setDiscount, setFlag }: Props) => {
                     {listCoupons.validCoupons.length !== 0 ? (
                         listCoupons.validCoupons.map((item) => (
                             <div
-                                className="border h-[116px] p-4 flex flex-col justify-center items-center hover:border-blue cursor-pointer"
+                                className="w-[500px] border h-[116px] p-4 flex flex-col justify-center items-center hover:border-blue cursor-pointer"
                                 onClick={() => handleSetDiscount(item)}
                             >
                                 <div className="flex items-center justify-between font-bold text-lg w-full">
                                     <span>Code: {item.code} </span>
                                     <span>Name: {item.name} </span>
                                 </div>
-                                <span className="font-semibold">Minimum Orders: {item.minAmount}</span>
+                                <span className="font-semibold">Minimum Orders: {formatCurrency(item.minAmount)}</span>
 
-                                <span>Effective from: {item.startDate}</span>
+                                <span>Effective from: {format(new Date(item.startDate), 'dd-MM-yyyy')}</span>
+                                <span>Expried Day: {format(new Date(item.endDate), 'dd-MM-yyyy')}</span>
                             </div>
                         ))
                     ) : (
@@ -51,23 +54,21 @@ const Coupons = ({ setActive, listCoupons, setDiscount, setFlag }: Props) => {
                     )}
                 </div>
                 {listCoupons.recommendCoupons.length !== 0 && (
-                    <span className="text-base font-medium">Recommend Coupons</span>
+                    <span className="text-base font-medium w-full">Recommend Coupons</span>
                 )}
 
                 <div className={`${listCoupons.recommendCoupons.length !== 0 ? 'grid grid-cols-2 gap-4' : ''}`}>
                     {listCoupons.recommendCoupons.length !== 0 &&
                         listCoupons.recommendCoupons.map((item) => (
-                            <div
-                                className="border h-[116px] p-4 flex flex-col justify-center items-center cursor-pointer"
-                                onClick={() => handleSetDiscount(item)}
-                            >
+                            <div className="w-[500px] border h-[116px] p-4 flex flex-col justify-center items-center cursor-pointer">
                                 <div className="flex items-center justify-between font-bold text-lg w-full">
                                     <span>Code: {item.code} </span>
                                     <span>Name: {item.name} </span>
                                 </div>
-                                <span className="font-semibold">Minimum Orders: {item.minAmount}</span>
+                                <span className="font-semibold">Minimum Orders: {formatCurrency(item.minAmount)}</span>
 
-                                <span>Effective from: {item.startDate}</span>
+                                <span>Effective from: {format(new Date(item.startDate), 'dd-MM-yyyy')}</span>
+                                <span>Expried Day: {format(new Date(item.endDate), 'dd-MM-yyyy')}</span>
                                 <span>{item.recommend}</span>
                             </div>
                         ))}
