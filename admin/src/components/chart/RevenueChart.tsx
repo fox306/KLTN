@@ -34,7 +34,7 @@ const RevenueChart = ({ path }: Props) => {
                 </div>
                 <div className="">
                     <BarChart
-                        width={650}
+                        width={500}
                         height={200}
                         data={detailWeek}
                         margin={{
@@ -60,7 +60,7 @@ const RevenueChart = ({ path }: Props) => {
                 </div>
                 <div className="">
                     <AreaChart
-                        width={650}
+                        width={500}
                         height={200}
                         data={detailWeek}
                         margin={{
