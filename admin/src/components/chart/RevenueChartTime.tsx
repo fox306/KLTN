@@ -125,7 +125,8 @@ const RevenueChartTime = ({ path }: Props) => {
         setLoading(false);
     }, [dispath, month, year, cate]);
     console.log('loading', loading);
-    const width = divRef.current?.offsetWidth;
+    const width1 = divRef.current?.offsetWidth;
+    const width = (width1 as number) - 200;
     useEffect(() => {
         if (path === 'Brand & No Month' || path === 'Cate & No Month') {
             setData(detailMonthCB);
